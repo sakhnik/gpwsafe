@@ -1,6 +1,7 @@
 
 bin_PROGRAMS = gpwsafe
 
-gpwsafe_SOURCES = main.c
+gpwsafe_SOURCES = main.cc \
+		  File3.cc File3.hh
 
-AM_CFLAGS = -Wall
+AM_CXXFLAGS = -Wall
