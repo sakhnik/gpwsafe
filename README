@@ -1,0 +1,9 @@
+This is a reimplementation of the unix command line utility
+pwsafe (http://nsd.dyndns.org/pwsafe/), which hasn't been updated
+since 2005.
+
+It should be compatible with the recent versions of the original
+Password Safe (http://passwordsafe.sourceforge.net/).
+
+Anatolii Sakhnik,
+Kyiv 2012
