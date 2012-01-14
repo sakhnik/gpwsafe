@@ -8,11 +8,22 @@
 #include "File3.hh"
 
 #include <iostream>
+#include <gcrypt.h>
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
+    if (!gcry_check_version(GCRYPT_VERSION))
+    {
+        cerr << "libgcrypt version mismatch\n" << endl;
+        return 1;
+    }
+    // Allocate secure memory for sensitive information (won't be swapped)
+    gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);
+
+    gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
+
     try
     {
         gPWS::cFile3 file;

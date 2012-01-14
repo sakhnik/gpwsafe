@@ -10,6 +10,8 @@
 
 #include <cstring>
 #include <iostream>
+#include <cassert>
+#include <gcrypt.h>
 
 namespace gPWS {
 
@@ -26,11 +28,11 @@ cFile3::~cFile3()
 
 int cFile3::Open(char const* fname)
 {
-    if (!_fname.empty())
-        return -1;
+    assert(gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) &&
+           "libgcrypt must be initialized beforehand");
+    assert(_fname.empty() && "Must be closed before opening");
     _fname = fname;
-    if (_fname.empty())
-        return -1;
+    assert(!_fname.empty() && "File name?");
 
     try
     {
