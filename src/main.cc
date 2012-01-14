@@ -27,7 +27,8 @@ int main(int argc, char* argv[])
     try
     {
         gPWS::cFile3 file;
-        if (file.Open("../test/first.psafe3"))
+        //if (file.Open("../test/first.psafe3"))
+        if (file.Open("asfd"))
         {
             cerr << "Failed to open file" << endl;
             return 1;
@@ -39,9 +40,15 @@ int main(int argc, char* argv[])
             return 1;
         }
     }
+    catch (fstream::failure const& e)
+    {
+        cerr << "IO error" << endl;
+        return 1;
+    }
     catch (std::exception const& e)
     {
         cerr << "Exception: " << e.what() << endl;
+        return 1;
     }
     return 0;
 }

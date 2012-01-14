@@ -24,6 +24,9 @@ public:
 private:
     std::string _fname;
     std::fstream _file;
+
+    cFile3(cFile3 const &);
+    cFile3& operator=(cFile3 const &);
 };
 
 } //namespace gPWS;

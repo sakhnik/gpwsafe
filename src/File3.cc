@@ -19,7 +19,7 @@ using namespace std;
 
 cFile3::cFile3()
 {
-    _file.exceptions(_file.failbit|_file.badbit);
+    _file.exceptions(ios::failbit|ios::badbit);
 }
 
 cFile3::~cFile3()
@@ -34,22 +34,16 @@ int cFile3::Open(char const* fname)
     _fname = fname;
     assert(!_fname.empty() && "File name?");
 
-    try
-    {
-        _file.open(fname, _file.in|_file.out|_file.binary);
+    _file.open(fname, _file.in|_file.out|_file.binary);
 
-        const string TAG ("PWS3");
-        char tag[TAG.size() + 1];
-        _file.read(tag, TAG.size());
-        tag[TAG.size()] = 0;
-        if (tag != TAG)
-            return -1;
-    }
-    catch (fstream::failure const& e)
-    {
-        cerr << "Exception opening/reading file" << endl;
+    char tag[4];
+    _file.read(tag, 4);
+    if (!std::equal(tag, tag + 4, "PWS3"))
         return -1;
-    }
+
+    uint8_t salt[32];
+    _file.read(reinterpret_cast<char *>(salt), 32);
+
     return 0;
 }
 
