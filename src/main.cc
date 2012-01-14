@@ -27,8 +27,7 @@ int main(int argc, char* argv[])
     try
     {
         gPWS::cFile3 file;
-        //if (file.Open("../test/first.psafe3"))
-        if (file.Open("asfd"))
+        if (file.Open("../test/first.psafe3", "first123"))
         {
             cerr << "Failed to open file" << endl;
             return 1;

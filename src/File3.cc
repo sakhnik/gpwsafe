@@ -6,12 +6,13 @@
 //
 
 #include "File3.hh"
-#include "Defs.hh"
+#include "KeyStretch.hh"
 
 #include <cstring>
 #include <iostream>
 #include <cassert>
 #include <gcrypt.h>
+#include <stdint.h>
 
 namespace gPWS {
 
@@ -26,7 +27,8 @@ cFile3::~cFile3()
 {
 }
 
-int cFile3::Open(char const* fname)
+int cFile3::Open(char const* fname,
+                 char const* pass)
 {
     assert(gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) &&
            "libgcrypt must be initialized beforehand");
@@ -41,8 +43,34 @@ int cFile3::Open(char const* fname)
     if (!std::equal(tag, tag + 4, "PWS3"))
         return -1;
 
-    uint8_t salt[32];
-    _file.read(reinterpret_cast<char *>(salt), 32);
+    const unsigned salt_len = 32;
+    char salt[salt_len];
+    _file.read(salt, salt_len);
+
+    uint8_t iter_buf[4];
+    _file.read(reinterpret_cast<char *>(iter_buf), 4);
+    uint32_t iterations = uint32_t(iter_buf[0])
+                        + (uint32_t(iter_buf[1]) << 8)
+                        + (uint32_t(iter_buf[2]) << 16)
+                        + (uint32_t(iter_buf[3]) << 24);
+
+    cKeyStretch key_stretch (pass, strlen(pass),
+                             salt, salt_len,
+                             iterations);
+
+    cSha256 key_md (key_stretch.Get(), key_stretch.LENGTH);
+
+    const unsigned key_len = 32;
+    char key[key_len];
+    _file.read(key, key_len);
+
+    if (memcmp(key, key_md.Get(), key_len))
+    {
+        cerr << "Key mismatch" << endl;
+        return -1;
+    }
+
+    cout << "Ok" << endl;
 
     return 0;
 }

@@ -18,7 +18,9 @@ public:
     cFile3();
     ~cFile3();
 
-    int Open(char const* fname);
+    int Open(char const* fname,
+             char const* pass);
+
     int Close();
 
 private:
