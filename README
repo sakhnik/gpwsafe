@@ -5,5 +5,8 @@ since 2005.
 It should be compatible with the recent versions of the original
 Password Safe (http://passwordsafe.sourceforge.net/).
 
+The goal is to keep the source code short, simple and correct.
+Run the unit test suite with `make check'.
+
 Anatolii Sakhnik,
 Kyiv 2012

@@ -1,0 +1,10 @@
+
+TESTS = file3-test
+
+check_PROGRAMS = file3-test
+
+file3_test_SOURCES = file3.cc
+
+AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DBOOST_TEST_DYN_LINK
+
+LDADD = $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
