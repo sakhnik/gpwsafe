@@ -7,11 +7,12 @@
 
 #include "File3.hh"
 #include "KeyStretch.hh"
+#include "Memory.hh"
 
 #include <cstring>
 #include <iostream>
+#include <vector>
 #include <cassert>
-#include <gcrypt.h>
 #include <stdint.h>
 
 namespace gPWS {
@@ -60,11 +61,10 @@ int cFile3::Open(char const* fname,
 
     cSha256 key_md (key_stretch.Get(), key_stretch.LENGTH);
 
-    const unsigned key_len = 32;
-    char key[key_len];
-    _file.read(key, key_len);
+    vector<char, SecureAllocator<char> > key(32);
+    _file.read(&key[0], key.size());
 
-    if (memcmp(key, key_md.Get(), key_len))
+    if (memcmp(&key[0], key_md.Get(), key.size()))
     {
         cerr << "Key mismatch" << endl;
         return -1;
