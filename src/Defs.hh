@@ -7,13 +7,20 @@
 
 #pragma once
 
+#include "Memory.hh"
+
 #include <vector>
 #include <stdint.h>
-#include <ios_fwd>
 
 namespace gPWS {
 
-typedef std::vector<uint8_t> BytesT;
+typedef std::vector<char> BytesT;
+
+typedef std::vector<char, SecureAllocator<char> > SecureBytesT;
+
+typedef std::basic_string<char,
+                          std::char_traits<char>,
+                          SecureAllocator<char> > SecureStringT;
 
 } //namespace gPWS;
 

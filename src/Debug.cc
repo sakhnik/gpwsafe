@@ -25,6 +25,11 @@ void PrintBuf(unsigned char const *buf, unsigned len)
     cout << endl;
 }
 
+void PrintBuf(char const *buf, unsigned len)
+{
+    PrintBuf(reinterpret_cast<unsigned char const *>(buf), len);
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

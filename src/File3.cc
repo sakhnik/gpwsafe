@@ -6,8 +6,10 @@
 //
 
 #include "File3.hh"
+#include "Defs.hh"
 #include "KeyStretch.hh"
 #include "Memory.hh"
+#include "Debug.hh"
 
 #include <cstring>
 #include <iostream>
@@ -55,13 +57,16 @@ int cFile3::Open(char const* fname,
                         + (uint32_t(iter_buf[2]) << 16)
                         + (uint32_t(iter_buf[3]) << 24);
 
-    cKeyStretch key_stretch (pass, strlen(pass),
-                             salt, salt_len,
-                             iterations);
+    cKeyStretch key_stretch(pass, strlen(pass),
+                            salt, salt_len,
+                            iterations);
 
-    cSha256 key_md (key_stretch.Get(), key_stretch.LENGTH);
+    PrintBuf(pass, strlen(pass));
+    PrintBuf(salt, salt_len);
+    PrintBuf(key_stretch.Get(), key_stretch.LENGTH);
+    cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
-    vector<char, SecureAllocator<char> > key(32);
+    SecureBytesT key(32);
     _file.read(&key[0], key.size());
 
     if (memcmp(&key[0], key_md.Get(), key.size()))

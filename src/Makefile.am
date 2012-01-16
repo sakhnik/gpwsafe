@@ -1,15 +1,20 @@
 
+noinst_LIBRARIES = libgpwsafe.a
+
+libgpwsafe_a_SOURCES = \
+		Defs.hh \
+		File3.cc File3.hh \
+		Sha256.cc Sha256.hh \
+		KeyStretch.cc KeyStretch.hh \
+		Memory.cc Memory.hh \
+		Debug.cc Debug.hh
+
 bin_PROGRAMS = gpwsafe
 
-gpwsafe_SOURCES = main.cc Defs.hh \
-		  File3.cc File3.hh \
-		  Sha256.cc Sha256.hh \
-		  KeyStretch.cc KeyStretch.hh \
-		  Memory.cc Memory.hh \
-		  Debug.cc Debug.hh
+gpwsafe_SOURCES = main.cc
+
+gpwsafe_LDADD = libgpwsafe.a $(LIBGCRYPT_LIBS)
 
 AM_CXXFLAGS = -Wall \
 	      $(LIBGCRYPT_CFLAGS) -DGCRYPT_NO_DEPRECATED \
 	      $(BOOST_CPPFLAGS)
-
-LDADD = $(LIBGCRYPT_LIBS)
