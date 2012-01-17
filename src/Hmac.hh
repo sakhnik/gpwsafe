@@ -1,7 +1,7 @@
 //
-// Sha256.hh
+// Hmac.hh
 //
-//     Created: 14.01.2012
+//     Created: 17.01.2012
 //      Author: A. Sakhnik
 //
 
@@ -12,25 +12,18 @@
 
 namespace gPWS {
 
-class cSha256
+class cHmac
 {
 public:
-    static const unsigned LENGTH = 32;
+    cHmac(void const *key, size_t key_len);
 
-    cSha256();
-    cSha256(void const *data, size_t len);
-
-    ~cSha256();
+    ~cHmac();
 
     void Update(void const *data, size_t len);
     uint8_t const *Get() const;
-    void Reset();
 
 private:
     gcry_md_hd_t _h;
-
-    cSha256(cSha256 const &);
-    cSha256 &operator=(cSha256 const &);
 };
 
 } //namespace gPWS;

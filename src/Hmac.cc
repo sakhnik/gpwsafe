@@ -1,11 +1,11 @@
 //
-// Sha256.cc
+// Hmac.cc
 //
-//     Created: 14.01.2012
+//     Created: 17.01.2012
 //      Author: A. Sakhnik
 //
 
-#include "Sha256.hh"
+#include "Hmac.hh"
 
 #include <iostream>
 #include <stdexcept>
@@ -14,23 +14,12 @@ namespace gPWS {
 
 using namespace std;
 
-cSha256::cSha256()
+cHmac::cHmac(void const *key, size_t key_len)
 {
     gcry_error_t error =
-        gcry_md_open(&_h, GCRY_MD_SHA256, GCRY_MD_FLAG_SECURE);
-    if (error)
-    {
-        cerr << "gcry_md_open failed: "
-             << gcry_strsource(error) << "/"
-             << gcry_strerror(error) << endl;
-        throw runtime_error("md error");
-    }
-}
-
-cSha256::cSha256(void const *data, size_t len)
-{
-    gcry_error_t error =
-        gcry_md_open(&_h, GCRY_MD_SHA256, GCRY_MD_FLAG_SECURE);
+        gcry_md_open(&_h,
+                     GCRY_MD_SHA256,
+                     GCRY_MD_FLAG_SECURE | GCRY_MD_FLAG_HMAC);
     if (error)
     {
         cerr << "gcry_md_open failed: "
@@ -39,27 +28,29 @@ cSha256::cSha256(void const *data, size_t len)
         throw runtime_error("md error");
     }
 
-    gcry_md_write(_h, data, len);
+    error = gcry_md_setkey(_h, key, key_len);
+    if (error)
+    {
+        cerr << "gcry_md_setkey failed: "
+             << gcry_strsource(error) << "/"
+             << gcry_strerror(error) << endl;
+        throw runtime_error("md error");
+    }
 }
 
-cSha256::~cSha256()
+cHmac::~cHmac()
 {
     gcry_md_close(_h);
 }
 
-uint8_t const *cSha256::Get() const
-{
-    return gcry_md_read(_h, 0);
-}
-
-void cSha256::Update(void const *data, size_t len)
+void cHmac::Update(void const *data, size_t len)
 {
     gcry_md_write(_h, data, len);
 }
 
-void cSha256::Reset()
+uint8_t const *cHmac::Get() const
 {
-    gcry_md_reset(_h);
+    return gcry_md_read(_h, 0);
 }
 
 } //namespace gPWS;
