@@ -5,6 +5,7 @@ libgpwsafe_a_SOURCES = \
 		Defs.hh \
 		File3.cc File3.hh \
 		Sha256.cc Sha256.hh \
+		Twofish.cc Twofish.hh \
 		KeyStretch.cc KeyStretch.hh \
 		Memory.cc Memory.hh \
 		Debug.cc Debug.hh

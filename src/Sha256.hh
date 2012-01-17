@@ -27,7 +27,7 @@ public:
     void Reset();
 
 private:
-    gcry_md_hd_t _c;
+    gcry_md_hd_t _h;
 
     cSha256(cSha256 const &);
     cSha256 &operator=(cSha256 const &);

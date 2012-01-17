@@ -14,9 +14,9 @@
 
 namespace gPWS {
 
-typedef std::vector<char> BytesT;
+typedef std::vector<uint8_t> BytesT;
 
-typedef std::vector<char, SecureAllocator<char> > SecureBytesT;
+typedef std::vector<uint8_t, SecureAllocator<uint8_t> > SecureBytesT;
 
 typedef std::basic_string<char,
                           std::char_traits<char>,

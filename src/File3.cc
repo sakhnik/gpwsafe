@@ -10,6 +10,7 @@
 #include "KeyStretch.hh"
 #include "Memory.hh"
 #include "Debug.hh"
+#include "Twofish.hh"
 
 #include <cstring>
 #include <iostream>
@@ -30,14 +31,11 @@ cFile3::~cFile3()
 {
 }
 
-int cFile3::Open(char const* fname,
-                 char const* pass)
+int cFile3::Open(char const *fname,
+                 char const *pass)
 {
     assert(gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) &&
            "libgcrypt must be initialized beforehand");
-    assert(_fname.empty() && "Must be closed before opening");
-    _fname = fname;
-    assert(!_fname.empty() && "File name?");
 
     _file.open(fname, _file.in|_file.out|_file.binary);
 
@@ -61,13 +59,10 @@ int cFile3::Open(char const* fname,
                             salt, salt_len,
                             iterations);
 
-    PrintBuf(pass, strlen(pass));
-    PrintBuf(salt, salt_len);
-    PrintBuf(key_stretch.Get(), key_stretch.LENGTH);
     cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
     SecureBytesT key(32);
-    _file.read(&key[0], key.size());
+    _file.read(reinterpret_cast<char *>(&key[0]), key.size());
 
     if (memcmp(&key[0], key_md.Get(), key.size()))
     {
@@ -75,16 +70,35 @@ int cFile3::Open(char const* fname,
         return -1;
     }
 
-    cout << "Ok" << endl;
+    SecureBytesT main_key(32);
+    _file.read(reinterpret_cast<char *>(&main_key[0]), main_key.size());
+    cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
+    twofish.Decrypt(&main_key[0], main_key.size(),
+                    &main_key[0], main_key.size());
+
+    SecureBytesT hmac_key(32);
+    _file.read(reinterpret_cast<char *>(&hmac_key[0]), hmac_key.size());
+    twofish.Decrypt(&hmac_key[0], hmac_key.size(),
+                    &hmac_key[0], hmac_key.size());
+
+    BytesT iv(16);
+    _file.read(reinterpret_cast<char *>(&iv[0]), iv.size());
+
+    cTwofish twofish2(cTwofish::M_CBC, &main_key[0], main_key.size());
+    twofish2.SetIV(&iv[0], iv.size());
+
+    BytesT data(1024);
+    _file.read(reinterpret_cast<char *>(&data[0]), data.size());
+    twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
+
+    std::copy(data.begin(), data.end(),
+              ostream_iterator<BytesT::value_type>(cout));
 
     return 0;
 }
 
 int cFile3::Close()
 {
-    if (_fname.empty())
-        return -1;
-    _fname.clear();
     _file.close();
     return 0;
 }

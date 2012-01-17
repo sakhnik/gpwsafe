@@ -18,13 +18,12 @@ public:
     cFile3();
     ~cFile3();
 
-    int Open(char const* fname,
-             char const* pass);
+    int Open(char const *fname,
+             char const *pass);
 
     int Close();
 
 private:
-    std::string _fname;
     std::fstream _file;
 
     cFile3(cFile3 const &);
