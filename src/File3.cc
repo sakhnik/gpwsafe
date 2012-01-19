@@ -18,6 +18,7 @@
 #include <vector>
 #include <cassert>
 #include <stdint.h>
+#include <boost/format.hpp>
 
 namespace gPWS {
 
@@ -81,43 +82,68 @@ int cFile3::Open(char const *fname,
     _file.read(reinterpret_cast<char *>(&hmac_key[0]), hmac_key.size());
     twofish.Decrypt(&hmac_key[0], hmac_key.size(),
                     &hmac_key[0], hmac_key.size());
+    cHmac hmac_calculator(&hmac_key[0], hmac_key.size());
 
     BytesT iv(16);
     _file.read(reinterpret_cast<char *>(&iv[0]), iv.size());
 
-    fstream::streampos data_start = _file.tellg();
-    _file.seekg(-(16 + 32), ios::end);
-    size_t data_length = _file.tellg() - data_start;
-
-    BytesT eof_marker(16);
-    _file.read(reinterpret_cast<char *>(&eof_marker[0]), eof_marker.size());
-    if (memcmp(&eof_marker[0], "PWS3-EOFPWS3-EOF", eof_marker.size()))
+    cTwofish twofish2(cTwofish::M_CBC, &main_key[0], main_key.size());
+    twofish2.SetIV(&iv[0], iv.size());
+    SecureBytesT data(16);
+    while (true)
     {
-        cerr << "Invalid EOF marker" << endl;
-        return -1;
+        _file.read(reinterpret_cast<char *>(&data[0]), data.size());
+        if (!memcmp(&data[0], "PWS3-EOFPWS3-EOF", data.size()))
+            break;
+        twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
+        //std::copy(data.begin(), data.end(),
+        //          ostream_iterator<BytesT::value_type>(cout));
+        uint32_t len = uint32_t(data[0])
+                     | (uint32_t(data[1]) << 8)
+                     | (uint32_t(data[2]) << 16)
+                     | (uint32_t(data[3]) << 24);
+        cout << "Len: " << len;
+        if (!len)
+        {
+            cout << endl;
+            continue;
+        }
+
+        unsigned type = data[4];
+        cout << "\tType: " << (boost::format("%02X") % type);
+
+        SecureBytesT val;
+        val.reserve(len);
+        for (unsigned i = 5; len > 0; )
+        {
+            if (i == data.size())
+            {
+                _file.read(reinterpret_cast<char *>(&data[0]), data.size());
+                twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
+                i = 0;
+            }
+            int available = (std::min)(data.size() - i, len);
+            val.insert(val.end(),
+                       data.begin() + i,
+                       data.begin() + i + available);
+            len -= available;
+            i += available;
+        }
+        cout << "\tBytes: ";
+        cout << Quote(&val[0], val.size()) << endl;
+        hmac_calculator.Update(&val[0], val.size());
     }
 
     BytesT hmac(32);
     _file.read(reinterpret_cast<char *>(&hmac[0]), hmac.size());
 
-    _file.seekg(data_start, ios::beg);
-    SecureBytesT data(data_length);
-    _file.read(reinterpret_cast<char *>(&data[0]), data.size());
-    cTwofish twofish2(cTwofish::M_CBC, &main_key[0], main_key.size());
-    twofish2.SetIV(&iv[0], iv.size());
-    twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
-    //std::copy(data.begin(), data.end(),
-    //          ostream_iterator<BytesT::value_type>(cout));
-
-
-    cHmac hmac_calculator(&hmac_key[0], hmac_key.size());
-    hmac_calculator.Update(&data[0], data.size());
     if (memcmp(hmac_calculator.Get(), &hmac[0], hmac.size()))
     {
         cerr << "HMAC check failed" << endl;
         return -1;
     }
 
+    cout << "Ok" << endl;
     return 0;
 }
 
