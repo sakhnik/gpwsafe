@@ -1,9 +1,7 @@
 
-TESTS = file3-test KeyStretchTest
+TESTS = KeyStretchTest
 
-check_PROGRAMS = file3-test KeyStretchTest
-
-file3_test_SOURCES = file3.cc
+check_PROGRAMS = KeyStretchTest
 
 KeyStretchTest_SOURCES = KeyStretchTest.cc
 KeyStretchTest_LDADD = $(top_builddir)/src/libgpwsafe.a \
