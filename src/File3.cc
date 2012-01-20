@@ -68,7 +68,7 @@ int cFile3::Read(char const *fname,
 
     cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
-    SecureBytesT key(32);
+    BytesX key(32);
     ifs.read(reinterpret_cast<char *>(&key[0]), key.size());
 
     if (memcmp(&key[0], key_md.Get(), key.size()))
@@ -79,12 +79,12 @@ int cFile3::Read(char const *fname,
 
     cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
-    SecureBytesT main_key(32);
+    BytesX main_key(32);
     ifs.read(reinterpret_cast<char *>(&main_key[0]), main_key.size());
     twofish.Decrypt(&main_key[0], main_key.size(),
                     &main_key[0], main_key.size());
 
-    SecureBytesT hmac_key(32);
+    BytesX hmac_key(32);
     ifs.read(reinterpret_cast<char *>(&hmac_key[0]), hmac_key.size());
     twofish.Decrypt(&hmac_key[0], hmac_key.size(),
                     &hmac_key[0], hmac_key.size());
@@ -95,7 +95,7 @@ int cFile3::Read(char const *fname,
 
     cTwofish twofish2(cTwofish::M_CBC, &main_key[0], main_key.size());
     twofish2.SetIV(&iv[0], iv.size());
-    SecureBytesT data(16);
+    BytesX data(16);
     while (true)
     {
         ifs.read(reinterpret_cast<char *>(&data[0]), data.size());
@@ -117,7 +117,7 @@ int cFile3::Read(char const *fname,
         field->length = length;
         field->type = data[4];
         field->value.reserve(length);
-        SecureBytesT &value (field->value);
+        BytesX &value (field->value);
 
         for (unsigned i = 5; length > 0; )
         {

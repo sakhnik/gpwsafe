@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(KeyStretchTest)
 BOOST_AUTO_TEST_CASE(First)
 {
     using namespace gPWS;
-    SecureStringT pass("first123");
+    StringX pass("first123");
     string salt("\x12\xE8\xA7\x6F\x0B\x20\x84\x7A"
                 "\x51\x49\xC3\x9D\xD3\xA5\xB1\xD5"
                 "\x44\x46\x3A\xE6\x2D\x89\x99\x10"

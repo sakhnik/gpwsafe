@@ -16,11 +16,11 @@ namespace gPWS {
 
 typedef std::vector<uint8_t> BytesT;
 
-typedef std::vector<uint8_t, SecureAllocator<uint8_t> > SecureBytesT;
+typedef std::vector<uint8_t, SecureAllocator<uint8_t> > BytesX;
 
 typedef std::basic_string<char,
                           std::char_traits<char>,
-                          SecureAllocator<char> > SecureStringT;
+                          SecureAllocator<char> > StringX;
 
 } //namespace gPWS;
 

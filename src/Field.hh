@@ -22,7 +22,7 @@ struct sField
 
     uint32_t length;
     uint8_t type;
-    SecureBytesT value;
+    BytesX value;
 };
 
 } //namespace gPWS;
