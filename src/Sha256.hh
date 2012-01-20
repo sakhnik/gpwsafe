@@ -9,10 +9,12 @@
 
 #include <gcrypt.h>
 #include <stdint.h>
+#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
 class cSha256
+    : boost::noncopyable
 {
 public:
     static const unsigned LENGTH = 32;
@@ -28,9 +30,6 @@ public:
 
 private:
     gcry_md_hd_t _h;
-
-    cSha256(cSha256 const &);
-    cSha256 &operator=(cSha256 const &);
 };
 
 } //namespace gPWS;

@@ -9,10 +9,12 @@
 
 #include <gcrypt.h>
 #include <stdint.h>
+#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
 class cHmac
+    : boost::noncopyable
 {
 public:
     cHmac(void const *key, size_t key_len);

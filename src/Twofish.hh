@@ -9,10 +9,12 @@
 
 #include <gcrypt.h>
 #include <stdint.h>
+#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
 class cTwofish
+    : boost::noncopyable
 {
 public:
     enum eMode
@@ -33,9 +35,6 @@ public:
 
 private:
     gcry_cipher_hd_t _h;
-
-    cTwofish(cTwofish const &);
-    cTwofish &operator=(cTwofish const &);
 };
 
 } //namespace gPWS;

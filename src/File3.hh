@@ -7,27 +7,25 @@
 
 #pragma once
 
-#include <string>
-#include <fstream>
+#include "Field.hh"
+
+#include <boost/function.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
 class cFile3
+    : boost::noncopyable
 {
 public:
     cFile3();
     ~cFile3();
 
-    int Open(char const *fname,
-             char const *pass);
+    typedef boost::function<void(sField::PtrT const &field)> OnFieldT;
 
-    int Close();
-
-private:
-    std::fstream _file;
-
-    cFile3(cFile3 const &);
-    cFile3& operator=(cFile3 const &);
+    int Read(char const *fname,
+             char const *pass,
+             OnFieldT const &on_field);
 };
 
 } //namespace gPWS;

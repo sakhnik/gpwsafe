@@ -6,9 +6,12 @@
 //
 
 #include "File3.hh"
+#include "Field.hh"
+#include "Debug.hh"
 
 #include <iostream>
 #include <gcrypt.h>
+#include <boost/format.hpp>
 
 using namespace std;
 
@@ -26,24 +29,36 @@ int main(int argc, char* argv[])
 
     try
     {
+        struct F
+        {
+            static void Print(gPWS::sField::PtrT const& field)
+            {
+                if (!field)
+                {
+                    cout << "------" << endl;
+                    return;
+                }
+                cout << "Length: " << boost::format("%3d") % field->length;
+                cout << "\tType: "
+                     << boost::format("%02d") % unsigned(field->type);
+                cout << "\tValue: "
+                     << gPWS::Quote(&field->value[0], field->value.size());
+                cout << endl;
+            }
+        };
+
         gPWS::cFile3 file;
-        if (file.Open("../test/first.psafe3", "first123"))
+        if (file.Read("../test/first.psafe3", "first123", &F::Print))
         {
             cerr << "Failed to open file" << endl;
             return 1;
         }
-
-        if (file.Close())
-        {
-            cerr << "Failed to close file" << endl;
-            return 1;
-        }
     }
-    catch (fstream::failure const& e)
-    {
-        cerr << "IO error" << endl;
-        return 1;
-    }
+    //catch (fstream::failure const& e)
+    //{
+    //    cerr << "IO error" << endl;
+    //    return 1;
+    //}
     catch (std::exception const& e)
     {
         cerr << "Exception: " << e.what() << endl;

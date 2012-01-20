@@ -9,9 +9,12 @@
 
 #include "Sha256.hh"
 
+#include <boost/noncopyable.hpp>
+
 namespace gPWS {
 
 class cKeyStretch
+    : boost::noncopyable
 {
 public:
     cKeyStretch(void const* pass,
@@ -28,9 +31,6 @@ public:
 
 private:
     cSha256 _sha256;
-
-    cKeyStretch(cKeyStretch const &);
-    cKeyStretch &operator=(cKeyStretch const &);
 };
 
 } //namespace gPWS;
