@@ -106,12 +106,6 @@ int cFile3::Read(char const *fname,
                         | (uint32_t(data[1]) << 8)
                         | (uint32_t(data[2]) << 16)
                         | (uint32_t(data[3]) << 24);
-        if (!length)
-        {
-            if (on_field)
-                on_field(sField::PtrT());
-            continue;
-        }
 
         sField::PtrT field(new sField);
         field->length = length;

@@ -33,14 +33,15 @@ int main(int argc, char* argv[])
         {
             static void Print(gPWS::sField::PtrT const& field)
             {
-                if (!field)
+                assert(field);
+                if (field->type == 0xFF)
                 {
-                    cout << "------" << endl;
+                    cout << "-------" << endl;
                     return;
                 }
                 cout << "Length: " << boost::format("%3d") % field->length;
                 cout << "\tType: "
-                     << boost::format("%02d") % unsigned(field->type);
+                     << boost::format("%02X") % unsigned(field->type);
                 cout << "\tValue: "
                      << gPWS::Quote(&field->value[0], field->value.size());
                 cout << endl;
