@@ -68,8 +68,8 @@ int cFile3::Read(char const *fname,
 
     cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
-    BytesX key(32);
-    ifs.read(reinterpret_cast<char *>(&key[0]), key.size());
+    StringX key(32, '\0');
+    ifs.read(&key[0], key.size());
 
     if (memcmp(&key[0], key_md.Get(), key.size()))
     {
@@ -79,13 +79,13 @@ int cFile3::Read(char const *fname,
 
     cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
-    BytesX main_key(32);
-    ifs.read(reinterpret_cast<char *>(&main_key[0]), main_key.size());
+    StringX main_key(32, '\0');
+    ifs.read(&main_key[0], main_key.size());
     twofish.Decrypt(&main_key[0], main_key.size(),
                     &main_key[0], main_key.size());
 
-    BytesX hmac_key(32);
-    ifs.read(reinterpret_cast<char *>(&hmac_key[0]), hmac_key.size());
+    StringX hmac_key(32, '\0');
+    ifs.read(&hmac_key[0], hmac_key.size());
     twofish.Decrypt(&hmac_key[0], hmac_key.size(),
                     &hmac_key[0], hmac_key.size());
     cHmac hmac_calculator(&hmac_key[0], hmac_key.size());
@@ -95,10 +95,10 @@ int cFile3::Read(char const *fname,
 
     cTwofish twofish2(cTwofish::M_CBC, &main_key[0], main_key.size());
     twofish2.SetIV(&iv[0], iv.size());
-    BytesX data(16);
+    StringX data(16, '\0');
     while (true)
     {
-        ifs.read(reinterpret_cast<char *>(&data[0]), data.size());
+        ifs.read(&data[0], data.size());
         if (!memcmp(&data[0], "PWS3-EOFPWS3-EOF", data.size()))
             break;
         twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
@@ -111,14 +111,15 @@ int cFile3::Read(char const *fname,
         field->length = length;
         field->type = data[4];
         field->value.reserve(length);
-        BytesX &value (field->value);
+        StringX &value (field->value);
 
         for (unsigned i = 5; length > 0; )
         {
             if (i == data.size())
             {
-                ifs.read(reinterpret_cast<char *>(&data[0]), data.size());
-                twofish2.Decrypt(&data[0], data.size(), &data[0], data.size());
+                ifs.read(&data[0], data.size());
+                twofish2.Decrypt(&data[0], data.size(),
+                                 &data[0], data.size());
                 i = 0;
             }
             int available = (std::min)(data.size() - i, length);

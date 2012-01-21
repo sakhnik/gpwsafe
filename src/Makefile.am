@@ -2,7 +2,8 @@
 noinst_LIBRARIES = libgpwsafe.a
 
 libgpwsafe_a_SOURCES = \
-		Defs.hh Field.hh \
+		Defs.hh \
+		Field.cc Field.hh \
 		File3.cc File3.hh \
 		Sha256.cc Sha256.hh \
 		Twofish.cc Twofish.hh \

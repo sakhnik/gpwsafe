@@ -44,6 +44,11 @@ string Quote(unsigned char const *buf, unsigned len)
     return result;
 }
 
+string Quote(char const *buf, unsigned len)
+{
+    return Quote(reinterpret_cast<unsigned char const *>(buf), len);
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

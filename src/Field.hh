@@ -22,7 +22,10 @@ struct sField
 
     uint32_t length;
     uint8_t type;
-    BytesX value;
+    StringX value;
+
+    void *operator new(size_t n);
+    void operator delete(void *p, size_t n);
 };
 
 } //namespace gPWS;

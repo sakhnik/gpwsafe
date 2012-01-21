@@ -9,14 +9,12 @@
 
 #include "Memory.hh"
 
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
 namespace gPWS {
 
 typedef std::vector<uint8_t> BytesT;
-
-typedef std::vector<uint8_t, SecureAllocator<uint8_t> > BytesX;
 
 typedef std::basic_string<char,
                           std::char_traits<char>,
