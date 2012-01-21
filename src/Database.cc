@@ -76,9 +76,6 @@ bool cDatabase::_AddField(sField::PtrT const &field)
         _version.minor = field->value[0];
         _version.major = field->value[1];
         break;
-    case 0x01:
-        _uuid = field->value;
-        break;
     case 0xFF:
         return false;
     default:
@@ -92,18 +89,18 @@ void cDatabase::Dump() const
 {
     cout << "Version: " << unsigned(_version.major)
          << '.' << unsigned(_version.minor) << endl;
-    cout << "UUID: " << Quote(&_uuid[0], _uuid.size()) << endl;
+    cout << endl;
 
     for (_OtherT::const_iterator i = _other.begin();
          i != _other.end(); ++i)
     {
         sField::PtrT const& field = *i;
-        cout << "Length: " << boost::format("%3d") % field->length;
-        cout << "\tType: "
-             << boost::format("%02X") % unsigned(field->type);
-        cout << "\tValue: "
-             << gPWS::Quote(&field->value[0], field->value.size());
-        cout << endl;
+        cout << "{0x"
+             << boost::format("%02X") % unsigned(field->type)
+             << ", '"
+             << gPWS::Quote(&field->value[0], field->value.size())
+             << "'}"
+             << endl;
     }
     cout << "==========" << endl;
 

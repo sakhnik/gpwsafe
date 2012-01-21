@@ -38,7 +38,6 @@ private:
         uint8_t major;
         uint8_t minor;
     } _version;
-    StringX _uuid;
 
     typedef std::vector<sField::PtrT> _OtherT;
     _OtherT _other;

@@ -28,6 +28,13 @@ public:
     void Dump() const;
 
 private:
+    StringX _group;
+    StringX _title;
+    StringX _user;
+    StringX _notes;
+    StringX _pass;
+    StringX _url;
+
     typedef std::vector<sField::PtrT> _OtherT;
     _OtherT _other;
 };
