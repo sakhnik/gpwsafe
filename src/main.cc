@@ -5,15 +5,13 @@
 //      Author: A. Sakhnik
 //
 
-#include "File3.hh"
-#include "Field.hh"
-#include "Debug.hh"
+#include "Database.hh"
 
 #include <iostream>
 #include <gcrypt.h>
-#include <boost/format.hpp>
 
 using namespace std;
+using namespace gPWS;
 
 int main(int argc, char* argv[])
 {
@@ -29,31 +27,9 @@ int main(int argc, char* argv[])
 
     try
     {
-        struct F
-        {
-            static void Print(gPWS::sField::PtrT const& field)
-            {
-                assert(field);
-                if (field->type == 0xFF)
-                {
-                    cout << "-------" << endl;
-                    return;
-                }
-                cout << "Length: " << boost::format("%3d") % field->length;
-                cout << "\tType: "
-                     << boost::format("%02X") % unsigned(field->type);
-                cout << "\tValue: "
-                     << gPWS::Quote(&field->value[0], field->value.size());
-                cout << endl;
-            }
-        };
-
-        gPWS::cFile3 file;
-        if (file.Read("../test/first.psafe3", "first123", &F::Print))
-        {
-            cerr << "Failed to open file" << endl;
-            return 1;
-        }
+        cDatabase::PtrT database(new cDatabase);
+        database->Read("../test/first.psafe3", "first123");
+        database->Dump();
     }
     //catch (fstream::failure const& e)
     //{

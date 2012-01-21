@@ -38,6 +38,12 @@ string Quote(unsigned char const *buf, unsigned len)
             result.push_back(c);
             continue;
         }
+        if (c == '\\')
+        {
+            result.push_back('\\');
+            result.push_back('\\');
+            continue;
+        }
         boost::format fmt("\\x%02X");
         result += (fmt % static_cast<unsigned>(c)).str();
     }
