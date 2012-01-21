@@ -23,7 +23,9 @@ public:
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);
 
-    void AddField(sField::PtrT const &field);
+    bool AddField(sField::PtrT const &field);
+
+    void Dump() const;
 
 private:
     typedef std::vector<sField::PtrT> _OtherT;

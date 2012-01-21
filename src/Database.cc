@@ -28,67 +28,64 @@ void cDatabase::operator delete(void *p, size_t n)
     return SecureAllocator<cDatabase>::deallocate(q, n);
 }
 
-struct cDatabase::sReadCtxt
-{
-    bool is_header;
-    cEntry::PtrT entry;
-
-    sReadCtxt() : is_header(true) { }
-};
-
-void cDatabase::_OnField(sField::PtrT const &field,
-                         sReadCtxt &read_ctxt)
-{
-    if (read_ctxt.is_header)
-    {
-        switch (field->type)
-        {
-        case 0x00:
-            if (field->value.size() != 2)
-                throw runtime_error("Format error");
-            _version.minor = field->value[0];
-            _version.major = field->value[1];
-            return;
-        case 0x01:
-            _uuid = field->value;
-            return;
-        case 0xFF:
-            read_ctxt.is_header = false;
-            return;
-        default:
-            _other.push_back(field);
-            return;
-        }
-        return;
-    }
-
-    if (!read_ctxt.entry)
-        read_ctxt.entry.reset(new cEntry);
-
-    if (field->type == 0xFF)
-    {
-        _entries.push_back(read_ctxt.entry);
-        read_ctxt.entry.reset(new cEntry);
-        return;
-    }
-    read_ctxt.entry->AddField(field);
-
-    //cout << "Length: " << boost::format("%3d") % field->length;
-    //cout << "\tType: "
-    //     << boost::format("%02X") % unsigned(field->type);
-    //cout << "\tValue: "
-    //     << gPWS::Quote(&field->value[0], field->value.size());
-    //cout << endl;
-}
+//void cDatabase::_OnField(sField::PtrT const &field,
+//                         sReadCtxt &read_ctxt)
+//{
+//    cout << "Length: " << boost::format("%3d") % field->length;
+//    cout << "\tType: "
+//         << boost::format("%02X") % unsigned(field->type);
+//    cout << "\tValue: "
+//         << gPWS::Quote(&field->value[0], field->value.size());
+//    cout << endl;
+//}
 
 void cDatabase::Read(char const *fname,
                      char const *pass)
 {
-    sReadCtxt read_ctxt;
-    _file.Read(fname,
-               pass,
-               boost::bind(&cDatabase::_OnField, this,
-                           _1, boost::ref(read_ctxt)));
+    _file.OpenRead(fname, pass);
+
+    // Read header fields first
+    sField::PtrT field;
+    while ((field = _file.ReadField()))
+    {
+        if (!_AddField(field))
+            break;
+    }
+
+    if (!field)
+        return;
+
+    cEntry::PtrT entry(new cEntry);
+    while ((field = _file.ReadField()))
+    {
+        if (!entry->AddField(field))
+        {
+            _entries.push_back(entry);
+            entry.reset(new cEntry);
+        }
+    }
+}
+
+bool cDatabase::_AddField(sField::PtrT const &field)
+{
+    switch (field->type)
+    {
+    case 0x00:
+        if (field->value.size() != 2)
+            throw runtime_error("Format error");
+        _version.minor = field->value[0];
+        _version.major = field->value[1];
+        break;
+    case 0x01:
+        _uuid = field->value;
+        break;
+    case 0xFF:
+        return false;
+    default:
+        _other.push_back(field);
+        break;
+    }
+    return true;
 }
 
 void cDatabase::Dump() const
@@ -100,13 +97,21 @@ void cDatabase::Dump() const
     for (_OtherT::const_iterator i = _other.begin();
          i != _other.end(); ++i)
     {
-        sField::PtrT const& field (*i);
+        sField::PtrT const& field = *i;
         cout << "Length: " << boost::format("%3d") % field->length;
         cout << "\tType: "
              << boost::format("%02X") % unsigned(field->type);
         cout << "\tValue: "
              << gPWS::Quote(&field->value[0], field->value.size());
         cout << endl;
+    }
+    cout << "==========" << endl;
+
+    for (_EntriesT::const_iterator i = _entries.begin();
+         i != _entries.end(); ++i)
+    {
+        cEntry::PtrT const& entry = *i;
+        entry->Dump();
     }
 }
 

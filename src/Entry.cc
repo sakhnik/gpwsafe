@@ -7,8 +7,14 @@
 
 #include "Entry.hh"
 #include "Memory.hh"
+#include "Debug.hh"
+
+#include <iostream>
+#include <boost/format.hpp>
 
 namespace gPWS {
+
+using namespace std;
 
 void *cEntry::operator new(size_t n)
 {
@@ -21,9 +27,33 @@ void cEntry::operator delete(void *p, size_t n)
     return SecureAllocator<cEntry>::deallocate(q, n);
 }
 
-void cEntry::AddField(sField::PtrT const &field)
+bool cEntry::AddField(sField::PtrT const &field)
 {
-    _other.push_back(field);
+    switch (field->type)
+    {
+    case 0xFF:
+        return false;
+    default:
+        _other.push_back(field);
+        break;
+    }
+    return true;
+}
+
+void cEntry::Dump() const
+{
+    for (_OtherT::const_iterator i = _other.begin();
+         i != _other.end(); ++i)
+    {
+        sField::PtrT const& field = *i;
+        cout << "Length: " << boost::format("%3d") % field->length;
+        cout << "\tType: "
+             << boost::format("%02X") % unsigned(field->type);
+        cout << "\tValue: "
+             << gPWS::Quote(&field->value[0], field->value.size());
+        cout << endl;
+    }
+    cout << "----------" << endl;
 }
 
 } //namespace gPWS;

@@ -8,8 +8,10 @@
 #pragma once
 
 #include "Field.hh"
+#include "Twofish.hh"
+#include "Hmac.hh"
 
-#include <boost/function.hpp>
+#include <fstream>
 #include <boost/noncopyable.hpp>
 
 namespace gPWS {
@@ -21,11 +23,27 @@ public:
     cFile3();
     ~cFile3();
 
-    typedef boost::function<void(sField::PtrT const &field)> OnFieldT;
+    void Close();
 
-    int Read(char const *fname,
-             char const *pass,
-             OnFieldT const &on_field);
+    void OpenRead(char const *fname,
+                  char const *pass);
+
+    sField::PtrT ReadField();
+
+private:
+    enum _eState
+    {
+        S_CLOSED = 0,
+        S_READING,
+        S_WRITING
+    } _state;
+
+    std::fstream _fs;
+    std::ios_base::iostate _initial_state;
+
+    std::auto_ptr<cTwofish> _twofish;
+    std::auto_ptr<cHmac> _hmac_calculator;
+    StringX _data;
 };
 
 } //namespace gPWS;

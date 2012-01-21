@@ -46,8 +46,7 @@ private:
     typedef std::vector<cEntry::PtrT> _EntriesT;
     _EntriesT _entries;
 
-    struct sReadCtxt;
-    void _OnField(sField::PtrT const &field, sReadCtxt &read_ctxt);
+    bool _AddField(sField::PtrT const &field);
 };
 
 } //namespace gPWS;
