@@ -31,6 +31,8 @@ void cDatabase::operator delete(void *p, size_t n)
 struct cDatabase::sReadCtxt
 {
     bool is_header;
+    cEntry::PtrT entry;
+
     sReadCtxt() : is_header(true) { }
 };
 
@@ -59,6 +61,18 @@ void cDatabase::_OnField(sField::PtrT const &field,
         }
         return;
     }
+
+    if (!read_ctxt.entry)
+        read_ctxt.entry.reset(new cEntry);
+
+    if (field->type == 0xFF)
+    {
+        _entries.push_back(read_ctxt.entry);
+        read_ctxt.entry.reset(new cEntry);
+        return;
+    }
+    read_ctxt.entry->AddField(field);
+
     //cout << "Length: " << boost::format("%3d") % field->length;
     //cout << "\tType: "
     //     << boost::format("%02X") % unsigned(field->type);

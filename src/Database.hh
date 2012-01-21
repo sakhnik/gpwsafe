@@ -8,6 +8,7 @@
 #pragma once
 
 #include "File3.hh"
+#include "Entry.hh"
 
 #include <stdint.h>
 #include <boost/noncopyable.hpp>
@@ -41,6 +42,9 @@ private:
 
     typedef std::vector<sField::PtrT> _OtherT;
     _OtherT _other;
+
+    typedef std::vector<cEntry::PtrT> _EntriesT;
+    _EntriesT _entries;
 
     struct sReadCtxt;
     void _OnField(sField::PtrT const &field, sReadCtxt &read_ctxt);

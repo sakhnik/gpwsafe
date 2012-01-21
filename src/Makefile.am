@@ -6,6 +6,7 @@ libgpwsafe_a_SOURCES = \
 		Field.cc Field.hh \
 		File3.cc File3.hh \
 		Database.cc Database.hh \
+		Entry.cc Entry.hh \
 		Sha256.cc Sha256.hh \
 		Twofish.cc Twofish.hh \
 		Hmac.cc Hmac.hh \
