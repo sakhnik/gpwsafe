@@ -27,6 +27,13 @@ public:
 
     void Dump() const;
 
+    StringX const &GetGroup() const { return _group; }
+    StringX const &GetTitle() const { return _title; }
+    StringX const &GetUser() const { return _user; }
+    StringX const &GetNotes() const { return _notes; }
+    StringX const &GetPass() const { return _pass; }
+    StringX const &GetUrl() const { return _url; }
+
 private:
     StringX _group;
     StringX _title;

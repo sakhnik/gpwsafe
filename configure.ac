@@ -8,6 +8,8 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_RANLIB
 
+AC_CHECK_FUNCS(getopt_long)
+
 AM_PATH_LIBGCRYPT([1.2.0],[],[])
 
 m4_include([m4/ax_boost_base.m4])
