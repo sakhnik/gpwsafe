@@ -12,6 +12,7 @@ libgpwsafe_a_SOURCES = \
 		Hmac.cc Hmac.hh \
 		KeyStretch.cc KeyStretch.hh \
 		Memory.cc Memory.hh \
+		Terminal.cc Terminal.hh \
 		Debug.cc Debug.hh
 
 bin_PROGRAMS = gpwsafe

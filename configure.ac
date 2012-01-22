@@ -9,6 +9,7 @@ AC_PROG_CXX
 AC_PROG_RANLIB
 
 AC_CHECK_FUNCS(getopt_long)
+AC_CHECK_LIB(readline,readline,[],[AC_MSG_ERROR(cannot find libreadline)])
 
 AM_PATH_LIBGCRYPT([1.2.0],[],[])
 

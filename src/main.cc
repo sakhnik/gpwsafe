@@ -6,6 +6,7 @@
 //
 
 #include "Database.hh"
+#include "Terminal.hh"
 
 #include <iostream>
 #include <gcrypt.h>
@@ -121,12 +122,14 @@ int main(int argc, char* argv[])
     try
     {
         cDatabase::PtrT database(new cDatabase);
-        cout << file_name << endl;
-        database->Read(file_name.c_str(), "first123");
         switch (command)
         {
         case C_LIST:
-            database->Dump();
+            {
+                StringX password = cTerminal::GetPassword("Enter password: ");
+                database->Read(file_name.c_str(), password.c_str());
+                database->Dump();
+            }
             break;
         default:
             cerr << "Command " << command << " isn't implemented" << endl;
