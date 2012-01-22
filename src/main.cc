@@ -15,7 +15,8 @@ using namespace gPWS;
 
 int main(int argc, char* argv[])
 {
-    if (!gcry_check_version(GCRYPT_VERSION))
+    char const *const REQ_GCRYPT_VERSION = "1.2.0";
+    if (!gcry_check_version(REQ_GCRYPT_VERSION))
     {
         cerr << "libgcrypt version mismatch\n" << endl;
         return 1;
