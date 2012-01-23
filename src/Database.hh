@@ -30,6 +30,9 @@ public:
 
     void Dump() const;
 
+    typedef std::vector<cEntry::PtrT> EntriesT;
+    EntriesT Find(char const *query);
+
 private:
     cFile3 _file;
 
@@ -42,8 +45,7 @@ private:
     typedef std::vector<sField::PtrT> _OtherT;
     _OtherT _other;
 
-    typedef std::vector<cEntry::PtrT> _EntriesT;
-    _EntriesT _entries;
+    EntriesT _entries;
 
     bool _AddField(sField::PtrT const &field);
 };

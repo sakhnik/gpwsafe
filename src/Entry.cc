@@ -82,6 +82,13 @@ void cEntry::Dump() const
     cout << "----------" << endl;
 }
 
+StringX cEntry::GetFullTitle() const
+{
+    if (_group.empty())
+        return _title;
+    return _group + "." + _title;
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

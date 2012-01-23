@@ -49,6 +49,36 @@ static char const *_Basename(char const *path)
     return res + 1;
 }
 
+static cDatabase::PtrT OpenDatabase(string const &file_name)
+{
+    cDatabase::PtrT database(new cDatabase);
+    string prompt = "Enter password for " + file_name + ": ";
+    StringX password =
+        cTerminal::GetPassword(prompt.c_str());
+    database->Read(file_name.c_str(), password.c_str());
+    return database;
+}
+
+static int DoList(string const &file_name,
+                  char const *query)
+{
+    cDatabase::PtrT database = OpenDatabase(file_name);
+    typedef cDatabase::EntriesT EntriesT;
+    EntriesT match = database->Find(query);
+    if (match.empty())
+    {
+        cout << "No matching entries found" << endl;
+        return 1;
+    }
+    for (EntriesT::const_iterator i = match.begin();
+         i != match.end(); ++i)
+    {
+        cEntry::PtrT const &entry(*i);
+        cout << entry->GetFullTitle() << endl;
+    }
+    return 0;
+}
+
 int main(int argc, char* argv[])
 {
     program_name = _Basename(argv[0]);
@@ -114,23 +144,24 @@ int main(int argc, char* argv[])
         };
     }
 
-    //while (optind < argc)
-    //{
-    //    //cout << "Non-option: " << argv[optind++] << endl;
-    //}
+    char const *argument = NULL;
+    if (command == C_LIST && optind != argc)
+    {
+        argument = argv[optind++];
+    }
+
+    if (optind != argc)
+    {
+        cerr << "Too many arguments" << endl;
+        return 1;
+    }
 
     try
     {
-        cDatabase::PtrT database(new cDatabase);
         switch (command)
         {
         case C_LIST:
-            {
-                StringX password = cTerminal::GetPassword("Enter password: ");
-                database->Read(file_name.c_str(), password.c_str());
-                database->Dump();
-            }
-            break;
+            return DoList(file_name, argument);
         default:
             cerr << "Command " << command << " isn't implemented" << endl;
             return 1;

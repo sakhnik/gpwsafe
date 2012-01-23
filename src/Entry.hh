@@ -34,6 +34,9 @@ public:
     StringX const &GetPass() const { return _pass; }
     StringX const &GetUrl() const { return _url; }
 
+    // group.title
+    StringX GetFullTitle() const;
+
 private:
     StringX _group;
     StringX _title;

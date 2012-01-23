@@ -85,6 +85,20 @@ bool cDatabase::_AddField(sField::PtrT const &field)
     return true;
 }
 
+cDatabase::EntriesT
+cDatabase::Find(char const *query)
+{
+    EntriesT found;
+    for (EntriesT::const_iterator i = _entries.begin();
+         i != _entries.end(); ++i)
+    {
+        cEntry::PtrT entry(*i);
+        if (!query || entry->GetFullTitle().find(query) != StringX::npos)
+            found.push_back(entry);
+    }
+    return found;
+}
+
 void cDatabase::Dump() const
 {
     cout << "Version: " << unsigned(_version.major)
@@ -104,7 +118,7 @@ void cDatabase::Dump() const
     }
     cout << "==========" << endl;
 
-    for (_EntriesT::const_iterator i = _entries.begin();
+    for (EntriesT::const_iterator i = _entries.begin();
          i != _entries.end(); ++i)
     {
         cEntry::PtrT const& entry = *i;
