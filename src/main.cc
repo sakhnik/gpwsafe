@@ -7,6 +7,7 @@
 
 #include "Database.hh"
 #include "Terminal.hh"
+#include "../config.h"
 
 #include <iostream>
 #include <gcrypt.h>
@@ -30,12 +31,15 @@ static int _Usage(bool fail)
     }
     os << "Usage: " << program_name << " [OPTION] command [ARG]\n";
     os << "Options:\n"
-          "  -f,--file=DATABASE_FILE   specify the database file (~/"
+          "  -f, --file=DATABASE_FILE   specify the database file (~/"
        << DEFAULT_FILE << " by default)\n"
-          "  -h,--help                 display this help and exit\n"
+          "  -u, --user                 emit username of listed account\n"
+          "  -p, --password             emit password of listed account\n"
+          "  -E, --echo                 force echoing of entry to stdout\n"
+          "  -h, --help                 display this help and exit\n"
           "Commands:\n"
-          "  -V,--version              output version information and exit\n"
-          "  [--list] [REGEX]          list all [matching] entries\n"
+          "  -V, --version              output version information and exit\n"
+          "  [--list] [REGEX]           list all [matching] entries\n"
           ;
     os << flush;
     return fail ? 1 : 0;
@@ -117,11 +121,18 @@ int main(int argc, char* argv[])
             { "help", no_argument, 0, 'h' },
             { "file", required_argument, 0, 'f' },
             { "list", no_argument, 0, 'L' },
+            { "user", no_argument, 0, 'u' },
+            { "password", no_argument, 0, 'p' },
+            { "echo", no_argument, 0, 'E' },
             { 0, 0, 0, 0 }
         };
         char const *const short_options =
-            "h"   //help
-            "f:"  //file
+            "h"   // help
+            "V"   // version
+            "f:"  // file
+            "u"   // user
+            "p"   // password
+            "E"   // force echo to stdout
             "";
         int option_index = 0;
         int c = getopt_long(argc, argv,
@@ -133,6 +144,9 @@ int main(int argc, char* argv[])
         {
         case 'h':
             return _Usage(false);
+        case 'V':
+            cout << program_name << " " << VERSION << endl;
+            return 0;
         case 'f':
             file_name = optarg;
             break;
