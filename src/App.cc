@@ -23,6 +23,8 @@ char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
 cApp::cApp(char const *program_name)
     : _program_name(program_name)
     , _command(C_LIST)
+    , _user(false)
+    , _password(false)
     , _argument(0)
 {
     char const *home = getenv("HOME");
@@ -100,6 +102,12 @@ int cApp::Init(int argc, char *argv[])
         case 'L':
             _command = C_LIST;
             break;
+        case 'u':
+            _user = true;
+            break;
+        case 'p':
+            _password = true;
+            break;
         default:
             return _Usage(true);
         };
@@ -154,8 +162,26 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
     return database;
 }
 
+void cApp::_PrintIntention()
+{
+    if (!_user && !_password)
+        return;
+    cout << "Going to print ";
+    if (_user)
+        cout << "login";
+    if (_password)
+    {
+        if (_user)
+            cout << " and ";
+        cout << "password";
+    }
+    cout << " to stdout" << endl;
+}
+
 int cApp::_DoList()
 {
+    _PrintIntention();
+
     cDatabase::PtrT database = _OpenDatabase(_file_name);
     typedef cDatabase::EntriesT EntriesT;
     EntriesT match = database->Find(_argument);
@@ -164,12 +190,47 @@ int cApp::_DoList()
         cout << "No matching entries found" << endl;
         return 1;
     }
-    for (EntriesT::const_iterator i = match.begin();
-         i != match.end(); ++i)
+
+    if (!_user && !_password)
     {
-        cEntry::PtrT const &entry(*i);
-        cout << entry->GetFullTitle() << endl;
+        for (EntriesT::const_iterator i = match.begin();
+             i != match.end(); ++i)
+        {
+            cEntry::PtrT const &entry(*i);
+            cout << entry->GetFullTitle() << endl;
+        }
+        return 0;
     }
+
+    if (match.size() != 1)
+    {
+        cout << "More than one matching entry: ";
+        int j = 0;
+        for (EntriesT::const_iterator i = match.begin();
+             i != match.end() && j != 3; ++i, ++j)
+        {
+            if (j)
+                cout << ", ";
+            cout << (*i)->GetFullTitle();
+        }
+        int rest = match.size() - j;
+        if (rest)
+            cout << ", ... (" << rest << " more)";
+        cout << " ." << endl;
+    }
+
+    cEntry::PtrT const &entry = match.front();
+    if (_user)
+    {
+        cout << "username for " << entry->GetFullTitle() << ": "
+             << entry->GetUser() << endl;;
+    }
+    if (_password)
+    {
+        cout << "password for " << entry->GetFullTitle() << ": "
+             << entry->GetPass() << endl;;
+    }
+
     return 0;
 }
 

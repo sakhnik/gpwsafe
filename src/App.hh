@@ -31,11 +31,15 @@ private:
         C_LIST = 0
     } _command;
 
+    bool _user;
+    bool _password;
+
     char const *_argument;
 
     int _Run();
     int _Usage(bool fail);
     int _DoList();
+    void _PrintIntention();
 };
 
 } //namespace gPWS;
