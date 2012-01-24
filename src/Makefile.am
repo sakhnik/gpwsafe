@@ -17,7 +17,8 @@ libgpwsafe_a_SOURCES = \
 
 bin_PROGRAMS = gpwsafe
 
-gpwsafe_SOURCES = main.cc
+gpwsafe_SOURCES = main.cc \
+		  App.cc App.hh
 
 gpwsafe_LDADD = libgpwsafe.a $(LIBGCRYPT_LIBS)
 
