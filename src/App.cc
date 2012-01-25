@@ -9,6 +9,7 @@
 #include "Database.hh"
 #include "Terminal.hh"
 #include "StdoutEmitter.hh"
+#include "GtkEmitter.hh"
 #include "../config.h"
 
 #include <iostream>
@@ -23,7 +24,8 @@ char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
 
 cApp::cApp(char const *program_name)
     : _program_name(program_name)
-    , _command(C_LIST)
+    , _command(_C_LIST)
+    , _emitter(_E_XCLIP)
     , _user(false)
     , _password(false)
     , _argument(0)
@@ -53,6 +55,7 @@ int cApp::_Usage(bool fail)
           "  -u, --user                 emit username of listed account\n"
           "  -p, --password             emit password of listed account\n"
           "  -E, --echo                 force echoing of entry to stdout\n"
+          "  -x, --xclip                force copying of entry to X selection\n"
           "  -h, --help                 display this help and exit\n"
           "Commands:\n"
           "  -V, --version              output version information and exit\n"
@@ -74,6 +77,7 @@ int cApp::Init(int argc, char *argv[])
             { "user",       no_argument,        0, 'u' },
             { "password",   no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
+            { "xclip",      no_argument,        0, 'x' },
             { 0, 0, 0, 0 }
         };
         char const *const short_options =
@@ -83,6 +87,7 @@ int cApp::Init(int argc, char *argv[])
             "u"   // user
             "p"   // password
             "E"   // force echo to stdout
+            "x"   // force copying to xclip
             "";
         int option_index = 0;
         int c = getopt_long(argc, argv,
@@ -101,7 +106,7 @@ int cApp::Init(int argc, char *argv[])
             _file_name = optarg;
             break;
         case 'L':
-            _command = C_LIST;
+            _command = _C_LIST;
             break;
         case 'u':
             _user = true;
@@ -109,12 +114,18 @@ int cApp::Init(int argc, char *argv[])
         case 'p':
             _password = true;
             break;
+        case 'E':
+            _emitter = _E_STDOUT;
+            break;
+        case 'x':
+            _emitter = _E_XCLIP;
+            break;
         default:
             return _Usage(true);
         };
     }
 
-    if (_command == C_LIST && optind != argc)
+    if (_command == _C_LIST && optind != argc)
     {
         _argument = argv[optind++];
     }
@@ -145,7 +156,7 @@ int cApp::_Run()
 {
     switch (_command)
     {
-    case C_LIST:
+    case _C_LIST:
         return _DoList();
     default:
         cerr << "Command " << _command << " isn't implemented" << endl;
@@ -163,28 +174,38 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
     return database;
 }
 
-void cApp::_PrintIntention(iEmitter const &emitter)
+void cApp::_PrintIntention(iEmitter const *emitter)
 {
     if (!_user && !_password)
         return;
-    cout << "Going " << emitter.GetAction() << " ";
+    string subject;
     if (_user)
-        cout << "login";
+        subject += "login";
     if (_password)
     {
         if (_user)
-            cout << " and ";
-        cout << "password";
+            subject += " and ";
+        subject += "password";
     }
-    cout << " to stdout" << endl;
+    emitter->PrintIntention(subject);
 }
 
 int cApp::_DoList()
 {
-    cStdoutEmitter stdout_emitter;
-    iEmitter &emitter(stdout_emitter);
+    auto_ptr<iEmitter> emitter;
+    switch (_emitter)
+    {
+    case _E_STDOUT:
+        emitter.reset(new cStdoutEmitter);
+        break;
+    case _E_XCLIP:
+        emitter.reset(new cGtkEmitter);
+        break;
+    default:
+        assert(!"Not implemented _emitter");
+    }
 
-    _PrintIntention(emitter);
+    _PrintIntention(emitter.get());
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
     typedef cDatabase::EntriesT EntriesT;
@@ -226,13 +247,13 @@ int cApp::_DoList()
     cEntry::PtrT const &entry = match.front();
     if (_user)
     {
-        emitter.Emit("username for " + entry->GetFullTitle(),
-                     entry->GetUser());
+        emitter->Emit("username for " + entry->GetFullTitle(),
+                      entry->GetUser());
     }
     if (_password)
     {
-        emitter.Emit("password for " + entry->GetFullTitle(),
-                     entry->GetPass());
+        emitter->Emit("password for " + entry->GetFullTitle(),
+                      entry->GetPass());
     }
 
     return 0;

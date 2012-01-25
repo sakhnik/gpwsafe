@@ -23,7 +23,8 @@ namespace gPWS {
 using namespace std;
 
 cFile3::cFile3()
-    : _initial_state(_fs.exceptions())
+    : _state(S_CLOSED)
+    , _initial_state(_fs.exceptions())
 {
     assert(gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) &&
            "libgcrypt must be initialized beforehand");

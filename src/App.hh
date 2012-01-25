@@ -30,8 +30,14 @@ private:
 
     enum eCommand
     {
-        C_LIST = 0
+        _C_LIST = 0
     } _command;
+
+    enum eEmitter
+    {
+        _E_XCLIP = 0,
+        _E_STDOUT
+    } _emitter;
 
     bool _user;
     bool _password;
@@ -41,7 +47,7 @@ private:
     int _Run();
     int _Usage(bool fail);
     int _DoList();
-    void _PrintIntention(iEmitter const &emitter);
+    void _PrintIntention(iEmitter const *emitter);
 };
 
 } //namespace gPWS;

@@ -20,10 +20,14 @@ bin_PROGRAMS = gpwsafe
 gpwsafe_SOURCES = main.cc \
 		  App.cc App.hh \
 		  IEmitter.hh \
-		  StdoutEmitter.cc StdoutEmitter.hh
+		  StdoutEmitter.cc StdoutEmitter.hh \
+		  GtkEmitter.cc GtkEmitter.hh
 
-gpwsafe_LDADD = libgpwsafe.a $(LIBGCRYPT_LIBS)
+gpwsafe_LDADD = libgpwsafe.a \
+		$(LIBGCRYPT_LIBS) \
+		$(GTK_LIBS)
 
 AM_CXXFLAGS = -Wall \
 	      $(LIBGCRYPT_CFLAGS) -DGCRYPT_NO_DEPRECATED \
-	      $(BOOST_CPPFLAGS)
+	      $(BOOST_CPPFLAGS) \
+	      $(GTK_CFLAGS)

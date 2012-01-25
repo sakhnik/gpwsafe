@@ -9,6 +9,7 @@
 
 #include "Defs.hh"
 
+#include <string>
 #include <boost/noncopyable.hpp>
 
 namespace gPWS {
@@ -18,7 +19,7 @@ struct iEmitter
 {
     virtual ~iEmitter() { }
 
-    virtual char const *GetAction() const = 0;
+    virtual void PrintIntention(std::string const &subject) const = 0;
 
     virtual void Emit(StringX const &name, StringX const &val) = 0;
 };
