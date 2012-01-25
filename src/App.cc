@@ -8,6 +8,7 @@
 #include "App.hh"
 #include "Database.hh"
 #include "Terminal.hh"
+#include "StdoutEmitter.hh"
 #include "../config.h"
 
 #include <iostream>
@@ -162,11 +163,11 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
     return database;
 }
 
-void cApp::_PrintIntention()
+void cApp::_PrintIntention(iEmitter const &emitter)
 {
     if (!_user && !_password)
         return;
-    cout << "Going to print ";
+    cout << "Going " << emitter.GetAction() << " ";
     if (_user)
         cout << "login";
     if (_password)
@@ -180,7 +181,10 @@ void cApp::_PrintIntention()
 
 int cApp::_DoList()
 {
-    _PrintIntention();
+    cStdoutEmitter stdout_emitter;
+    iEmitter &emitter(stdout_emitter);
+
+    _PrintIntention(emitter);
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
     typedef cDatabase::EntriesT EntriesT;
@@ -222,13 +226,13 @@ int cApp::_DoList()
     cEntry::PtrT const &entry = match.front();
     if (_user)
     {
-        cout << "username for " << entry->GetFullTitle() << ": "
-             << entry->GetUser() << endl;;
+        emitter.Emit("username for " + entry->GetFullTitle(),
+                     entry->GetUser());
     }
     if (_password)
     {
-        cout << "password for " << entry->GetFullTitle() << ": "
-             << entry->GetPass() << endl;;
+        emitter.Emit("password for " + entry->GetFullTitle(),
+                     entry->GetPass());
     }
 
     return 0;

@@ -12,6 +12,8 @@
 
 namespace gPWS {
 
+struct iEmitter;
+
 class cApp
     : boost::noncopyable
 {
@@ -39,7 +41,7 @@ private:
     int _Run();
     int _Usage(bool fail);
     int _DoList();
-    void _PrintIntention();
+    void _PrintIntention(iEmitter const &emitter);
 };
 
 } //namespace gPWS;
