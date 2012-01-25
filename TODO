@@ -1,1 +1,4 @@
 * Error handling, granular exceptions
+* Avoid GTK_CFLAGS for the files which don't actually need it
+
+* Script to remove excessive headers
