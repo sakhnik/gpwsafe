@@ -42,10 +42,10 @@ void cGtkEmitter::PrintIntention(string const &subject) const
 }
 
 static void
-text_get_func(GtkClipboard     *clipboard,
-              GtkSelectionData *selection_data,
-              guint             info,
-              gpointer          data)
+_TextGetFunc(GtkClipboard     *clipboard,
+             GtkSelectionData *selection_data,
+             guint             info,
+             gpointer          data)
 {
     StringX const *val = reinterpret_cast<StringX const *>(data);
     gtk_selection_data_set_text (selection_data, val->c_str(), val->size());
@@ -54,8 +54,8 @@ text_get_func(GtkClipboard     *clipboard,
 }
 
 static void
-text_clear_func(GtkClipboard *clipboard,
-                gpointer      data)
+_TextClearFunc(GtkClipboard *clipboard,
+               gpointer      data)
 {
 }
 
@@ -82,7 +82,7 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 
     gtk_clipboard_set_with_data (clipboard,
                                  targets, n_targets,
-                                 text_get_func, text_clear_func,
+                                 _TextGetFunc, _TextClearFunc,
                                  const_cast<StringX *>(&val));
     gtk_clipboard_set_can_store (clipboard, NULL, 0);
 
