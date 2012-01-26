@@ -53,7 +53,7 @@ cApp::cApp(char const *program_name)
     _file_name += DEFAULT_FILE;
 }
 
-int cApp::_Usage(bool fail)
+void cApp::_Usage(bool fail)
 {
     ostream &os = fail ? cerr : cout;
     if (!fail)
@@ -76,10 +76,10 @@ int cApp::_Usage(bool fail)
           "  [--list] [REGEX]           list all [matching] entries\n"
           ;
     os << flush;
-    return fail ? 1 : 0;
+    throw ExitEx(fail ? 1 : 0);
 }
 
-int cApp::Init(int argc, char *argv[])
+void cApp::Init(int argc, char *argv[])
 {
     while (true)
     {
@@ -115,7 +115,7 @@ int cApp::Init(int argc, char *argv[])
             return _Usage(false);
         case 'V':
             cout << _program_name << " " << VERSION << endl;
-            return 0;
+            throw ExitEx(0);
         case 'f':
             _file_name = optarg;
             break;
@@ -147,26 +147,24 @@ int cApp::Init(int argc, char *argv[])
     if (optind != argc)
     {
         cerr << "Too many arguments" << endl;
-        return 1;
+        throw ExitEx(1);
     }
-
-    return 0;
 }
 
-int cApp::Run()
+void cApp::Run()
 {
     try
     {
-        return _Run();
+        _Run();
     }
     catch (std::exception const &e)
     {
         cerr << "Exception: " << e.what() << endl;
-        return 1;
+        throw ExitEx(1);
     }
 }
 
-int cApp::_Run()
+void cApp::_Run()
 {
     switch (_command)
     {
@@ -174,7 +172,7 @@ int cApp::_Run()
         return _DoList();
     default:
         cerr << "Command " << _command << " isn't implemented" << endl;
-        return 1;
+        throw ExitEx(1);
     }
 }
 
@@ -204,7 +202,7 @@ void cApp::_PrintIntention(iEmitter const *emitter)
     emitter->PrintIntention(subject);
 }
 
-int cApp::_DoList()
+void cApp::_DoList()
 {
     auto_ptr<iEmitter> emitter;
     switch (_emitter)
@@ -227,7 +225,7 @@ int cApp::_DoList()
     if (match.empty())
     {
         cout << "No matching entries found" << endl;
-        return 1;
+        throw ExitEx(1);
     }
 
     if (!_user && !_password)
@@ -238,7 +236,7 @@ int cApp::_DoList()
             cEntry::PtrT const &entry(*i);
             cout << entry->GetFullTitle() << endl;
         }
-        return 0;
+        return;
     }
 
     if (match.size() != 1)
@@ -256,6 +254,7 @@ int cApp::_DoList()
         if (rest)
             cout << ", ... (" << rest << " more)";
         cout << " ." << endl;
+        throw ExitEx(1);
     }
 
     cEntry::PtrT const &entry = match.front();
@@ -269,8 +268,6 @@ int cApp::_DoList()
         emitter->Emit("password for " + entry->GetFullTitle(),
                       entry->GetPass());
     }
-
-    return 0;
 }
 
 } //namespace gPWS;

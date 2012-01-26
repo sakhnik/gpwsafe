@@ -54,11 +54,18 @@ int main(int argc, char* argv[])
     gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);
     gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
 
-    cApp app(program_name);
-    if (int res = app.Init(argc, argv))
-        return res;
+    try
+    {
+        cApp app(program_name);
+        app.Init(argc, argv);
 
-    return app.Run();
+        app.Run();
+    }
+    catch (cApp::ExitEx const &e)
+    {
+        return e.retcode;
+    }
+    return 0;
 }
 
 // vim: set et ts=4 sw=4:

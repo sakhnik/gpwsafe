@@ -34,9 +34,15 @@ class cApp
 public:
     cApp(char const *program_name);
 
-    int Init(int argc, char *argv[]);
+    void Init(int argc, char *argv[]);
 
-    int Run();
+    void Run();
+
+    struct ExitEx
+    {
+        int retcode;
+        ExitEx(int retcode_) : retcode(retcode_) { }
+    };
 
 private:
     char const *_program_name;
@@ -58,9 +64,9 @@ private:
 
     char const *_argument;
 
-    int _Run();
-    int _Usage(bool fail);
-    int _DoList();
+    void _Run();
+    void _Usage(bool fail);
+    void _DoList();
     void _PrintIntention(iEmitter const *emitter);
 };
 
