@@ -21,7 +21,6 @@
 
 #include "Terminal.hh"
 
-#include <termios.h>
 #include <readline/readline.h>
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
@@ -55,6 +54,27 @@ StringX cTerminal::GetPassword(char const *prompt)
     } BOOST_SCOPE_EXIT_END
 
     return StringX(input);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+cRawTerminal::cRawTerminal()
+{
+    tcgetattr(STDIN_FILENO, &_tio);
+
+    struct termios new_tio = _tio;
+    new_tio.c_lflag &= ~(ICANON);
+    // A hack for sparc (from pwsafe)
+    new_tio.c_cc[VMIN] = 1;
+    new_tio.c_cc[VTIME] = 0;
+    // Turn off echo too; no need to show them the char they pressed
+    new_tio.c_lflag &= ~(ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+}
+
+cRawTerminal::~cRawTerminal()
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &_tio);
 }
 
 } //namespace gPWS;

@@ -20,6 +20,7 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 #include "GtkEmitter.hh"
+#include "Terminal.hh"
 
 #include <iostream>
 #include <gtk/gtk.h>
@@ -49,7 +50,7 @@ _TextGetFunc(GtkClipboard     *clipboard,
 {
     StringX const *val = reinterpret_cast<StringX const *>(data);
     gtk_selection_data_set_text (selection_data, val->c_str(), val->size());
-    gtk_clipboard_clear(clipboard);
+    //gtk_clipboard_clear(clipboard);
     gtk_main_quit();
 }
 
@@ -57,6 +58,19 @@ static void
 _TextClearFunc(GtkClipboard *clipboard,
                gpointer      data)
 {
+}
+
+static gboolean
+_OnStdin(GIOChannel *source,
+         GIOCondition condition,
+         gpointer data)
+{
+    // Read the ready byte from the stdin
+    char ch;
+    ::read(g_io_channel_unix_get_fd(source), &ch, 1);
+    // Quit the clipboard waiting
+    gtk_main_quit();
+    return FALSE;
 }
 
 void cGtkEmitter::Emit(StringX const &name, StringX const &val)
@@ -92,7 +106,17 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
     cout << "You are ready to paste the " << name << " from PRIMARY" << endl;
     cout << "Press any key when done" << endl;
 
+    // Switch off the canonical mode
+    cRawTerminal raw_terminal;
+
+    // Poll the stdin for any events to react on key press
+    GIOChannel *channel = g_io_channel_unix_new(STDIN_FILENO);
+    /*gint evt_id =*/ g_io_add_watch(channel, G_IO_IN, _OnStdin, NULL);
+
     gtk_main();
+
+    gtk_clipboard_clear(clipboard);
+    g_io_channel_unref(channel);
 }
 
 } //namespace gPWS;

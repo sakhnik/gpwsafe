@@ -23,12 +23,26 @@
 
 #include "Defs.hh"
 
+#include <termios.h>
+
 namespace gPWS {
 
 class cTerminal
+    : boost::noncopyable
 {
 public:
     static StringX GetPassword(char const *prompt);
+};
+
+class cRawTerminal
+    : public cTerminal
+{
+public:
+    cRawTerminal();
+    ~cRawTerminal();
+
+private:
+    struct termios _tio;
 };
 
 } //namespace gPWS;
