@@ -20,18 +20,36 @@ AX_BOOST_BASE([1.40],[],[])
 m4_include([m4/ax_boost_unit_test_framework.m4])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
-dnl X11 clipboard support
-AC_ARG_ENABLE([xclip],
-              AS_HELP_STRING([--enable-xclip=[no]],
-                             [Enable copying to the X11 clipboard (no,gtk)]))
-AS_IF([test "x$enable_xclip" = "xgtk"],[
-    PKG_CHECK_MODULES([GTK],[gtk+-3.0],[gtk_found=yes])
+dnl X clipboard support
+AC_ARG_ENABLE(
+    [xclip],
+    AS_HELP_STRING([--enable-xclip=[yes]],
+                   [Enable copying to the X clipboard (yes,no,gtk)])
+)
+
+AC_MSG_CHECKING(--enable-xclip argument)
+case "$enable_xclip" in
+    no)      AC_MSG_RESULT(no X clipboard support);;
+    yes|"")  AC_MSG_RESULT(yes - automatic X clipboard support)
+             enable_xclip=yes
+             ;;
+    *)       AC_MSG_RESULT([Sorry, $enable_xclip X clipboard is not supported]);;
+esac
+
+AS_IF([test "x$enable_xclip" = "xgtk" -o "x$enable_xclip" = "xyes"],[
+    PKG_CHECK_MODULES([GTK],[gtk+-3.0],[gtk_found=yes enable_xclip=gtk])
 ])
 AS_IF([test "x$gtk_found" = "xyes"],[
     AC_DEFINE([ENABLE_GTK],[1],[Define to compile with GTK+ support])
-    AC_DEFINE([ENABLE_XCLIP],[1],[Define to compile with X11 clipboard support])
+    AC_DEFINE([ENABLE_XCLIP],[1],[Define to compile with X clipboard support])
 ])
 AM_CONDITIONAL([ENABLE_GTK],[test "x$gtk_found" = "xyes"])
+
+AS_IF([test "x$enable_xclip" = "xyes"],[
+    AC_MSG_WARN([No suitable X clipboard support library found])
+])
+
+dnl --------------------------------------------------------------------------
 
 AC_OUTPUT([Makefile \
            src/Makefile \
