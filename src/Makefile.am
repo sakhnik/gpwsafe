@@ -1,4 +1,8 @@
 
+AM_CXXFLAGS = -Wall \
+	      $(LIBGCRYPT_CFLAGS) -DGCRYPT_NO_DEPRECATED \
+	      $(BOOST_CPPFLAGS)
+
 noinst_LIBRARIES = libgpwsafe.a
 
 libgpwsafe_a_SOURCES = \
@@ -20,14 +24,16 @@ bin_PROGRAMS = gpwsafe
 gpwsafe_SOURCES = main.cc \
 		  App.cc App.hh \
 		  IEmitter.hh \
-		  StdoutEmitter.cc StdoutEmitter.hh \
-		  GtkEmitter.cc GtkEmitter.hh
+		  StdoutEmitter.cc StdoutEmitter.hh
 
 gpwsafe_LDADD = libgpwsafe.a \
-		$(LIBGCRYPT_LIBS) \
-		$(GTK_LIBS)
+		$(LIBGCRYPT_LIBS)
 
-AM_CXXFLAGS = -Wall \
-	      $(LIBGCRYPT_CFLAGS) -DGCRYPT_NO_DEPRECATED \
-	      $(BOOST_CPPFLAGS) \
-	      $(GTK_CFLAGS)
+gpwsafe_CXXFLAGS = $(AM_CXXFLAGS)
+
+if ENABLE_GTK
+gpwsafe_SOURCES += GtkEmitter.cc GtkEmitter.hh
+gpwsafe_LDADD += $(GTK_LIBS)
+gpwsafe_CXXFLAGS += $(GTK_CFLAGS)
+endif # Enable_GTK
+

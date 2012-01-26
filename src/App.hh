@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "../config.h"
+
 #include <string>
 #include <boost/noncopyable.hpp>
 
@@ -55,7 +57,9 @@ private:
 
     enum eEmitter
     {
-        _E_XCLIP = 0,
+#ifdef ENABLE_XCLIP
+        _E_XCLIP,
+#endif //ENABLE_XCLIP
         _E_STDOUT
     } _emitter;
 

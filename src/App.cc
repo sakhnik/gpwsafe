@@ -23,8 +23,12 @@
 #include "Database.hh"
 #include "Terminal.hh"
 #include "StdoutEmitter.hh"
-#include "GtkEmitter.hh"
+
 #include "../config.h"
+
+#ifdef ENABLE_GTK
+#include "GtkEmitter.hh"
+#endif //ENABLE_GTK
 
 #include <iostream>
 #include <cstdlib>
@@ -39,7 +43,13 @@ char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
 cApp::cApp(char const *program_name)
     : _program_name(program_name)
     , _command(_C_LIST)
-    , _emitter(_E_XCLIP)
+    , _emitter(
+#ifdef ENABLE_XCLIP
+               _E_XCLIP
+#else
+               _E_STDOUT
+#endif //ENABLE_XCLIP
+               )
     , _user(false)
     , _password(false)
     , _argument(0)
@@ -69,7 +79,9 @@ void cApp::_Usage(bool fail)
           "  -u, --user                 emit username of listed account\n"
           "  -p, --password             emit password of listed account\n"
           "  -E, --echo                 force echoing of entry to stdout\n"
+#ifdef ENABLE_XCLIP
           "  -x, --xclip                force copying of entry to X selection\n"
+#endif //ENABLE_XCLIP
           "  -h, --help                 display this help and exit\n"
           "Commands:\n"
           "  -V, --version              output version information and exit\n"
@@ -91,7 +103,9 @@ void cApp::Init(int argc, char *argv[])
             { "user",       no_argument,        0, 'u' },
             { "password",   no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
+#ifdef ENABLE_XCLIP
             { "xclip",      no_argument,        0, 'x' },
+#endif //ENABLE_XCLIP
             { 0, 0, 0, 0 }
         };
         char const *const short_options =
@@ -101,7 +115,9 @@ void cApp::Init(int argc, char *argv[])
             "u"   // user
             "p"   // password
             "E"   // force echo to stdout
+#ifdef ENABLE_XCLIP
             "x"   // force copying to xclip
+#endif //ENABLE_XCLIP
             "";
         int option_index = 0;
         int c = getopt_long(argc, argv,
@@ -131,9 +147,11 @@ void cApp::Init(int argc, char *argv[])
         case 'E':
             _emitter = _E_STDOUT;
             break;
+#ifdef ENABLE_XCLIP
         case 'x':
             _emitter = _E_XCLIP;
             break;
+#endif //ENABLE_XCLIP
         default:
             return _Usage(true);
         };
@@ -210,12 +228,16 @@ void cApp::_DoList()
     case _E_STDOUT:
         emitter.reset(new cStdoutEmitter);
         break;
+#ifdef ENABLE_XCLIP
     case _E_XCLIP:
+#ifdef ENABLE_GTK
         emitter.reset(new cGtkEmitter);
+#endif //ENABLE_GTK
         break;
-    default:
-        assert(!"Not implemented _emitter");
+#endif //ENABLE_XCLIP
     }
+
+    assert(emitter.get() && "Not implemented _emitter");
 
     _PrintIntention(emitter.get());
 

@@ -20,8 +20,18 @@ AX_BOOST_BASE([1.40],[],[])
 m4_include([m4/ax_boost_unit_test_framework.m4])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
-PKG_CHECK_MODULES([GTK],[gtk+-3.0])
-
+dnl X11 clipboard support
+AC_ARG_ENABLE([xclip],
+              AS_HELP_STRING([--enable-xclip=[no]],
+                             [Enable copying to the X11 clipboard (no,gtk)]))
+AS_IF([test "x$enable_xclip" = "xgtk"],[
+    PKG_CHECK_MODULES([GTK],[gtk+-3.0],[gtk_found=yes])
+])
+AS_IF([test "x$gtk_found" = "xyes"],[
+    AC_DEFINE([ENABLE_GTK],[1],[Define to compile with GTK+ support])
+    AC_DEFINE([ENABLE_XCLIP],[1],[Define to compile with X11 clipboard support])
+])
+AM_CONDITIONAL([ENABLE_GTK],[test "x$gtk_found" = "xyes"])
 
 AC_OUTPUT([Makefile \
            src/Makefile \
