@@ -31,6 +31,9 @@ class cHmac
     : boost::noncopyable
 {
 public:
+    static const unsigned KEY_LENGTH = 32;
+    static const unsigned LENGTH = 32;
+
     cHmac(void const *key, size_t key_len);
 
     ~cHmac();

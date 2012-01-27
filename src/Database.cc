@@ -42,17 +42,6 @@ void cDatabase::operator delete(void *p, size_t n)
     return SecureAllocator<cDatabase>::deallocate(q, n);
 }
 
-//void cDatabase::_OnField(sField::PtrT const &field,
-//                         sReadCtxt &read_ctxt)
-//{
-//    cout << "Length: " << boost::format("%3d") % field->length;
-//    cout << "\tType: "
-//         << boost::format("%02X") % unsigned(field->type);
-//    cout << "\tValue: "
-//         << gPWS::Quote(&field->value[0], field->value.size());
-//    cout << endl;
-//}
-
 void cDatabase::Read(char const *fname,
                      char const *pass)
 {
@@ -78,6 +67,12 @@ void cDatabase::Read(char const *fname,
             entry.reset(new cEntry);
         }
     }
+}
+
+void cDatabase::Write(char const *fname,
+                      char const *pass)
+{
+    _file.OpenWrite(fname, pass);
 }
 
 bool cDatabase::_AddField(sField::PtrT const &field)

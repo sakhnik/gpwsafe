@@ -23,6 +23,7 @@
 #include "Defs.hh"
 #include "KeyStretch.hh"
 #include "Memory.hh"
+#include "Random.hh"
 #include "Debug.hh"
 
 #include <stdint.h>
@@ -36,9 +37,13 @@ namespace gPWS {
 
 using namespace std;
 
+const string MAGIC_TAG ("PWS3");
+const unsigned SALT_LEN = 32;
+
 cFile3::cFile3()
     : _state(S_CLOSED)
     , _initial_state(_fs.exceptions())
+    , _iterations(2048)
 {
     assert(gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) &&
            "libgcrypt must be initialized beforehand");
@@ -63,32 +68,31 @@ void cFile3::OpenRead(char const *fname,
     _fs.exceptions(_initial_state);
     _fs.open(fname, ios::in|ios::binary);
     if (!_fs)
-        throw runtime_error("Can't open file");
+        throw runtime_error("Can't open file for reading");
     _fs.exceptions(ios::failbit|ios::badbit);
 
-    char tag[4];
-    _fs.read(tag, 4);
-    if (!std::equal(tag, tag + 4, "PWS3"))
+    char tag[MAGIC_TAG.size()];
+    _fs.read(tag, MAGIC_TAG.size());
+    if (!std::equal(MAGIC_TAG.begin(), MAGIC_TAG.end(), tag))
         throw runtime_error("Invalid tag");
 
-    const unsigned salt_len = 32;
-    char salt[salt_len];
-    _fs.read(salt, salt_len);
+    char salt[SALT_LEN];
+    _fs.read(salt, SALT_LEN);
 
     uint8_t iter_buf[4];
     _fs.read(reinterpret_cast<char *>(iter_buf), 4);
-    uint32_t iterations = uint32_t(iter_buf[0])
-                        + (uint32_t(iter_buf[1]) << 8)
-                        + (uint32_t(iter_buf[2]) << 16)
-                        + (uint32_t(iter_buf[3]) << 24);
+    _iterations = uint32_t(iter_buf[0])
+                + (uint32_t(iter_buf[1]) << 8)
+                + (uint32_t(iter_buf[2]) << 16)
+                + (uint32_t(iter_buf[3]) << 24);
 
     cKeyStretch key_stretch(pass, strlen(pass),
-                            salt, salt_len,
-                            iterations);
+                            salt, SALT_LEN,
+                            _iterations);
 
     cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
-    string key(32, '\0');
+    string key(cSha256::LENGTH, '\0');
     _fs.read(&key[0], key.size());
 
     if (memcmp(&key[0], key_md.Get(), key.size()))
@@ -96,18 +100,18 @@ void cFile3::OpenRead(char const *fname,
 
     cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
-    StringX main_key(32, '\0');
+    StringX main_key(cTwofish::KEY_LENGTH, '\0');
     _fs.read(&main_key[0], main_key.size());
     twofish.Decrypt(&main_key[0], main_key.size(),
                     &main_key[0], main_key.size());
 
-    StringX hmac_key(32, '\0');
+    StringX hmac_key(cHmac::KEY_LENGTH, '\0');
     _fs.read(&hmac_key[0], hmac_key.size());
     twofish.Decrypt(&hmac_key[0], hmac_key.size(),
                     &hmac_key[0], hmac_key.size());
     _hmac_calculator.reset(new cHmac(&hmac_key[0], hmac_key.size()));
 
-    BytesT iv(16);
+    BytesT iv(cTwofish::BLOCK_LENGTH);
     _fs.read(reinterpret_cast<char *>(&iv[0]), iv.size());
 
     _twofish.reset(new cTwofish(cTwofish::M_CBC,
@@ -120,12 +124,12 @@ sField::PtrT cFile3::ReadField()
 {
     assert(_state == S_READING);
 
-    _data.resize(16);
+    _data.resize(cTwofish::BLOCK_LENGTH);
     _fs.read(&_data[0], _data.size());
 
     if (!memcmp(&_data[0], "PWS3-EOFPWS3-EOF", _data.size()))
     {
-        BytesT hmac(32);
+        BytesT hmac(cHmac::LENGTH);
         _fs.read(reinterpret_cast<char *>(&hmac[0]), hmac.size());
         _state = S_CLOSED;
         _fs.close();
@@ -164,6 +168,70 @@ sField::PtrT cFile3::ReadField()
     }
     _hmac_calculator->Update(&value[0], value.size());
     return field;
+}
+
+void cFile3::OpenWrite(char const *fname,
+                       char const *pass)
+{
+    assert(_state == S_CLOSED);
+    _state = S_WRITING;
+
+    _fs.exceptions(_initial_state);
+    _fs.open(fname, ios::out|ios::binary|ios::trunc);
+    if (!_fs)
+        throw runtime_error("Can't open file for writing");
+    _fs.exceptions(ios::failbit|ios::badbit);
+
+    _fs.write(&MAGIC_TAG[0], MAGIC_TAG.size());
+
+    char salt[SALT_LEN];
+    cRandom::CreateNonce(salt, SALT_LEN);
+    _fs.write(salt, SALT_LEN);
+
+    uint8_t iter_buf[4] =
+    {
+        _iterations & 0xFF,
+        (_iterations >> 8) & 0xFF,
+        (_iterations >> 16) & 0xFF,
+        (_iterations >> 24) & 0xFF
+    };
+    _fs.write(reinterpret_cast<char *>(iter_buf), 4);
+
+    cKeyStretch key_stretch(pass, strlen(pass),
+                            salt, SALT_LEN,
+                            _iterations);
+
+    cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
+
+    _fs.write(reinterpret_cast<char const *>(key_md.Get()), key_md.LENGTH);
+
+    cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
+
+    StringX main_key(cTwofish::KEY_LENGTH, '\0');
+    cRandom::Randomize(&main_key[0], main_key.size());
+    // Encrypt the main key before writing
+    StringX main_key_enc(main_key);
+    twofish.Encrypt(&main_key_enc[0], main_key_enc.size(),
+                    &main_key[0], main_key.size());
+    _fs.write(&main_key_enc[0], main_key_enc.size());
+
+    StringX hmac_key(cHmac::KEY_LENGTH, '\0');
+    cRandom::Randomize(&hmac_key[0], hmac_key.size());
+    StringX hmac_key_enc(hmac_key);
+    twofish.Encrypt(&hmac_key_enc[0], hmac_key_enc.size(),
+                    &hmac_key[0], hmac_key.size());
+    _fs.write(&hmac_key_enc[0], hmac_key_enc.size());
+
+    _hmac_calculator.reset(new cHmac(&hmac_key[0], hmac_key.size()));
+
+    BytesT iv(cTwofish::BLOCK_LENGTH);
+    cRandom::CreateNonce(&iv[0], iv.size());
+    _fs.write(reinterpret_cast<char *>(&iv[0]), iv.size());
+
+    _twofish.reset(new cTwofish(cTwofish::M_CBC,
+                                &main_key[0],
+                                main_key.size()));
+    _twofish->SetIV(&iv[0], iv.size());
 }
 
 } //namespace gPWS;

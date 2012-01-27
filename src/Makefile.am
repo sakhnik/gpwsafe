@@ -15,6 +15,7 @@ libgpwsafe_a_SOURCES = \
 		Twofish.cc Twofish.hh \
 		Hmac.cc Hmac.hh \
 		KeyStretch.cc KeyStretch.hh \
+		Random.cc Random.hh \
 		Memory.cc Memory.hh \
 		Debug.cc Debug.hh
 

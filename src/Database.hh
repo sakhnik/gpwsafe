@@ -42,6 +42,9 @@ public:
     void Read(char const *fname,
               char const *pass);
 
+    void Write(char const *fname,
+               char const *pass);
+
     void Dump() const;
 
     typedef std::vector<cEntry::PtrT> EntriesT;

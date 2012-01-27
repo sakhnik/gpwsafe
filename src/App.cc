@@ -201,6 +201,11 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
     StringX password =
         cTerminal::GetPassword(prompt.c_str());
     database->Read(file_name.c_str(), password.c_str());
+
+    // Temporary for testing
+    string fname2 = file_name + "~";
+    database->Write(fname2.c_str(), password.c_str());
+
     return database;
 }
 
@@ -242,6 +247,7 @@ void cApp::_DoList()
     _PrintIntention(emitter.get());
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
+
     typedef cDatabase::EntriesT EntriesT;
     EntriesT match = database->Find(_argument);
     if (match.empty())

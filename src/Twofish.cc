@@ -86,6 +86,20 @@ void cTwofish::Decrypt(uint8_t *out, size_t out_len,
     }
 }
 
+void cTwofish::Encrypt(uint8_t *out, size_t out_len,
+                       uint8_t const *in, size_t in_len)
+{
+    gcry_error_t error =
+        gcry_cipher_encrypt(_h, out, out_len, in, in_len);
+    if (error)
+    {
+        cerr << "gcry_cipher_encrypt failed: "
+             << gcry_strsource(error) << "/"
+             << gcry_strerror(error) << endl;
+        throw runtime_error("cipher error");
+    }
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

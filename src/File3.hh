@@ -44,6 +44,9 @@ public:
 
     sField::PtrT ReadField();
 
+    void OpenWrite(char const *fname,
+                   char const *pass);
+
 private:
     enum _eState
     {
@@ -54,6 +57,9 @@ private:
 
     std::fstream _fs;
     std::ios_base::iostate _initial_state;
+
+    // Count of iterations for the key stretching
+    uint32_t _iterations;
 
     std::auto_ptr<cTwofish> _twofish;
     std::auto_ptr<cHmac> _hmac_calculator;
