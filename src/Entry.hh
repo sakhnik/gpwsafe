@@ -25,6 +25,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 
 namespace gPWS {
 
@@ -38,6 +39,10 @@ public:
     void operator delete(void *p, size_t n);
 
     bool AddField(sField::PtrT const &field);
+
+    typedef boost::function<void(sField::PtrT const &ptr)> OnFieldT;
+
+    void ForEachField(OnFieldT on_field);
 
     void Dump() const;
 

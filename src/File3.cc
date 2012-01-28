@@ -280,9 +280,12 @@ void cFile3::WriteField(sField::PtrT const &field)
             data_idx = 0;
             if (!value_rest)
                 break;
+            continue;
         }
         copy(value.begin() + val_idx, value.begin() + val_idx + block_rest,
              _data.begin() + data_idx);
+        data_idx += block_rest;
+        val_idx += block_rest;
     }
 }
 

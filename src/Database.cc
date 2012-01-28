@@ -85,13 +85,20 @@ void cDatabase::Write(char const *fname,
         _file.WriteField(*i);
 
     // Field terminator
-    field->type = 0xFF;
-    field->value.clear();
-    _file.WriteField(field);
+    sField::PtrT terminator(new sField);
+    terminator->type = 0xFF;
+    terminator->value.clear();
+    _file.WriteField(terminator);
 
     for (EntriesT::const_iterator i = _entries.begin();
          i != _entries.end(); ++i)
     {
+        cEntry::PtrT const &entry(*i);
+        entry->ForEachField(boost::bind(&cFile3::WriteField,
+                                        boost::ref(_file),
+                                        _1));
+
+        _file.WriteField(terminator);
     }
 
     _file.CloseWrite();

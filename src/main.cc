@@ -43,8 +43,12 @@ _GcryProgressHandler(void *cb_data, const char *what,
 {
     if (!strcmp(what, "need_entropy"))
     {
-        cerr << "\r" << total << " more bytes of entry are needed."
-             << " Play around." << endl;
+        cerr << "\rEntropy pool: " << current << " of " << total
+             << " bytes are available.";
+        if (current == total)
+            cerr << " Done.              " << endl;
+        else
+            cerr << " Waiting for more..." << flush;
     }
 }
 

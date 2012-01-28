@@ -72,6 +72,58 @@ bool cEntry::AddField(sField::PtrT const &field)
     return true;
 }
 
+void cEntry::ForEachField(OnFieldT on_field)
+{
+    sField::PtrT field(new sField);
+    // Group
+    if (!_group.empty())
+    {
+        field->type = 0x02;
+        field->value = _group;
+        on_field(field);
+    }
+    // Title
+    if (!_title.empty())
+    {
+        field->type = 0x03;
+        field->value = _title;
+        on_field(field);
+    }
+    // User
+    if (!_user.empty())
+    {
+        field->type = 0x04;
+        field->value = _user;
+        on_field(field);
+    }
+    // Notes
+    if (!_notes.empty())
+    {
+        field->type = 0x05;
+        field->value = _notes;
+        on_field(field);
+    }
+    // Password
+    if (!_pass.empty())
+    {
+        field->type = 0x06;
+        field->value = _pass;
+        on_field(field);
+    }
+    // URL
+    if (!_url.empty())
+    {
+        field->type = 0x0D;
+        field->value = _url;
+        on_field(field);
+    }
+
+    for (_OtherT::const_iterator i = _other.begin(); i != _other.end(); ++i)
+    {
+        on_field(*i);
+    }
+}
+
 void cEntry::Dump() const
 {
     cout << "Group: " << _group << endl;
