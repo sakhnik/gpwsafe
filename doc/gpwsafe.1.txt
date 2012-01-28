@@ -1,0 +1,121 @@
+:man source: gpwsafe
+:man version: {version}
+:man manual: Gpwsafe Manual
+
+GPWSAFE(1)
+==========
+
+NAME
+----
+gpwsafe - command line password database utility compatible with
+Counterpane's PasswordSafe v3.
+
+
+SYNOPSIS
+--------
+*gpwsafe* [options] comand [arg]
+
+
+DESCRIPTION
+-----------
+*gpwsafe* manipulates Counterpane's PasswordSafe username/password databases.
+
+It is compatible with Counterpane's PasswordSafe 3.x databases.
+
+
+COMMANDS
+--------
+*gpwsafe* accepts the following commands
+
+--list=[REGEX]::
+        List all [matching] entries in database. If -u or -p is given,
+        then REGEX must match only one entry, and only the requested
+        field(s) are emitted.
+
+If no command is given, --list is assumed.
+
+
+OPTIONS
+-------
+*gpwsafe* accepts the following options:
+
+-f, --file::
+        Specify the database to manipulate. Default is $HOME/.gpwsafe.psafe3
+
+-u, --user::
+        Show username of listed account(s)
+
+-p, --pass::
+        Show password of listed account(s)
+
+-E, --echo::
+        Force echo'ing the entry to stdout. This is selected by default,
+        if $DISPLAY is not set.
+
+-x, --xclip::
+        Force copying the login and password to X clipboard. This is selected
+        by default is $DISPLAY is set.
+
+-h, --help::
+        Show summary of options
+
+-V, --version:
+        Show version of program.
+
+
+ENVIRONMENT
+-----------
+HOME::
+        Used to locate the default database "~/.gpwsafe.psafe3".
+
+
+FILES
+-----
+~/.gpwsafe.psafe3::
+        The default password database.
+
+~/.gpwsafe.psafe3~::
+        The backup of the database.
+
+
+WARNINGS
+--------
+Use a good password for your database.
+
+Don't use gpwsafe over telnet or from untrusted terminals.
+
+
+EXAMPLES
+--------
+Copy username and password of 'test' to console or X clipboard.
+
+---------
+gpwsafe -up test
+---------
+
+
+BUGS
+----
+Report bugs using the GitHub's tracker at
+https://github.com/sakhnik/gpwsafe/issues
+
+
+COPYRIGHT
+---------
+Copyright (c) 2012 Anatolii Sakhnik
+
+This is free software; see the source code for copying conditions.
+There is NO warranty; neither for MERCHANTABILITY nor FITNESS FOR
+A PARTICULAR PURPOSE.
+
+
+AUTHOR
+------
+Anatolii Sakhnik <sakhnik@gmail.com>
+
+
+SEE ALSO
+--------
+https://github.com/sakhnik/gpwsafe
+
+http://passwordsafe.sourceforge.net/, http://www.counterpane.com/

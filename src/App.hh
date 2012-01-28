@@ -64,7 +64,7 @@ private:
     } _emitter;
 
     bool _user;
-    bool _password;
+    bool _pass;
 
     char const *_argument;
 

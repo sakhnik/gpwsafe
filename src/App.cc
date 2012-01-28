@@ -51,7 +51,7 @@ cApp::cApp(char const *program_name)
 #endif //ENABLE_XCLIP
                )
     , _user(false)
-    , _password(false)
+    , _pass(false)
     , _argument(0)
 {
     char const *home = getenv("HOME");
@@ -77,7 +77,7 @@ void cApp::_Usage(bool fail)
           "  -f, --file=DATABASE_FILE   specify the database file (~/"
        << DEFAULT_FILE << " by default)\n"
           "  -u, --user                 emit username of listed account\n"
-          "  -p, --password             emit password of listed account\n"
+          "  -p, --pass                 emit password of listed account\n"
           "  -E, --echo                 force echoing of entry to stdout\n"
 #ifdef ENABLE_XCLIP
           "  -x, --xclip                force copying of entry to X selection\n"
@@ -101,7 +101,7 @@ void cApp::Init(int argc, char *argv[])
             { "file",       required_argument,  0, 'f' },
             { "list",       no_argument,        0, 'L' },
             { "user",       no_argument,        0, 'u' },
-            { "password",   no_argument,        0, 'p' },
+            { "pass",       no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
 #ifdef ENABLE_XCLIP
             { "xclip",      no_argument,        0, 'x' },
@@ -113,7 +113,7 @@ void cApp::Init(int argc, char *argv[])
             "V"   // version
             "f:"  // file
             "u"   // user
-            "p"   // password
+            "p"   // pass
             "E"   // force echo to stdout
 #ifdef ENABLE_XCLIP
             "x"   // force copying to xclip
@@ -142,7 +142,7 @@ void cApp::Init(int argc, char *argv[])
             _user = true;
             break;
         case 'p':
-            _password = true;
+            _pass = true;
             break;
         case 'E':
             _emitter = _E_STDOUT;
@@ -206,12 +206,12 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
 
 void cApp::_PrintIntention(iEmitter const *emitter)
 {
-    if (!_user && !_password)
+    if (!_user && !_pass)
         return;
     string subject;
     if (_user)
         subject += "login";
-    if (_password)
+    if (_pass)
     {
         if (_user)
             subject += " and ";
@@ -251,7 +251,7 @@ void cApp::_DoList()
         throw ExitEx(1);
     }
 
-    if (!_user && !_password)
+    if (!_user && !_pass)
     {
         for (EntriesT::const_iterator i = match.begin();
              i != match.end(); ++i)
@@ -286,7 +286,7 @@ void cApp::_DoList()
         emitter->Emit("username for " + entry->GetFullTitle(),
                       entry->GetUser());
     }
-    if (_password)
+    if (_pass)
     {
         emitter->Emit("password for " + entry->GetFullTitle(),
                       entry->GetPass());

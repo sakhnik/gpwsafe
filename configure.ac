@@ -20,6 +20,7 @@ AX_BOOST_BASE([1.40],[],[])
 m4_include([m4/ax_boost_unit_test_framework.m4])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
+dnl --------------------------------------------------------------------------
 dnl X clipboard support
 AC_ARG_ENABLE(
     [xclip],
@@ -50,7 +51,28 @@ AS_IF([test "x$enable_xclip" = "xyes"],[
 ])
 
 dnl --------------------------------------------------------------------------
+dnl Documentation support
 
-AC_OUTPUT([Makefile \
-           src/Makefile \
-           test/Makefile])
+AC_ARG_ENABLE(doc,
+    AS_HELP_STRING([--enable-doc=yes], [Build man pages (yes by default)]),
+    [wantdoc=$enableval], [wantdoc=yes])
+
+AC_MSG_CHECKING([for building documentation])
+AS_IF([test "x$wantdoc" = "xyes"], [
+    AC_MSG_RESULT([yes])
+    AC_CHECK_PROGS([ASCIIDOC], [asciidoc])
+    AS_IF([test $ASCIIDOC], [
+    ], [
+        AC_MSG_ERROR([asciidoc is required to build man pages])
+    ])],
+[
+    AC_MSG_RESULT([no])
+])
+AM_CONDITIONAL(WANT_DOC, [test "x$wantdoc" = "xyes"])
+
+dnl --------------------------------------------------------------------------
+
+AC_OUTPUT([Makefile
+           src/Makefile
+           test/Makefile
+           doc/Makefile])
