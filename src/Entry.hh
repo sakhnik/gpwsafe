@@ -38,6 +38,8 @@ public:
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);
 
+    cEntry();
+
     bool AddField(sField::PtrT const &field);
 
     typedef boost::function<void(sField::PtrT const &ptr)> OnFieldT;
@@ -46,26 +48,26 @@ public:
 
     void Dump() const;
 
-    StringX const &GetGroup() const { return _group; }
-    StringX const &GetTitle() const { return _title; }
-    StringX const &GetUser() const { return _user; }
-    StringX const &GetNotes() const { return _notes; }
-    StringX const &GetPass() const { return _pass; }
-    StringX const &GetUrl() const { return _url; }
+    StringX const &GetValue(sField::eType type) const;
+
+    StringX const &GetGroup() const { return GetValue(sField::T_GROUP); }
+    StringX const &GetTitle() const { return GetValue(sField::T_TITLE); }
+    StringX const &GetUser() const  { return GetValue(sField::T_USER);  }
+    StringX const &GetNotes() const { return GetValue(sField::T_NOTES); }
+    StringX const &GetPass() const  { return GetValue(sField::T_PASS);  }
+    StringX const &GetUrl() const   { return GetValue(sField::T_URL);   }
 
     // group.title
     StringX GetFullTitle() const;
 
 private:
-    StringX _group;
-    StringX _title;
-    StringX _user;
-    StringX _notes;
-    StringX _pass;
-    StringX _url;
+    // Associative container. Type is used as index in the vector.
+    // Null means the field wasn't defined.
+    typedef std::vector<sField::PtrT> _FieldsT;
+    _FieldsT _fields;
 
-    typedef std::vector<sField::PtrT> _OtherT;
-    _OtherT _other;
+    // Empty string to refer to if a specific field is missing.
+    StringX _empty;
 };
 
 } //namespace gPWS;
