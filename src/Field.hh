@@ -34,7 +34,6 @@ struct sField
 {
     typedef boost::shared_ptr<sField> PtrT;
 
-    uint32_t length;
     uint8_t type;
     StringX value;
 

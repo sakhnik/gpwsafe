@@ -45,7 +45,12 @@ public:
     sField::PtrT ReadField();
 
     void OpenWrite(char const *fname,
-                   char const *pass);
+                   char const *pass,
+                   bool new_keys = false);
+
+    void WriteField(sField::PtrT const &field);
+
+    void CloseWrite();
 
 private:
     enum _eState
@@ -60,6 +65,10 @@ private:
 
     // Count of iterations for the key stretching
     uint32_t _iterations;
+
+    // Main encryption key for TwoFish
+    StringX _main_key;
+    StringX _hmac_key;
 
     std::auto_ptr<cTwofish> _twofish;
     std::auto_ptr<cHmac> _hmac_calculator;

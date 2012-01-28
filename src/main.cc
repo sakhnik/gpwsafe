@@ -37,6 +37,17 @@ static char const *_Basename(char const *path)
     return res + 1;
 }
 
+static void
+_GcryProgressHandler(void *cb_data, const char *what,
+                     int printchar, int current, int total)
+{
+    if (!strcmp(what, "need_entropy"))
+    {
+        cerr << "\r" << total << " more bytes of entry are needed."
+             << " Play around." << endl;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     char const *program_name = _Basename(argv[0]);
@@ -52,6 +63,7 @@ int main(int argc, char* argv[])
     }
     // Allocate secure memory for sensitive information (won't be swapped)
     gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);
+    gcry_set_progress_handler(_GcryProgressHandler, NULL);
     gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
 
     try

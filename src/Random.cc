@@ -32,8 +32,7 @@ void cRandom::CreateNonce(uint8_t *buffer, unsigned len)
 
 void cRandom::Randomize(uint8_t *buffer, unsigned length)
 {
-    // TODO: Utilize GCRY_VERY_STRONG_RANDOM
-    gcry_randomize(buffer, length, GCRY_STRONG_RANDOM);
+    gcry_randomize(buffer, length, GCRY_VERY_STRONG_RANDOM);
 }
 
 } //namespace gPWS;

@@ -72,7 +72,29 @@ void cDatabase::Read(char const *fname,
 void cDatabase::Write(char const *fname,
                       char const *pass)
 {
-    _file.OpenWrite(fname, pass);
+    _file.OpenWrite(fname, pass, true);
+
+    // Write version
+    sField::PtrT field(new sField);
+    field->type = 0x00;
+    field->value.push_back(_version.minor);
+    field->value.push_back(_version.major);
+    _file.WriteField(field);
+
+    for (_OtherT::const_iterator i = _other.begin(); i != _other.end(); ++i)
+        _file.WriteField(*i);
+
+    // Field terminator
+    field->type = 0xFF;
+    field->value.clear();
+    _file.WriteField(field);
+
+    for (EntriesT::const_iterator i = _entries.begin();
+         i != _entries.end(); ++i)
+    {
+    }
+
+    _file.CloseWrite();
 }
 
 bool cDatabase::_AddField(sField::PtrT const &field)
