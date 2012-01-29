@@ -17,6 +17,7 @@ libgpwsafe_a_SOURCES = \
 		KeyStretch.cc KeyStretch.hh \
 		Random.cc Random.hh \
 		Memory.cc Memory.hh \
+		Gcrypt.cc Gcrypt.hh \
 		Debug.cc Debug.hh
 
 bin_PROGRAMS = gpwsafe

@@ -21,10 +21,11 @@
 
 #include "../config.h"
 #include "App.hh"
+#include "Gcrypt.hh"
 
 #include <sys/stat.h>
 #include <iostream>
-#include <gcrypt.h>
+#include <cstring>
 
 using namespace std;
 using namespace gPWS;
@@ -37,21 +38,6 @@ static char const *_Basename(char const *path)
     return res + 1;
 }
 
-static void
-_GcryProgressHandler(void *cb_data, const char *what,
-                     int printchar, int current, int total)
-{
-    if (!strcmp(what, "need_entropy"))
-    {
-        cerr << "\rEntropy pool: " << current << " of " << total
-             << " bytes are available.";
-        if (current == total)
-            cerr << " Done.              " << endl;
-        else
-            cerr << " Waiting for more..." << flush;
-    }
-}
-
 int main(int argc, char* argv[])
 {
     char const *program_name = _Basename(argv[0]);
@@ -59,16 +45,11 @@ int main(int argc, char* argv[])
     // Be nice and paranoid
     umask(0077);
 
-    char const *const REQ_GCRYPT_VERSION = "1.2.0";
-    if (!gcry_check_version(REQ_GCRYPT_VERSION))
+    if (int res = cGcrypt::Init())
     {
-        cerr << "libgcrypt version mismatch\n" << endl;
-        return 1;
+        cerr << "Can't initialize libgcrypt" << endl;
+        return res;
     }
-    // Allocate secure memory for sensitive information (won't be swapped)
-    gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);
-    gcry_set_progress_handler(_GcryProgressHandler, NULL);
-    gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
 
     try
     {
