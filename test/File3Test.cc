@@ -11,8 +11,10 @@
 #include "../src/File3.hh"
 #include "../src/Defs.hh"
 #include "../src/Gcrypt.hh"
+#include "../src/Debug.hh"
 
-#include <boost/scope_exit.hpp>
+#include <boost/format.hpp>
+#include <boost/iterator/indirect_iterator.hpp>
 
 using namespace std;
 
@@ -39,7 +41,7 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
     {
         sField::PtrT field(new sField);
         field->type = rand() % 256;
-        field->value.resize(rand() % 1024);
+        field->value.resize(rand() % 256);
         generate(field->value.begin(), field->value.end(), &rand);
         fields1.push_back(field);
     }
@@ -48,10 +50,7 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
     char const *const pass = "!23$QweR";
 
     cFile3 file1;
-    file1.OpenWrite(fname, pass);
-    BOOST_SCOPE_EXIT((&fname)) {
-        ::unlink(fname);
-    } BOOST_SCOPE_EXIT_END
+    file1.OpenWrite(fname, pass, true, false);
 
     for (FieldsT::const_iterator i = fields1.begin(); i != fields1.end(); ++i)
         file1.WriteField(*i);
@@ -63,9 +62,18 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
     FieldsT fields2;
     sField::PtrT field;
     while ((field = file2.ReadField()))
+    {
         fields2.push_back(field);
+    }
 
     BOOST_CHECK_EQUAL(fields1.size(), fields2.size());
+
+    //typedef boost::indirect_iterator<FieldsT::iterator> IterT;
+    //BOOST_CHECK_EQUAL_COLLECTIONS(IterT(fields1.begin()),
+    //                              IterT(fields1.end()),
+    //                              IterT(fields2.begin()),
+    //                              IterT(fields2.end()));
+    ::unlink(fname);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

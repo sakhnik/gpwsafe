@@ -37,11 +37,14 @@ public:
         CreateNonce(reinterpret_cast<uint8_t *>(buffer), length);
     }
 
-    static void Randomize(uint8_t *buffer, unsigned length);
+    static void Randomize(uint8_t *buffer, unsigned length,
+                          bool very_strong);
 
-    static void Randomize(char *buffer, unsigned length)
+    static void Randomize(char *buffer, unsigned length,
+                          bool very_strong)
     {
-        Randomize(reinterpret_cast<uint8_t *>(buffer), length);
+        Randomize(reinterpret_cast<uint8_t *>(buffer), length,
+                  very_strong);
     }
 };
 
