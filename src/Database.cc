@@ -26,6 +26,7 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
+#include <uuid/uuid.h>
 
 namespace gPWS {
 
@@ -40,6 +41,32 @@ void cDatabase::operator delete(void *p, size_t n)
 {
     cDatabase *q = reinterpret_cast<cDatabase *>(p);
     return SecureAllocator<cDatabase>::deallocate(q, n);
+}
+
+cDatabase::cDatabase()
+{
+    _fields.reserve(0x0F);
+}
+
+void cDatabase::Create()
+{
+    _fields.clear();
+    sField::PtrT field(new sField);
+
+    // Insert default version (mock 3.10)
+    field->type = FT_VERSION;
+    field->value.clear();
+    field->value.push_back(0x0A);
+    field->value.push_back(0x03);
+    _AddField(field);
+
+    // Insert new UUID
+    field->type = FT_UUID;
+    field->value.resize(16);
+    uuid_t new_uuid;
+    ::uuid_generate(new_uuid);
+    copy(new_uuid, new_uuid + 16, field->value.begin());
+    _AddField(field);
 }
 
 void cDatabase::Read(char const *fname,
@@ -74,15 +101,13 @@ void cDatabase::Write(char const *fname,
 {
     _file.OpenWrite(fname, pass, true);
 
-    // Write version
-    sField::PtrT field(new sField);
-    field->type = 0x00;
-    field->value.push_back(_version.minor);
-    field->value.push_back(_version.major);
-    _file.WriteField(field);
-
-    for (_OtherT::const_iterator i = _other.begin(); i != _other.end(); ++i)
-        _file.WriteField(*i);
+    for (_FieldsT::const_iterator i = _fields.begin();
+         i != _fields.end(); ++i)
+    {
+        sField::PtrT const &field = *i;
+        if (field)
+            _file.WriteField(field);
+    }
 
     // Field terminator
     sField::PtrT terminator(new sField);
@@ -106,20 +131,11 @@ void cDatabase::Write(char const *fname,
 
 bool cDatabase::_AddField(sField::PtrT const &field)
 {
-    switch (field->type)
-    {
-    case 0x00:
-        if (field->value.size() != 2)
-            throw runtime_error("Format error");
-        _version.minor = field->value[0];
-        _version.major = field->value[1];
-        break;
-    case 0xFF:
+    if (field->type == 0xFF)
         return false;
-    default:
-        _other.push_back(field);
-        break;
-    }
+    if (_fields.size() <= field->type)
+        _fields.resize(static_cast<unsigned>(field->type) + 1);
+    _fields[field->type] = field;
     return true;
 }
 
@@ -139,14 +155,12 @@ cDatabase::Find(char const *query)
 
 void cDatabase::Dump() const
 {
-    cout << "Version: " << unsigned(_version.major)
-         << '.' << unsigned(_version.minor) << endl;
-    cout << endl;
-
-    for (_OtherT::const_iterator i = _other.begin();
-         i != _other.end(); ++i)
+    for (_FieldsT::const_iterator i = _fields.begin();
+         i != _fields.end(); ++i)
     {
         sField::PtrT const& field = *i;
+        if (!field)
+            continue;
         cout << "{0x"
              << boost::format("%02X") % unsigned(field->type)
              << ", '"

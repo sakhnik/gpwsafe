@@ -52,7 +52,8 @@ private:
 
     enum eCommand
     {
-        _C_LIST = 0
+        _C_LIST = 0,
+        _C_CREATE
     } _command;
 
     enum eEmitter
@@ -71,6 +72,7 @@ private:
     void _Run();
     void _Usage(bool fail);
     void _DoList();
+    void _DoCreate();
     void _PrintIntention(iEmitter const *emitter);
 };
 

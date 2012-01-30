@@ -39,6 +39,10 @@ public:
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);
 
+    cDatabase();
+
+    void Create();
+
     void Read(char const *fname,
               char const *pass);
 
@@ -53,14 +57,17 @@ public:
 private:
     cFile3 _file;
 
-    struct _sVersion
+    enum _eFieldType
     {
-        uint8_t major;
-        uint8_t minor;
-    } _version;
+        FT_VERSION = 0x00,
+        FT_UUID = 0x01,
 
-    typedef std::vector<sField::PtrT> _OtherT;
-    _OtherT _other;
+        FT_END = 0xFF
+    };
+
+    // Associative vector of fields
+    typedef std::vector<sField::PtrT> _FieldsT;
+    _FieldsT _fields;
 
     EntriesT _entries;
 

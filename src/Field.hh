@@ -35,18 +35,6 @@ struct sField
 {
     typedef boost::shared_ptr<sField> PtrT;
 
-    enum eType
-    {
-        T_GROUP = 0x02,
-        T_TITLE = 0x03,
-        T_USER = 0x04,
-        T_NOTES = 0x05,
-        T_PASS = 0x06,
-        T_URL = 0x0D,
-
-        T_END = 0xFF
-    };
-
     uint8_t type;
     StringX value;
 

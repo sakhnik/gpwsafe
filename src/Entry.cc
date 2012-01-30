@@ -48,17 +48,18 @@ cEntry::cEntry()
 
 bool cEntry::AddField(sField::PtrT const &field)
 {
-    if (field->type == sField::T_END)
+    if (field->type == FT_END)
         return false;
     if (_fields.size() <= field->type)
-        _fields.resize(field->type + 1, sField::PtrT());
+        _fields.resize(static_cast<unsigned>(field->type) + 1);
     _fields[field->type] = field;
     return true;
 }
 
 void cEntry::ForEachField(OnFieldT on_field)
 {
-    for (_FieldsT::const_iterator i = _fields.begin(); i != _fields.end(); ++i)
+    for (_FieldsT::const_iterator i = _fields.begin();
+         i != _fields.end(); ++i)
     {
         sField::PtrT const &field(*i);
         if (!field)
@@ -85,13 +86,14 @@ void cEntry::Dump() const
     cout << "----------" << endl;
 }
 
-StringX const &cEntry::GetValue(sField::eType type) const
+StringX const &cEntry::GetValue(eFieldType field_type) const
 {
-    if (type >= _fields.size())
+    if (field_type >= _fields.size())
         return _empty;
-    sField::PtrT const &field = _fields[type];
+    sField::PtrT const &field = _fields[field_type];
     if (!field)
         return _empty;
+    assert(field_type == field->type);
     return field->value;
 }
 

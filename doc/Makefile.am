@@ -1,5 +1,5 @@
 
-EXTRA_DIST = gpwsafe.1.txt
+EXTRA_DIST = gpwsafe.1.txt formatV3.txt
 
 if WANT_DOC
 

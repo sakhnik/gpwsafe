@@ -27,6 +27,9 @@ COMMANDS
 --------
 *gpwsafe* accepts the following commands
 
+--create::
+        Create a new database.
+
 --list=[REGEX]::
         List all [matching] entries in database. If -u or -p is given,
         then REGEX must match only one entry, and only the requested

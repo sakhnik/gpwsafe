@@ -48,14 +48,26 @@ public:
 
     void Dump() const;
 
-    StringX const &GetValue(sField::eType type) const;
+    enum eFieldType
+    {
+        FT_GROUP = 0x02,
+        FT_TITLE = 0x03,
+        FT_USER = 0x04,
+        FT_NOTES = 0x05,
+        FT_PASS = 0x06,
+        FT_URL = 0x0D,
 
-    StringX const &GetGroup() const { return GetValue(sField::T_GROUP); }
-    StringX const &GetTitle() const { return GetValue(sField::T_TITLE); }
-    StringX const &GetUser() const  { return GetValue(sField::T_USER);  }
-    StringX const &GetNotes() const { return GetValue(sField::T_NOTES); }
-    StringX const &GetPass() const  { return GetValue(sField::T_PASS);  }
-    StringX const &GetUrl() const   { return GetValue(sField::T_URL);   }
+        FT_END = 0xFF
+    };
+
+    StringX const &GetValue(eFieldType type) const;
+
+    StringX const &GetGroup() const { return GetValue(FT_GROUP); }
+    StringX const &GetTitle() const { return GetValue(FT_TITLE); }
+    StringX const &GetUser() const  { return GetValue(FT_USER);  }
+    StringX const &GetNotes() const { return GetValue(FT_NOTES); }
+    StringX const &GetPass() const  { return GetValue(FT_PASS);  }
+    StringX const &GetUrl() const   { return GetValue(FT_URL);   }
 
     // group.title
     StringX GetFullTitle() const;

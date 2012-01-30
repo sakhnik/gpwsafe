@@ -83,8 +83,9 @@ void cApp::_Usage(bool fail)
           "  -x, --xclip                force copying of entry to X selection\n"
 #endif //ENABLE_XCLIP
           "  -h, --help                 display this help and exit\n"
-          "Commands:\n"
           "  -V, --version              output version information and exit\n"
+          "Commands:\n"
+          "  --create                   create an empty database\n"
           "  [--list] [REGEX]           list all [matching] entries\n"
           ;
     os << flush;
@@ -100,6 +101,7 @@ void cApp::Init(int argc, char *argv[])
             { "help",       no_argument,        0, 'h' },
             { "file",       required_argument,  0, 'f' },
             { "list",       no_argument,        0, 'L' },
+            { "create",     no_argument,        0, 'C' },
             { "user",       no_argument,        0, 'u' },
             { "pass",       no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
@@ -137,6 +139,9 @@ void cApp::Init(int argc, char *argv[])
             break;
         case 'L':
             _command = _C_LIST;
+            break;
+        case 'C':
+            _command = _C_CREATE;
             break;
         case 'u':
             _user = true;
@@ -188,6 +193,8 @@ void cApp::_Run()
     {
     case _C_LIST:
         return _DoList();
+    case _C_CREATE:
+        return _DoCreate();
     default:
         cerr << "Command " << _command << " isn't implemented" << endl;
         throw ExitEx(1);
@@ -291,6 +298,29 @@ void cApp::_DoList()
         emitter->Emit("password for " + entry->GetFullTitle(),
                       entry->GetPass());
     }
+}
+
+void cApp::_DoCreate()
+{
+    if (!::access(_file_name.c_str(), F_OK))
+    {
+        cerr << _file_name << " already exists" << endl;
+        throw ExitEx(1);
+    }
+
+    string prompt1 = "Enter passphrase for " + _file_name + ":";
+    StringX pass1 = cTerminal::GetPassword(prompt1.c_str());
+    string prompt2 = "Reenter passphrase for " + _file_name + ":";
+    StringX pass2 = cTerminal::GetPassword(prompt2.c_str());
+    if (pass1 != pass2)
+    {
+        cerr << "Passphrases do not match" << endl;
+        throw ExitEx(1);
+    }
+
+    cDatabase db;
+    db.Create();
+    db.Write(_file_name.c_str(), pass1.c_str());
 }
 
 } //namespace gPWS;
