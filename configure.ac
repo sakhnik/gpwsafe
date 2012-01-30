@@ -29,16 +29,18 @@ AC_ARG_ENABLE(
 )
 
 AC_MSG_CHECKING(--enable-xclip argument)
-case "$enable_xclip" in
-    no)      AC_MSG_RESULT(no X clipboard support);;
-    yes|"")  AC_MSG_RESULT(yes - automatic X clipboard support)
-             enable_xclip=yes
-             ;;
-    *)       AC_MSG_RESULT([Sorry, $enable_xclip X clipboard is not supported]);;
-esac
+AS_CASE([$enable_xclip],
+    [no],    [AC_MSG_RESULT(no X clipboard support)],
+    [yes|""],[AC_MSG_RESULT(yes - automatic X clipboard support)
+              enable_xclip=yes],
+    [AC_MSG_RESULT([Sorry, $enable_xclip X clipboard is not supported])]
+)
 
 AS_IF([test "x$enable_xclip" = "xgtk" -o "x$enable_xclip" = "xyes"],[
     PKG_CHECK_MODULES([GTK],[gtk+-3.0],[gtk_found=yes enable_xclip=gtk])
+    AS_IF([test "x$gtk_found" != "xyes"],[
+        PKG_CHECK_MODULES([GTK],[gtk+-2.0],[gtk_found=yes enable_xclip=gtk])
+    ])
 ])
 AS_IF([test "x$gtk_found" = "xyes"],[
     AC_DEFINE([ENABLE_GTK],[1],[Define to compile with GTK+ support])
