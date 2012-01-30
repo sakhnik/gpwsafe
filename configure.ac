@@ -48,7 +48,9 @@ AM_CONDITIONAL([ENABLE_GTK],[test "x$gtk_found" = "xyes"])
 
 AS_IF([test "x$enable_xclip" = "xyes"],[
     AC_MSG_WARN([No suitable X clipboard support library found])
+    enable_xclip=no
 ])
+AM_CONDITIONAL([ENABLE_XCLIP],[test "x$enable_xclip" != "xno"])
 
 dnl --------------------------------------------------------------------------
 dnl Documentation support

@@ -49,17 +49,21 @@ OPTIONS
         Show password of listed account(s)
 
 -E, --echo::
-        Force echo'ing the entry to stdout. This is selected by default,
-        if $DISPLAY is not set.
+        Echo the entry to stdout.
+ifdef::enable_xclip[]
+        This is selected by default, if $DISPLAY is not set.
+endif::enable_xclip[]
 
+ifdef::enable_xclip[]
 -x, --xclip::
-        Force copying the login and password to X clipboard. This is selected
+        Copy the login and password to X clipboard. This is selected
         by default is $DISPLAY is set.
+endif::enable_xclip[]
 
 -h, --help::
         Show summary of options
 
--V, --version:
+-V, --version::
         Show version of program.
 
 
@@ -87,7 +91,12 @@ Don't use gpwsafe over telnet or from untrusted terminals.
 
 EXAMPLES
 --------
+ifdef::enable_xclip[]
 Copy username and password of 'test' to console or X clipboard.
+endif::enable_xclip[]
+ifndef::enable_xclip[]
+Print username and password of 'test' to stdout.
+endif::enable_xclip[]
 
 ---------
 gpwsafe -up test
