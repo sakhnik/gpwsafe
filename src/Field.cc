@@ -21,8 +21,13 @@
 
 #include "Field.hh"
 #include "Memory.hh"
+#include "Debug.hh"
+
+#include <boost/format.hpp>
 
 namespace gPWS {
+
+using namespace std;
 
 void *sField::operator new(size_t n)
 {
@@ -33,6 +38,14 @@ void sField::operator delete(void *p, size_t n)
 {
     sField *q(reinterpret_cast<sField *>(p));
     return SecureAllocator<sField>::deallocate(q, n);
+}
+
+ostream &operator<<(ostream &os, sField const &field)
+{
+    boost::format fmt("{0x%02X,%s}");
+    fmt % static_cast<unsigned>(field.type);
+    fmt % Quote(&field.value[0], field.value.size());
+    return os << fmt;
 }
 
 } //namespace gPWS;

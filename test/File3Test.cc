@@ -13,7 +13,6 @@
 #include "../src/Gcrypt.hh"
 #include "../src/Debug.hh"
 
-#include <boost/format.hpp>
 #include <boost/iterator/indirect_iterator.hpp>
 
 using namespace std;
@@ -66,13 +65,13 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
         fields2.push_back(field);
     }
 
-    BOOST_CHECK_EQUAL(fields1.size(), fields2.size());
+    BOOST_CHECK_EQUAL_COLLECTIONS(
+        boost::make_indirect_iterator(fields1.begin()),
+        boost::make_indirect_iterator(fields1.end()),
+        boost::make_indirect_iterator(fields2.begin()),
+        boost::make_indirect_iterator(fields2.end())
+        );
 
-    //typedef boost::indirect_iterator<FieldsT::iterator> IterT;
-    //BOOST_CHECK_EQUAL_COLLECTIONS(IterT(fields1.begin()),
-    //                              IterT(fields1.end()),
-    //                              IterT(fields2.begin()),
-    //                              IterT(fields2.end()));
     ::unlink(fname);
 }
 

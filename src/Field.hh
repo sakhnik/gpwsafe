@@ -24,6 +24,7 @@
 #include "Defs.hh"
 
 #include <stdint.h>
+#include <iosfwd>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -51,7 +52,14 @@ struct sField
 
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);
+
+    bool operator!=(sField const &o)
+    {
+        return type != o.type || value != o.value;
+    }
 };
+
+std::ostream &operator<<(std::ostream &os, sField const &field);
 
 } //namespace gPWS;
 
