@@ -21,6 +21,8 @@
 
 #include "StdoutEmitter.hh"
 
+#include <iostream>
+
 namespace gPWS {
 
 using namespace std;

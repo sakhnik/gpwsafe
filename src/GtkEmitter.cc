@@ -67,7 +67,10 @@ _OnStdin(GIOChannel *source,
 {
     // Read the ready byte from the stdin
     char ch;
-    ::read(g_io_channel_unix_get_fd(source), &ch, 1);
+    int res = ::read(g_io_channel_unix_get_fd(source), &ch, 1);
+    if (-1 == res)
+    {
+    }
     // Quit the clipboard waiting
     gtk_main_quit();
     return FALSE;

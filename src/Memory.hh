@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <cstring>
 #include <boost/pool/pool_alloc.hpp>
 
 namespace gPWS {

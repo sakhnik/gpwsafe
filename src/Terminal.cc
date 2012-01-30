@@ -21,9 +21,10 @@
 
 #include "Terminal.hh"
 
-#include <readline/readline.h>
+#include <iostream>
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
+#include <readline/readline.h>
 
 namespace gPWS {
 

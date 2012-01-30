@@ -24,6 +24,7 @@
 #include "Defs.hh"
 
 #include <termios.h>
+#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
