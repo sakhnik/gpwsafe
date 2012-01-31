@@ -29,7 +29,7 @@ dnl X clipboard support
 AC_ARG_ENABLE(
     [xclip],
     AS_HELP_STRING([--enable-xclip=[yes]],
-                   [Enable copying to the X clipboard (yes,no,gtk)])
+                   [Enable copying to the X clipboard (yes,no,gtk2,gtk3)])
 )
 
 AC_MSG_CHECKING(--enable-xclip argument)
@@ -37,25 +37,47 @@ AS_CASE([$enable_xclip],
     [no],    [AC_MSG_RESULT(no X clipboard support)],
     [yes|""],[AC_MSG_RESULT(yes - automatic X clipboard support)
               enable_xclip=yes],
+    [gtk*],  [AC_MSG_RESULT([yes - using $enable_xclip])],
     [AC_MSG_RESULT([Sorry, $enable_xclip X clipboard is not supported])]
 )
 
-AS_IF([test "x$enable_xclip" = "xgtk" -o "x$enable_xclip" = "xyes"],[
-    PKG_CHECK_MODULES([GTK],[gtk+-3.0],[gtk_found=yes enable_xclip=gtk])
-    AS_IF([test "x$gtk_found" != "xyes"],[
-        PKG_CHECK_MODULES([GTK],[gtk+-2.0],[gtk_found=yes enable_xclip=gtk])
-    ])
+AS_IF([test "x$enable_xclip" = "xgtk3"],[
+    PKG_CHECK_MODULES([GTK],
+                      [gtk+-3.0],
+                      [gtk_found=yes])
 ])
+
+AS_IF([test "x$enable_xclip" = "xgtk2"],[
+    PKG_CHECK_MODULES([GTK],
+                      [gtk+-2.0],
+                      [gtk_found=yes])
+])
+
+AS_IF([test "x$enable_xclip" = "xyes"],[
+    PKG_CHECK_MODULES([GTK],
+                      [gtk+-3.0],
+                      [gtk_found=yes enable_xclip=gtk3],
+                      [gtk_found=no])
+])
+
+AS_IF([test "x$enable_xclip" = "xyes"],[
+    PKG_CHECK_MODULES([GTK],
+                      [gtk+-2.0],
+                      [gtk_found=yes enable_xclip=gtk2],
+                      [gtk_found=no])
+])
+
 AS_IF([test "x$gtk_found" = "xyes"],[
     AC_DEFINE([ENABLE_GTK],[1],[Define to compile with GTK+ support])
     AC_DEFINE([ENABLE_XCLIP],[1],[Define to compile with X clipboard support])
 ])
+
 AM_CONDITIONAL([ENABLE_GTK],[test "x$gtk_found" = "xyes"])
 
 AS_IF([test "x$enable_xclip" = "xyes"],[
-    AC_MSG_WARN([No suitable X clipboard support library found])
-    enable_xclip=no
+    AC_MSG_ERROR([No suitable X clipboard support library found])
 ])
+
 AM_CONDITIONAL([ENABLE_XCLIP],[test "x$enable_xclip" != "xno"])
 
 dnl --------------------------------------------------------------------------

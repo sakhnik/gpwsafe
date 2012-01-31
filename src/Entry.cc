@@ -88,7 +88,7 @@ void cEntry::Dump() const
 
 StringX const &cEntry::GetValue(eFieldType field_type) const
 {
-    if (field_type >= _fields.size())
+    if (static_cast<size_t>(field_type) >= _fields.size())
         return _empty;
     sField::PtrT const &field = _fields[field_type];
     if (!field)
