@@ -28,22 +28,35 @@
 
 namespace gPWS {
 
+class cRawTerminal
+    : boost::noncopyable
+{
+public:
+    cRawTerminal(bool new_line = false);
+    ~cRawTerminal();
+
+private:
+    bool _new_line;
+    struct termios _tio;
+};
+
 class cTerminal
     : boost::noncopyable
 {
 public:
     static StringX GetPassword(char const *prompt);
-};
+    static StringX GetText(char const *prompt);
+    static StringX EnterPassword(char const *prompt1, char const *prompt2);
+    static bool GetYN(char const *prompt, const int def_val);
+    static char GetChar(char const *prompt, const int def_val);
 
-class cRawTerminal
-    : public cTerminal
-{
-public:
-    cRawTerminal();
-    ~cRawTerminal();
+    template<typename StringT>
+    static char GetChar(StringT const &prompt, const int def_val)
+    {
+        return GetChar(prompt.c_str(), def_val);
+    }
 
-private:
-    struct termios _tio;
+    static StringX RandomPassword();
 };
 
 } //namespace gPWS;

@@ -60,7 +60,7 @@ public:
         FT_END = 0xFF
     };
 
-    StringX const &GetValue(eFieldType type) const;
+    StringX const &GetValue(eFieldType field_type) const;
 
     StringX const &GetGroup() const { return GetValue(FT_GROUP); }
     StringX const &GetTitle() const { return GetValue(FT_TITLE); }
@@ -68,6 +68,15 @@ public:
     StringX const &GetNotes() const { return GetValue(FT_NOTES); }
     StringX const &GetPass() const  { return GetValue(FT_PASS);  }
     StringX const &GetUrl() const   { return GetValue(FT_URL);   }
+
+    void SetValue(eFieldType field_type, StringX const &value);
+
+    void SetGroup(StringX const &value) { SetValue(FT_GROUP, value); }
+    void SetTitle(StringX const &value) { SetValue(FT_TITLE, value); }
+    void SetUser(StringX const &value)  { SetValue(FT_USER, value);  }
+    void SetNotes(StringX const &value) { SetValue(FT_NOTES, value); }
+    void SetPass(StringX const &value)  { SetValue(FT_PASS, value);  }
+    void SetUrl(StringX const &value)   { SetValue(FT_URL, value);   }
 
     // group.title
     StringX GetFullTitle() const;

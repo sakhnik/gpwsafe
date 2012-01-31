@@ -44,6 +44,7 @@ void cDatabase::operator delete(void *p, size_t n)
 }
 
 cDatabase::cDatabase()
+    : _changed(false)
 {
     _fields.reserve(0x0F);
 }
@@ -51,6 +52,8 @@ cDatabase::cDatabase()
 void cDatabase::Create()
 {
     _fields.clear();
+    _changed = false;
+
     sField::PtrT field(new sField);
 
     // Insert default version (mock 3.10)
@@ -69,10 +72,16 @@ void cDatabase::Create()
     _AddField(field);
 }
 
-void cDatabase::Read(char const *fname,
-                     char const *pass)
+void cDatabase::Read(string const &fname,
+                     StringX const &pass)
 {
-    _file.OpenRead(fname, pass);
+    // The database must be clear.
+    assert(!_changed && "The changes must be written beforehand");
+
+    _changed = false;
+    _fname = fname;
+    _pass = pass;
+    _file.OpenRead(fname.c_str(), pass);
 
     // Read header fields first
     sField::PtrT field;
@@ -96,10 +105,11 @@ void cDatabase::Read(char const *fname,
     }
 }
 
-void cDatabase::Write(char const *fname,
-                      char const *pass)
+void cDatabase::Write(string const &fname,
+                      StringX const &pass)
 {
-    _file.OpenWrite(fname, pass, true);
+    _changed = false;
+    _file.OpenWrite(fname.c_str(), pass, true);
 
     for (_FieldsT::const_iterator i = _fields.begin();
          i != _fields.end(); ++i)
@@ -127,6 +137,32 @@ void cDatabase::Write(char const *fname,
     }
 
     _file.CloseWrite();
+}
+
+void cDatabase::Write()
+{
+    assert(!_fname.empty() && !_pass.empty());
+
+    string new_fname = _fname + ".new";
+    string backup = _fname + "~";
+
+    ::unlink(new_fname.c_str());
+    Write(new_fname, _pass);
+
+    // The followin calls will fail unlikely.
+    ::unlink(backup.c_str());
+
+    if (-1 == ::rename(_fname.c_str(), backup.c_str()))
+    {
+        cerr << "Failed to create backup: " << strerror(errno) << endl;
+        throw runtime_error("File system");
+    }
+
+    if (-1 == ::rename(new_fname.c_str(), _fname.c_str()))
+    {
+        cerr << "Failed to move new file: " << strerror(errno) << endl;
+        throw runtime_error("File system");
+    }
 }
 
 bool cDatabase::_AddField(sField::PtrT const &field)
@@ -176,6 +212,12 @@ void cDatabase::Dump() const
         cEntry::PtrT const& entry = *i;
         entry->Dump();
     }
+}
+
+void cDatabase::AddEntry(cEntry::PtrT const &entry)
+{
+    _entries.push_back(entry);
+    _changed = true;
 }
 
 } //namespace gPWS;

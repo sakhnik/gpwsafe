@@ -61,7 +61,7 @@ void cFile3::Close()
 }
 
 void cFile3::OpenRead(char const *fname,
-                      char const *pass)
+                      StringX const &pass)
 {
     assert(_state == S_CLOSED);
     _state = S_READING;
@@ -87,7 +87,7 @@ void cFile3::OpenRead(char const *fname,
                 + (uint32_t(iter_buf[2]) << 16)
                 + (uint32_t(iter_buf[3]) << 24);
 
-    cKeyStretch key_stretch(pass, strlen(pass),
+    cKeyStretch key_stretch(pass.c_str(), pass.size(),
                             salt, SALT_LEN,
                             _iterations);
 
@@ -175,7 +175,7 @@ sField::PtrT cFile3::ReadField()
 }
 
 void cFile3::OpenWrite(char const *fname,
-                       char const *pass,
+                       StringX const &pass,
                        bool new_keys,
                        bool very_strong)
 {
@@ -203,7 +203,7 @@ void cFile3::OpenWrite(char const *fname,
     };
     _fs.write(reinterpret_cast<char *>(iter_buf), 4);
 
-    cKeyStretch key_stretch(pass, strlen(pass),
+    cKeyStretch key_stretch(pass.c_str(), pass.size(),
                             salt, SALT_LEN,
                             _iterations);
 

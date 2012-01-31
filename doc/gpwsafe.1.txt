@@ -30,10 +30,13 @@ COMMANDS
 --create::
         Create a new database.
 
---list=[REGEX]::
+--list[=REGEX]::
         List all [matching] entries in database. If -u or -p is given,
         then REGEX must match only one entry, and only the requested
         field(s) are emitted.
+
+-a, --add[=ENTRY]::
+        Add an entry to database.
 
 If no command is given, --list is assumed.
 
@@ -81,7 +84,7 @@ FILES
 ~/.gpwsafe.psafe3::
         The default password database.
 
-~/.gpwsafe.psafe3~::
+\~/.gpwsafe.psafe3~::
         The backup of the database.
 
 
@@ -94,17 +97,30 @@ Don't use gpwsafe over telnet or from untrusted terminals.
 
 EXAMPLES
 --------
+For those who can't read the rest of this file:
+
+Create $HOME/.gpwsafe.psafe3.
+
+-----------
+gpwsafe --create
+-----------
+
+Add an entry named \'test'.
+
+----------
+gpwsafe -a test
+----------
+
 ifdef::enable_xclip[]
-Copy username and password of 'test' to console or X clipboard.
+Copy username and password of \'test' to console or X clipboard.
 endif::enable_xclip[]
 ifndef::enable_xclip[]
-Print username and password of 'test' to stdout.
+Print username and password of \'test' to stdout.
 endif::enable_xclip[]
 
 ---------
 gpwsafe -up test
 ---------
-
 
 BUGS
 ----

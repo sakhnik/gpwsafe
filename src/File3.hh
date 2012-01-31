@@ -24,6 +24,7 @@
 #include "Field.hh"
 #include "Twofish.hh"
 #include "Hmac.hh"
+#include "Defs.hh"
 
 #include <fstream>
 #include <boost/noncopyable.hpp>
@@ -40,12 +41,12 @@ public:
     void Close();
 
     void OpenRead(char const *fname,
-                  char const *pass);
+                  StringX const &pass);
 
     sField::PtrT ReadField();
 
     void OpenWrite(char const *fname,
-                   char const *pass,
+                   StringX const &pass,
                    bool new_keys = false,
                    bool very_strong = true);
 

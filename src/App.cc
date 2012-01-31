@@ -42,7 +42,7 @@ char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
 
 cApp::cApp(char const *program_name)
     : _program_name(program_name)
-    , _command(_C_LIST)
+    , _command(_C_NOP)
     , _emitter(
 #ifdef ENABLE_XCLIP
                _E_XCLIP
@@ -86,7 +86,10 @@ void cApp::_Usage(bool fail)
           "  -V, --version              output version information and exit\n"
           "Commands:\n"
           "  --create                   create an empty database\n"
-          "  [--list] [REGEX]           list all [matching] entries\n"
+          "  [--list] [REGEX]           list all [matching] entries."
+                                        " If either -u or -p\n"
+          "                             are given, only one entry may match\n"
+          "  -a, --add [NAME]           add an entry\n"
           ;
     os << flush;
     throw ExitEx(fail ? 1 : 0);
@@ -102,6 +105,7 @@ void cApp::Init(int argc, char *argv[])
             { "file",       required_argument,  0, 'f' },
             { "list",       no_argument,        0, 'L' },
             { "create",     no_argument,        0, 'C' },
+            { "add",        no_argument,        0, 'a' },
             { "user",       no_argument,        0, 'u' },
             { "pass",       no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
@@ -113,6 +117,7 @@ void cApp::Init(int argc, char *argv[])
         char const *const short_options =
             "h"   // help
             "V"   // version
+            "a"   // add
             "f:"  // file
             "u"   // user
             "p"   // pass
@@ -138,9 +143,18 @@ void cApp::Init(int argc, char *argv[])
             _file_name = optarg;
             break;
         case 'L':
+            if (_command != _C_NOP)
+                return _Usage(false);
             _command = _C_LIST;
             break;
+        case 'a':
+            if (_command != _C_NOP)
+                return _Usage(false);
+            _command = _C_ADD;
+            break;
         case 'C':
+            if (_command != _C_NOP)
+                return _Usage(false);
             _command = _C_CREATE;
             break;
         case 'u':
@@ -162,7 +176,11 @@ void cApp::Init(int argc, char *argv[])
         };
     }
 
-    if (_command == _C_LIST && optind != argc)
+    if (_command == _C_NOP)
+        _command = _C_LIST;
+
+    if ((_command == _C_LIST || _command == _C_ADD)
+        && optind != argc)
     {
         _argument = argv[optind++];
     }
@@ -195,6 +213,8 @@ void cApp::_Run()
         return _DoList();
     case _C_CREATE:
         return _DoCreate();
+    case _C_ADD:
+        return _DoAdd();
     default:
         cerr << "Command " << _command << " isn't implemented" << endl;
         throw ExitEx(1);
@@ -318,9 +338,78 @@ void cApp::_DoCreate()
         throw ExitEx(1);
     }
 
-    cDatabase db;
-    db.Create();
-    db.Write(_file_name.c_str(), pass1.c_str());
+    cDatabase::PtrT database(new cDatabase);
+    database->Create();
+    database->Write(_file_name.c_str(), pass1.c_str());
+}
+
+void cApp::_DoAdd()
+{
+    // Copied from pwsafe
+    char const *name = _argument;
+
+    cDatabase::PtrT database = _OpenDatabase(_file_name);
+    cEntry::PtrT entry(new cEntry);
+
+    if (name)
+    {
+        // group.title may be given via command line
+        char const *dot = strchr(name, '.');
+        if (dot &&
+            dot != name &&
+            dot[1] &&
+            strrchr(name, '.') == dot)
+        {
+            entry->SetTitle(dot + 1);
+            entry->SetGroup(StringX(name, dot - name));
+        }
+        else
+        {
+            entry->SetTitle(name);
+        }
+    }
+
+    // FIXME: Limit count of retries.
+    while (true)
+    {
+        if (entry->GetTitle().empty())
+            entry->SetTitle(cTerminal::GetText("name: "));
+        if (entry->GetGroup().empty())
+            entry->SetGroup(cTerminal::GetText("group [<none>]: "));
+
+        cDatabase::EntriesT found =
+            database->Find(entry->GetFullTitle().c_str());
+
+        if (!found.empty())
+        {
+            cerr << entry->GetFullTitle() << " already exists" << endl;
+            if (name)
+                throw ExitEx(1);
+            entry->SetTitle("");
+            entry->SetGroup("");
+        }
+        else if (!entry->GetTitle().empty())
+            break;
+    }
+
+    entry->SetUser(cTerminal::GetText("username: "));
+    if (entry->GetUser().empty())
+    {
+        // FIXME!!!
+        throw ExitEx(1);
+        //e.default_login = getyn("use default username ("+e.the_default_login+") ? [n] ", false);
+    }
+
+    StringX pass =
+        cTerminal::EnterPassword("password [return for random]: ",
+                                 "password again: ");
+    entry->SetPass(pass);
+
+    entry->SetNotes(cTerminal::GetText("notes: "));
+
+    database->AddEntry(entry);
+
+    database->Write();
 }
 
 } //namespace gPWS;

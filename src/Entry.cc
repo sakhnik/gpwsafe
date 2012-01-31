@@ -104,6 +104,17 @@ StringX cEntry::GetFullTitle() const
     return GetGroup() + "." + GetTitle();
 }
 
+void cEntry::SetValue(eFieldType field_type, StringX const &value)
+{
+    if (static_cast<size_t>(field_type) >= _fields.size())
+        _fields.resize(static_cast<unsigned>(field_type) + 1);
+    sField::PtrT &field = _fields[field_type];
+    if (!field)
+        field.reset(new sField);
+    field->type = field_type;
+    field->value = value;
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

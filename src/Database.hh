@@ -43,19 +43,27 @@ public:
 
     void Create();
 
-    void Read(char const *fname,
-              char const *pass);
+    void Read(std::string const &fname,
+              StringX const &pass);
 
-    void Write(char const *fname,
-               char const *pass);
+    void Write(std::string const &fname,
+               StringX const &pass);
+
+    // Use the cached file name and password
+    void Write();
 
     void Dump() const;
 
     typedef std::vector<cEntry::PtrT> EntriesT;
     EntriesT Find(char const *query);
 
+    void AddEntry(cEntry::PtrT const &entry);
+
 private:
     cFile3 _file;
+    bool _changed;
+    std::string _fname; // Cached file name
+    StringX _pass;      // Cached password
 
     enum _eFieldType
     {
