@@ -225,9 +225,8 @@ static cDatabase::PtrT _OpenDatabase(string const &file_name)
 {
     cDatabase::PtrT database(new cDatabase);
     string prompt = "Enter password for " + file_name + ": ";
-    StringX password =
-        cTerminal::GetPassword(prompt.c_str());
-    database->Read(file_name.c_str(), password.c_str());
+    StringX password = cTerminal::GetPassword(prompt);
+    database->Read(file_name, password);
     return database;
 }
 
@@ -329,9 +328,9 @@ void cApp::_DoCreate()
     }
 
     string prompt1 = "Enter passphrase for " + _file_name + ":";
-    StringX pass1 = cTerminal::GetPassword(prompt1.c_str());
+    StringX pass1 = cTerminal::GetPassword(prompt1);
     string prompt2 = "Reenter passphrase for " + _file_name + ":";
-    StringX pass2 = cTerminal::GetPassword(prompt2.c_str());
+    StringX pass2 = cTerminal::GetPassword(prompt2);
     if (pass1 != pass2)
     {
         cerr << "Passphrases do not match" << endl;
@@ -340,7 +339,7 @@ void cApp::_DoCreate()
 
     cDatabase::PtrT database(new cDatabase);
     database->Create();
-    database->Write(_file_name.c_str(), pass1.c_str());
+    database->Write(_file_name, pass1);
 }
 
 void cApp::_DoAdd()

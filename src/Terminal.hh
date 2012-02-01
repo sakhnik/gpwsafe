@@ -45,6 +45,12 @@ class cTerminal
 {
 public:
     static StringX GetPassword(char const *prompt);
+
+    static StringX GetPassword(std::string const &prompt)
+    {
+        return GetPassword(prompt.c_str());
+    }
+
     static StringX GetText(char const *prompt);
     static StringX EnterPassword(char const *prompt1, char const *prompt2);
     static bool GetYN(char const *prompt, const int def_val);
