@@ -84,6 +84,21 @@ public:
     // group.title
     StringX GetFullTitle() const;
 
+    // Difference from another entry
+    struct sChange
+    {
+        uint8_t type;
+        enum eChange
+        {
+            C_ADDED = 0,
+            C_DELETED,
+            C_MODIFIED
+        } change;
+    };
+
+    typedef std::vector<sChange> DiffT;
+    DiffT Diff(cEntry::PtrT const &other) const;
+
 private:
     // Associative container. Type is used as index in the vector.
     // Null means the field wasn't defined.

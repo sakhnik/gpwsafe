@@ -127,6 +127,48 @@ void cEntry::SetValue(eFieldType field_type, StringX const &value)
     field->value = value;
 }
 
+cEntry::DiffT
+cEntry::Diff(cEntry::PtrT const &other) const
+{
+    DiffT diff;
+    for (unsigned i = 0, n = (std::max)(_fields.size(), other->_fields.size());
+         i != n; ++i)
+    {
+        sField::PtrT field;
+        if (i < _fields.size())
+            field = _fields[i];
+        sField::PtrT field_o;
+        if (i < other->_fields.size())
+            field_o = other->_fields[i];
+
+        if (field)
+        {
+            if (!field_o)
+            {
+                sChange change = { field->type, sChange::C_ADDED };
+                diff.push_back(change);
+            }
+            else
+            {
+                if (field->value != field_o->value)
+                {
+                    sChange change = { field->type, sChange::C_MODIFIED };
+                    diff.push_back(change);
+                }
+            }
+        }
+        else // !field
+        {
+            if (field_o)
+            {
+                sChange change = { field_o->type, sChange::C_DELETED };
+                diff.push_back(change);
+            }
+        }
+    }
+    return diff;
+}
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:

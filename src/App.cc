@@ -496,35 +496,36 @@ void cApp::_DoEdit()
     e->SetNotes(cTerminal::GetText("notes: [<keep same>] ",
                                    e_orig->GetNotes()));
 
-    // FIXME: Implement a generic comparison
-    typedef vector<string> ChangesT;
-    ChangesT changes;
-
-    if (e_orig->GetGroup() != e->GetGroup())
-        changes.push_back("group");
-    if (e_orig->GetTitle() != e->GetTitle())
-        changes.push_back("name");
-    //if (e_orig.default_login != e.default_login || 
-    //    (!e_orig.default_login && !e.default_login && e_orig.login != e.login))
-    //    changes.push_back("login");
-    if (e_orig->GetPass() != e->GetPass())
-        changes.push_back("password");
-    if (e_orig->GetNotes() != e->GetNotes())
-        changes.push_back("notes");
-
-    if (changes.empty())
+    cEntry::DiffT diff = e->Diff(e_orig);
+    if (diff.empty())
     {
         cout << "No change" << endl;
         return;
     }
 
     std::string prompt = "Confirm changing ";
-    for (ChangesT::const_iterator i = changes.begin();
-         i != changes.end(); ++i)
+    for (cEntry::DiffT::const_iterator i = diff.begin();
+         i != diff.end(); ++i)
     {
-        if (i != changes.begin())
+        if (i != diff.begin())
             prompt += ", ";
-        prompt += *i;
+        switch (i->type)
+        {
+        case cEntry::FT_GROUP:
+            prompt += "group";
+            break;
+        case cEntry::FT_TITLE:
+            prompt += "name";
+            break;
+        case cEntry::FT_PASS:
+            prompt += "password";
+            break;
+        case cEntry::FT_NOTES:
+            prompt += "notes";
+            break;
+        default:
+            assert(!"Implement this");
+        }
     }
     prompt += "? [y] ";
     if (!cTerminal::GetYN(prompt, true))
