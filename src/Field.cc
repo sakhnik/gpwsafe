@@ -29,6 +29,14 @@ namespace gPWS {
 
 using namespace std;
 
+sField::PtrT sField::Copy() const
+{
+    sField::PtrT field(new sField);
+    field->type = type;
+    field->value = value;
+    return field;
+}
+
 void *sField::operator new(size_t n)
 {
     return SecureAllocator<sField>::allocate(n);

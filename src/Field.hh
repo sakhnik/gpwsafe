@@ -38,6 +38,8 @@ struct sField
     uint8_t type;
     StringX value;
 
+    sField::PtrT Copy() const;
+
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);
 

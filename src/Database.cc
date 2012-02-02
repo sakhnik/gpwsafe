@@ -99,7 +99,9 @@ void cDatabase::Read(string const &fname,
     {
         if (!entry->AddField(field))
         {
-            _entries.push_back(entry);
+            // FIXME: Check if such key already exists.
+            // Avoid loosing information.
+            _entries[entry->GetFullTitle()] = entry;
             entry.reset(new cEntry);
         }
     }
@@ -125,10 +127,10 @@ void cDatabase::Write(string const &fname,
     terminator->value.clear();
     _file.WriteField(terminator);
 
-    for (EntriesT::const_iterator i = _entries.begin();
+    for (_TitleEntryT::const_iterator i = _entries.begin();
          i != _entries.end(); ++i)
     {
-        cEntry::PtrT const &entry(*i);
+        cEntry::PtrT const &entry = i->second;
         entry->ForEachField(boost::bind(&cFile3::WriteField,
                                         boost::ref(_file),
                                         _1));
@@ -176,14 +178,16 @@ bool cDatabase::_AddField(sField::PtrT const &field)
 }
 
 cDatabase::EntriesT
-cDatabase::Find(char const *query)
+cDatabase::Find(char const *query) const
 {
     EntriesT found;
-    for (EntriesT::const_iterator i = _entries.begin();
+    for (_TitleEntryT::const_iterator i = _entries.begin();
          i != _entries.end(); ++i)
     {
-        cEntry::PtrT entry(*i);
-        if (!query || entry->GetFullTitle().find(query) != StringX::npos)
+        StringX const &full_title = i->first;
+        cEntry::PtrT const &entry = i->second;
+
+        if (!query || full_title.find(query) != StringX::npos)
             found.push_back(entry);
     }
     return found;
@@ -206,18 +210,30 @@ void cDatabase::Dump() const
     }
     cout << "==========" << endl;
 
-    for (EntriesT::const_iterator i = _entries.begin();
+    for (_TitleEntryT::const_iterator i = _entries.begin();
          i != _entries.end(); ++i)
     {
-        cEntry::PtrT const& entry = *i;
+        cEntry::PtrT const& entry = i->second;
         entry->Dump();
     }
 }
 
 void cDatabase::AddEntry(cEntry::PtrT const &entry)
 {
-    _entries.push_back(entry);
+    // FIXME: Check if such key already exists. Avoid loosing information.
+    _entries[entry->GetFullTitle()] = entry;
     _changed = true;
+}
+
+void cDatabase::RemoveEntry(cEntry::PtrT const &entry)
+{
+    _entries.erase(entry->GetFullTitle());
+    _changed = true;
+}
+
+bool cDatabase::HasEntry(StringX const &full_title) const
+{
+    return _entries.find(full_title) != _entries.end();
 }
 
 } //namespace gPWS;

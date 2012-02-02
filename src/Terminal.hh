@@ -51,9 +51,24 @@ public:
         return GetPassword(prompt.c_str());
     }
 
-    static StringX GetText(char const *prompt);
+    static StringX GetText(char const *prompt,
+                           StringX const &def = "");
+
+    static StringX GetText(StringX const &prompt,
+                           StringX const &def = "")
+    {
+        return GetText(prompt.c_str(), def);
+    }
+
     static StringX EnterPassword(char const *prompt1, char const *prompt2);
-    static bool GetYN(char const *prompt, const int def_val);
+
+    static bool GetYN(char const *prompt, int def_val = -1);
+
+    static bool GetYN(std::string const &prompt, int def_val = -1)
+    {
+        return GetYN(prompt.c_str(), def_val);
+    }
+
     static char GetChar(char const *prompt, const int def_val);
 
     template<typename StringT>

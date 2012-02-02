@@ -90,6 +90,7 @@ void cApp::_Usage(bool fail)
                                         " If either -u or -p\n"
           "                             are given, only one entry may match\n"
           "  -a, --add [NAME]           add an entry\n"
+          "  -e, --edit REGEX           edit an entry\n"
           ;
     os << flush;
     throw ExitEx(fail ? 1 : 0);
@@ -106,6 +107,7 @@ void cApp::Init(int argc, char *argv[])
             { "list",       no_argument,        0, 'L' },
             { "create",     no_argument,        0, 'C' },
             { "add",        no_argument,        0, 'a' },
+            { "edit",       no_argument,        0, 'e' },
             { "user",       no_argument,        0, 'u' },
             { "pass",       no_argument,        0, 'p' },
             { "echo",       no_argument,        0, 'E' },
@@ -118,6 +120,7 @@ void cApp::Init(int argc, char *argv[])
             "h"   // help
             "V"   // version
             "a"   // add
+            "e"   // edit
             "f:"  // file
             "u"   // user
             "p"   // pass
@@ -152,6 +155,11 @@ void cApp::Init(int argc, char *argv[])
                 return _Usage(false);
             _command = _C_ADD;
             break;
+        case 'e':
+            if (_command != _C_NOP)
+                return _Usage(false);
+            _command = _C_EDIT;
+            break;
         case 'C':
             if (_command != _C_NOP)
                 return _Usage(false);
@@ -179,7 +187,7 @@ void cApp::Init(int argc, char *argv[])
     if (_command == _C_NOP)
         _command = _C_LIST;
 
-    if ((_command == _C_LIST || _command == _C_ADD)
+    if ((_command == _C_LIST || _command == _C_ADD || _command == _C_EDIT)
         && optind != argc)
     {
         _argument = argv[optind++];
@@ -215,6 +223,8 @@ void cApp::_Run()
         return _DoCreate();
     case _C_ADD:
         return _DoAdd();
+    case _C_EDIT:
+        return _DoEdit();
     default:
         cerr << "Command " << _command << " isn't implemented" << endl;
         throw ExitEx(1);
@@ -246,6 +256,30 @@ void cApp::_PrintIntention(iEmitter const *emitter)
     emitter->PrintIntention(subject);
 }
 
+template<typename EntriesT>
+static bool _CheckSingleEntry(EntriesT const &entries)
+{
+    assert(!entries.empty() && "Must be analyzed separately");
+
+    if (entries.size() == 1)
+        return true;
+
+    cerr << "More than one matching entry: ";
+    int j = 0;
+    for (typename EntriesT::const_iterator i = entries.begin();
+         i != entries.end() && j != 3; ++i, ++j)
+    {
+        if (j)
+            cerr << ", ";
+        cerr << (*i)->GetFullTitle();
+    }
+    int rest = entries.size() - j;
+    if (rest)
+        cerr << ", ... (" << rest << " more)";
+    cerr << " ." << endl;
+    return false;
+}
+
 void cApp::_DoList()
 {
     auto_ptr<iEmitter> emitter;
@@ -273,7 +307,7 @@ void cApp::_DoList()
     EntriesT match = database->Find(_argument);
     if (match.empty())
     {
-        cout << "No matching entries found" << endl;
+        cerr << "No matching entries found" << endl;
         throw ExitEx(1);
     }
 
@@ -288,23 +322,8 @@ void cApp::_DoList()
         return;
     }
 
-    if (match.size() != 1)
-    {
-        cout << "More than one matching entry: ";
-        int j = 0;
-        for (EntriesT::const_iterator i = match.begin();
-             i != match.end() && j != 3; ++i, ++j)
-        {
-            if (j)
-                cout << ", ";
-            cout << (*i)->GetFullTitle();
-        }
-        int rest = match.size() - j;
-        if (rest)
-            cout << ", ... (" << rest << " more)";
-        cout << " ." << endl;
+    if (!_CheckSingleEntry(match))
         throw ExitEx(1);
-    }
 
     cEntry::PtrT const &entry = match.front();
     if (_user)
@@ -327,9 +346,9 @@ void cApp::_DoCreate()
         throw ExitEx(1);
     }
 
-    string prompt1 = "Enter passphrase for " + _file_name + ":";
+    string prompt1 = "Enter passphrase for " + _file_name + ": ";
     StringX pass1 = cTerminal::GetPassword(prompt1);
-    string prompt2 = "Reenter passphrase for " + _file_name + ":";
+    string prompt2 = "Reenter passphrase for " + _file_name + ": ";
     StringX pass2 = cTerminal::GetPassword(prompt2);
     if (pass1 != pass2)
     {
@@ -376,10 +395,7 @@ void cApp::_DoAdd()
         if (entry->GetGroup().empty())
             entry->SetGroup(cTerminal::GetText("group [<none>]: "));
 
-        cDatabase::EntriesT found =
-            database->Find(entry->GetFullTitle().c_str());
-
-        if (!found.empty())
+        if (database->HasEntry(entry->GetFullTitle()))
         {
             cerr << entry->GetFullTitle() << " already exists" << endl;
             if (name)
@@ -407,7 +423,118 @@ void cApp::_DoAdd()
     entry->SetNotes(cTerminal::GetText("notes: "));
 
     database->AddEntry(entry);
+    database->Write();
+}
 
+void cApp::_DoEdit()
+{
+    char const *query = _argument;
+    if (!query)
+    {
+        cerr << "An entry must be specified" << endl;
+        throw ExitEx(1);
+    }
+
+    cDatabase::PtrT database = _OpenDatabase(_file_name);
+    cDatabase::EntriesT entries = database->Find(query);
+    if (entries.empty())
+    {
+        cerr << "No matching entries found" << endl;
+        throw ExitEx(1);
+    }
+    if (!_CheckSingleEntry(entries))
+        throw ExitEx(1);
+
+    // Original entry
+    cEntry::PtrT e_orig = entries.front();
+
+    // Copied from pwsafe
+    cEntry::PtrT e = e_orig->Copy(); // make a local copy to edit
+
+    while (true)
+    {
+        e->SetTitle(cTerminal::GetText("name: [" + e_orig->GetTitle() + "] ",
+                                       e_orig->GetTitle()));
+        e->SetGroup(cTerminal::GetText("group: [" + e_orig->GetGroup() + "] ",
+                                       e_orig->GetGroup()));
+        if ((e->GetTitle() == e_orig->GetTitle() &&
+             e->GetGroup() == e_orig->GetGroup()) ||
+            !database->HasEntry(e->GetFullTitle()))
+            // e.name cannot be empty b/c if the user entered an empty string
+            // they got the old name
+            break;
+        cout << e->GetFullTitle() << " already exists" << endl;
+    }
+
+    // FIXME!!!: What's the default login?
+    //if (e.default_login)
+    //    e.default_login = getyn("keep default username ("+e_orig.the_default_login+") ? [y]", true);
+    //if (!e.default_login) {
+    //    e.login = gettxt("username: ["+e_orig.login+"] ", e_orig.login);
+    //    if (e.login.empty() && !e_orig.default_login) // no point in asking if they just disabled default login
+    //        e.default_login = getyn("use default username ("+e_orig.the_default_login+") ? [n]", false);
+    //}
+
+    while (true)
+    {
+        if (!cTerminal::GetYN("change password ? [n] ", false))
+            break;
+
+        StringX new_pw =
+            cTerminal::EnterPassword("new password: [return for random] ",
+                                     "new password again: ");
+        if (new_pw.empty() && !e->GetPass().empty())
+        {
+            if (!cTerminal::GetYN("Confirm changing to an empty password?"
+                                  " [n] "))
+                continue;
+        }
+        e->SetPass(new_pw);
+        break;
+    }
+
+    e->SetNotes(cTerminal::GetText("notes: [<keep same>] ",
+                                   e_orig->GetNotes()));
+
+    // FIXME: Implement a generic comparison
+    typedef vector<string> ChangesT;
+    ChangesT changes;
+
+    if (e_orig->GetGroup() != e->GetGroup())
+        changes.push_back("group");
+    if (e_orig->GetTitle() != e->GetTitle())
+        changes.push_back("name");
+    //if (e_orig.default_login != e.default_login || 
+    //    (!e_orig.default_login && !e.default_login && e_orig.login != e.login))
+    //    changes.push_back("login");
+    if (e_orig->GetPass() != e->GetPass())
+        changes.push_back("password");
+    if (e_orig->GetNotes() != e->GetNotes())
+        changes.push_back("notes");
+
+    if (changes.empty())
+    {
+        cout << "No change" << endl;
+        return;
+    }
+
+    std::string prompt = "Confirm changing ";
+    for (ChangesT::const_iterator i = changes.begin();
+         i != changes.end(); ++i)
+    {
+        if (i != changes.begin())
+            prompt += ", ";
+        prompt += *i;
+    }
+    prompt += "? [y] ";
+    if (!cTerminal::GetYN(prompt, true))
+    {
+        cout << "Changes abandoned" << endl;
+        return;
+    }
+
+    database->RemoveEntry(e_orig);
+    database->AddEntry(e);
     database->Write();
 }
 

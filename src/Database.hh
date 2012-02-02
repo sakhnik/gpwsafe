@@ -55,9 +55,11 @@ public:
     void Dump() const;
 
     typedef std::vector<cEntry::PtrT> EntriesT;
-    EntriesT Find(char const *query);
+    EntriesT Find(char const *query) const;
 
     void AddEntry(cEntry::PtrT const &entry);
+    void RemoveEntry(cEntry::PtrT const &entry);
+    bool HasEntry(StringX const &full_title) const;
 
 private:
     cFile3 _file;
@@ -75,9 +77,12 @@ private:
 
     // Associative vector of fields
     typedef std::vector<sField::PtrT> _FieldsT;
+    // Database header
     _FieldsT _fields;
 
-    EntriesT _entries;
+    // FullTitle -> EntryT
+    typedef std::map<StringX, cEntry::PtrT> _TitleEntryT;
+    _TitleEntryT _entries;
 
     bool _AddField(sField::PtrT const &field);
 };

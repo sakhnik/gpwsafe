@@ -40,6 +40,9 @@ public:
 
     cEntry();
 
+    // Deep copy
+    cEntry::PtrT Copy() const;
+
     bool AddField(sField::PtrT const &field);
 
     typedef boost::function<void(sField::PtrT const &ptr)> OnFieldT;

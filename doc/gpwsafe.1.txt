@@ -38,6 +38,9 @@ COMMANDS
 -a, --add[=ENTRY]::
         Add an entry to database.
 
+-e, --edit=REGEX::
+        Edit an entry.
+
 If no command is given, --list is assumed.
 
 

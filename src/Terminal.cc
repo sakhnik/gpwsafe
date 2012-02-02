@@ -72,7 +72,8 @@ StringX cTerminal::GetPassword(char const *prompt)
     return StringX(input);
 }
 
-StringX cTerminal::GetText(char const *prompt)
+StringX cTerminal::GetText(char const *prompt,
+                           StringX const &def)
 {
     rl_completion_entry_function = NULL;
     char *input = readline(prompt);
@@ -83,7 +84,10 @@ StringX cTerminal::GetText(char const *prompt)
         delete input;
     } BOOST_SCOPE_EXIT_END
 
-    return StringX(input);
+    StringX res(input);
+    if (res.empty())
+        return def;
+    return res;
 }
 
 StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
@@ -116,7 +120,7 @@ StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
     }
 }
 
-bool cTerminal::GetYN(char const *prompt, const int def_val)
+bool cTerminal::GetYN(char const *prompt, int def_val)
 {
     // Copied from pwsafe
     while (true)

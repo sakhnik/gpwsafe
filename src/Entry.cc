@@ -46,6 +46,18 @@ cEntry::cEntry()
 {
 }
 
+cEntry::PtrT cEntry::Copy() const
+{
+    cEntry::PtrT entry(new cEntry);
+    entry->_fields.resize(_fields.size());
+    for (unsigned i = 0; i != _fields.size(); ++i)
+    {
+        if (_fields[i])
+            entry->_fields[i] = _fields[i]->Copy();
+    }
+    return entry;
+}
+
 bool cEntry::AddField(sField::PtrT const &field)
 {
     if (field->type == FT_END)
