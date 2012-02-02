@@ -1,4 +1,4 @@
-AC_INIT([gpwsafe],[0.1.3],[sakhnik@gmail.com])
+AC_INIT([gpwsafe],[0.1.4],[sakhnik@gmail.com])
 AC_PREREQ(2.59)
 dnl AC_CONFIG_AUX_DIR(config)
 
