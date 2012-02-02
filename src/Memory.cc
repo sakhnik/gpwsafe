@@ -20,6 +20,7 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 #include "Memory.hh"
+#include "Privileges.hh"
 
 #include <sys/mman.h>
 #include <iostream>
@@ -34,9 +35,15 @@ char *cLockedBlockAllocator::malloc(const size_type bytes)
     int ret = mlock(block, bytes);
     if (ret)
     {
-        // TODO: Implement setuid if needed.
-        cerr << "WARNING: unable to use secure ram (need to be setuid root)"
-             << endl;
+        // Try to raise privileges
+        cPrivileges privileges;
+        ret = mlock(block, bytes);
+        if (ret)
+        {
+            // TODO: Implement setuid if needed.
+            cerr << "WARNING: unable to use secure ram (need to be setuid root)"
+                 << endl;
+        }
     }
     return block;
 }

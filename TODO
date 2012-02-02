@@ -1,3 +1,2 @@
 * Error handling, granular exceptions
 * Detect where a password was actually pasted to
-* Secure memory allocation error handling (setuid root)
