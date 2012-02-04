@@ -25,6 +25,7 @@
 #include "Entry.hh"
 
 #include <stdint.h>
+#include <map>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 

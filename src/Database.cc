@@ -24,6 +24,7 @@
 #include "Debug.hh"
 
 #include <iostream>
+#include <errno.h>
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
 #include <uuid/uuid.h>

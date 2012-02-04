@@ -6,13 +6,12 @@ AM_INIT_AUTOMAKE([1.9 color-tests])
 
 AM_CONFIG_HEADER([config.h])
 
-AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_RANLIB
 
-AC_CHECK_HEADERS(uuid/uuid.h)
-AC_CHECK_FUNCS(uuid_generate, uuid)
-AC_SEARCH_LIBS(uuid_generate, uuid)
+AC_SEARCH_LIBS(uuid_generate, uuid, , [
+    AC_MSG_ERROR([unable to find the uuid_generate() function])
+])
 
 AC_CHECK_FUNCS(getopt_long)
 AC_CHECK_LIB(readline,readline,[],[AC_MSG_ERROR(cannot find libreadline)])
