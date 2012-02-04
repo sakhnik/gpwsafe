@@ -22,7 +22,6 @@
 #include "../config.h"
 #include "App.hh"
 #include "Gcrypt.hh"
-#include "Privileges.hh"
 
 #include <sys/stat.h>
 #include <iostream>
@@ -42,9 +41,6 @@ static char const *_Basename(char const *path)
 int main(int argc, char* argv[])
 {
     char const *program_name = _Basename(argv[0]);
-
-    // Drop privileges if setuid root
-    cPrivileges::Init();
 
     // Be nice and paranoid
     umask(0077);

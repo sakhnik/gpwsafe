@@ -114,7 +114,6 @@ StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
         if (pw1 == pw2)
         {
             return pw1;
-            break;
         }
         cerr << "Passwords do not match" << endl;
     }
