@@ -163,7 +163,7 @@ sField::PtrT cFile3::ReadField()
                               &_data[0], _data.size());
             i = 0;
         }
-        int available = (std::min)(_data.size() - i, length);
+        int available = (std::min)(_data.size() - i, size_t(length));
         value.insert(value.end(),
                      _data.begin() + i,
                      _data.begin() + i + available);

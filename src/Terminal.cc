@@ -326,7 +326,7 @@ StringX cTerminal::RandomPassword()
         snprintf(ent_buf, sizeof(ent_buf), "%d", entropy_needed);
         ent_buf[sizeof(ent_buf)-1] = '\0';
         char len_buf[24];
-        snprintf(len_buf, sizeof(len_buf), "%d", pw.length());
+        snprintf(len_buf, sizeof(len_buf), "%ld", pw.length());
         len_buf[sizeof(len_buf)-1] = '\0';
         StringX prompt = "Use " + pw + "\n"
                        + "type " + type_name + ", "
