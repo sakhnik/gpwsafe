@@ -9,10 +9,6 @@ AM_CONFIG_HEADER([config.h])
 AC_PROG_CXX
 AC_PROG_RANLIB
 
-AC_SEARCH_LIBS(uuid_generate, uuid, , [
-    AC_MSG_ERROR([unable to find the uuid_generate() function])
-])
-
 AC_CHECK_FUNCS(getopt_long)
 AC_CHECK_LIB(readline,readline,[],[AC_MSG_ERROR(cannot find libreadline)])
 

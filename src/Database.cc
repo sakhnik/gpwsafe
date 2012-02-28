@@ -27,7 +27,8 @@
 #include <errno.h>
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
-#include <uuid/uuid.h>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/random_generator.hpp>
 
 namespace gPWS {
 
@@ -67,9 +68,9 @@ void cDatabase::Create()
     // Insert new UUID
     field->type = FT_UUID;
     field->value.resize(16);
-    uuid_t new_uuid;
-    ::uuid_generate(new_uuid);
-    copy(new_uuid, new_uuid + 16, field->value.begin());
+    boost::uuids::uuid new_uuid = boost::uuids::random_generator()();
+    assert(new_uuid.size() == 16);
+    copy(new_uuid.begin(), new_uuid.end(), field->value.begin());
     _AddField(field);
 }
 
