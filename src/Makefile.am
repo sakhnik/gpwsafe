@@ -31,7 +31,7 @@ gpwsafe_SOURCES = main.cc \
 gpwsafe_LDADD = libgpwsafe.a \
 		$(LIBGCRYPT_LIBS)
 
-gpwsafe_CXXFLAGS = $(AM_CXXFLAGS)
+gpwsafe_CXXFLAGS = -Werror $(AM_CXXFLAGS)
 
 if ENABLE_GTK
 gpwsafe_SOURCES += GtkEmitter.cc GtkEmitter.hh

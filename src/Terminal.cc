@@ -322,16 +322,13 @@ StringX cTerminal::RandomPassword()
         // in entropy_per_char)
 
         // see what the user thinks of this one
-        char ent_buf[24];
-        snprintf(ent_buf, sizeof(ent_buf), "%d", entropy_needed);
-        ent_buf[sizeof(ent_buf)-1] = '\0';
-        char len_buf[24];
-        snprintf(len_buf, sizeof(len_buf), "%ld", pw.length());
-        len_buf[sizeof(len_buf)-1] = '\0';
-        StringX prompt = "Use " + pw + "\n"
-                       + "type " + type_name + ", "
-                       + "length " + len_buf + ", "
-                       + ent_buf + " bits of entropy [y/N/ /+/-/q/?] ? ";
+        OStringStreamX prompt_oss;
+        prompt_oss << "Use " << pw << "\n"
+                      "type " << type_name << ", "
+                      "length " << pw.length() + ", "
+                   << entropy_needed
+                   << " bits of entropy [y/N/ /+/-/q/?] ? ";
+        StringX prompt = prompt_oss.str();
         switch (tolower(GetChar(prompt, 'n')))
         {
         case 'y':

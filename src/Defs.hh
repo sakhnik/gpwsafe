@@ -35,6 +35,10 @@ typedef std::basic_string<char,
                           std::char_traits<char>,
                           SecureAllocator<char> > StringX;
 
+typedef std::basic_ostringstream<char,
+                                 std::char_traits<char>,
+                                 SecureAllocator<char> > OStringStreamX;
+
 } //namespace gPWS;
 
 // vim: set et ts=4 sw=4:
