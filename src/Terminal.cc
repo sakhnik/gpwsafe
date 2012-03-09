@@ -325,7 +325,7 @@ StringX cTerminal::RandomPassword()
         OStringStreamX prompt_oss;
         prompt_oss << "Use " << pw << "\n"
                       "type " << type_name << ", "
-                      "length " << pw.length() + ", "
+                      "length " << pw.length() << ", "
                    << entropy_needed
                    << " bits of entropy [y/N/ /+/-/q/?] ? ";
         StringX prompt = prompt_oss.str();
