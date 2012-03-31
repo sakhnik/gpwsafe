@@ -23,6 +23,7 @@
 
 #include <cstring>
 #include <boost/pool/pool_alloc.hpp>
+#include <stdio.h>
 
 namespace gPWS {
 

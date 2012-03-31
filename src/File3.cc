@@ -194,13 +194,12 @@ void cFile3::OpenWrite(char const *fname,
     cRandom::CreateNonce(salt, SALT_LEN);
     _fs.write(salt, SALT_LEN);
 
-    uint8_t iter_buf[4] =
-    {
-        _iterations & 0xFF,
-        (_iterations >> 8) & 0xFF,
-        (_iterations >> 16) & 0xFF,
-        (_iterations >> 24) & 0xFF
-    };
+    uint8_t iter_buf[4];
+    iter_buf[0] = _iterations & 0xFF;
+    iter_buf[1] = (_iterations >> 8) & 0xFF;
+    iter_buf[2] = (_iterations >> 16) & 0xFF;
+    iter_buf[3] = (_iterations >> 24) & 0xFF;
+
     _fs.write(reinterpret_cast<char *>(iter_buf), 4);
 
     cKeyStretch key_stretch(pass.c_str(), pass.size(),
