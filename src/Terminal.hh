@@ -28,7 +28,6 @@
 namespace gPWS {
 
 class cTerminal
-    : boost::noncopyable
 {
 public:
     static StringX GetPassword(char const *prompt);

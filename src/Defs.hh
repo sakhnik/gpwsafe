@@ -24,6 +24,8 @@
 #include "Memory.hh"
 
 #include <stdint.h>
+#include <cstring>
+#include <iostream>
 #include <vector>
 
 namespace gPWS {
