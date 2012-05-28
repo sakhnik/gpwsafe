@@ -23,6 +23,7 @@
 #include "Random.hh"
 
 #include <iostream>
+#include <sstream>
 #include <cstdio>
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
