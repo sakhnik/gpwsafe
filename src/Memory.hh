@@ -21,9 +21,6 @@
 
 #pragma once
 
-// Multi-threading isn't required, and we don't want to linking dependencies
-#define BOOST_POOL_NO_MT
-
 #include <cstring>
 #include <boost/pool/pool_alloc.hpp>
 #include <stdio.h>

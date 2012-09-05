@@ -1,4 +1,4 @@
-AC_INIT([gpwsafe],[0.1.5],[sakhnik@gmail.com])
+AC_INIT([gpwsafe],[0.1.6],[sakhnik@gmail.com])
 AC_PREREQ(2.59)
 dnl AC_CONFIG_AUX_DIR(config)
 
@@ -18,6 +18,9 @@ m4_include([m4/ax_boost_base.m4])
 AX_BOOST_BASE([1.40],[],[])
 m4_include([m4/ax_boost_unit_test_framework.m4])
 AX_BOOST_UNIT_TEST_FRAMEWORK
+dnl There's a bug in boost 1.50 preventing the memory pool
+dnl to be used without linking, unless:
+BOOST_CPPFLAGS=$BOOST_CPPFLAGS" -DBOOST_DISABLE_THREADS"
 
 dnl --------------------------------------------------------------------------
 dnl X clipboard support
