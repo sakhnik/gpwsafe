@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
     FieldsT fields1;
     for (unsigned i = 0, n = rand() % 999; i != n; ++i)
     {
-        sField::PtrT field(new sField);
+        sField::PtrT field(sField::Create());
         field->type = rand() % 256;
         field->value.resize(rand() % 256);
         generate(field->value.begin(), field->value.end(), &rand);

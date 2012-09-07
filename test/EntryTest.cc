@@ -17,11 +17,11 @@ BOOST_AUTO_TEST_SUITE(EntryTest)
 BOOST_AUTO_TEST_CASE(TestDiff)
 {
     using namespace gPWS;
-    cEntry::PtrT entry0(new cEntry);
+    cEntry::PtrT entry0(cEntry::Create());
     entry0->SetGroup("arch");
     entry0->SetTitle("aur");
 
-    cEntry::PtrT entry1(new cEntry);
+    cEntry::PtrT entry1(cEntry::Create());
     entry1->SetTitle("aur2");
     entry1->SetUser("sakhnik");
 
