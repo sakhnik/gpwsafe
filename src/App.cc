@@ -266,7 +266,7 @@ static bool _CheckSingleEntry(EntriesT const &entries)
 
     cerr << "More than one matching entry: ";
     int j = 0;
-    for (typename EntriesT::const_iterator i = entries.begin();
+    for (auto i = entries.begin();
          i != entries.end() && j != 3; ++i, ++j)
     {
         if (j)
@@ -313,19 +313,15 @@ void cApp::_DoList()
 
     if (!_user && !_pass)
     {
-        for (EntriesT::const_iterator i = match.begin();
-             i != match.end(); ++i)
-        {
-            cEntry::PtrT const &entry(*i);
+        for (auto const &entry : match)
             cout << entry->GetFullTitle() << endl;
-        }
         return;
     }
 
     if (!_CheckSingleEntry(match))
         throw ExitEx(1);
 
-    cEntry::PtrT const &entry = match.front();
+    auto const &entry = match.front();
     if (_user)
     {
         emitter->Emit("username for " + entry->GetFullTitle(),
@@ -504,8 +500,7 @@ void cApp::_DoEdit()
     }
 
     std::string prompt = "Confirm changing ";
-    for (cEntry::DiffT::const_iterator i = diff.begin();
-         i != diff.end(); ++i)
+    for (auto i = diff.begin(); i != diff.end(); ++i)
     {
         if (i != diff.begin())
             prompt += ", ";
