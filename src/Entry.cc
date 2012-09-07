@@ -30,6 +30,11 @@ namespace gPWS {
 
 using namespace std;
 
+cEntry::PtrT cEntry::Create()
+{
+    return make_shared<cEntry>();
+}
+
 void *cEntry::operator new(size_t n)
 {
     return SecureAllocator<cEntry>::allocate(n);
@@ -122,7 +127,7 @@ void cEntry::SetValue(eFieldType field_type, StringX const &value)
         _fields.resize(static_cast<unsigned>(field_type) + 1);
     sField::PtrT &field = _fields[field_type];
     if (!field)
-        field.reset(new sField);
+        field = sField::Create();
     field->type = field_type;
     field->value = value;
 }

@@ -149,7 +149,7 @@ sField::PtrT cFile3::ReadField()
                     | (uint32_t(udata[2]) << 16)
                     | (uint32_t(udata[3]) << 24);
 
-    sField::PtrT field(new sField);
+    sField::PtrT field(sField::Create());
     field->type = _data[4];
     field->value.reserve(length);
     StringX &value (field->value);

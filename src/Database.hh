@@ -26,8 +26,8 @@
 
 #include <stdint.h>
 #include <map>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace gPWS {
 
@@ -35,7 +35,7 @@ class cDatabase
     : boost::noncopyable
 {
 public:
-    typedef boost::shared_ptr<cDatabase> PtrT;
+    typedef std::shared_ptr<cDatabase> PtrT;
 
     void *operator new(size_t n);
     void operator delete(void *p, size_t n);

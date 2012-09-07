@@ -55,7 +55,7 @@ void cDatabase::Create()
     _fields.clear();
     _changed = false;
 
-    sField::PtrT field(new sField);
+    sField::PtrT field(sField::Create());
 
     // Insert default version (mock 3.10)
     field->type = FT_VERSION;
@@ -95,7 +95,7 @@ void cDatabase::Read(string const &fname,
     if (!field)
         return;
 
-    cEntry::PtrT entry(new cEntry);
+    cEntry::PtrT entry(cEntry::Create());
     while ((field = _file.ReadField()))
     {
         if (!entry->AddField(field))
@@ -103,7 +103,7 @@ void cDatabase::Read(string const &fname,
             // FIXME: Check if such key already exists.
             // Avoid loosing information.
             _entries[entry->GetFullTitle()] = entry;
-            entry.reset(new cEntry);
+            entry = cEntry::Create();
         }
     }
 }
@@ -121,7 +121,7 @@ void cDatabase::Write(string const &fname,
     }
 
     // Field terminator
-    sField::PtrT terminator(new sField);
+    sField::PtrT terminator(sField::Create());
     terminator->type = 0xFF;
     terminator->value.clear();
     _file.WriteField(terminator);

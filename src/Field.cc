@@ -29,6 +29,11 @@ namespace gPWS {
 
 using namespace std;
 
+sField::PtrT sField::Create()
+{
+    return make_shared<sField>();
+}
+
 sField::PtrT sField::Copy() const
 {
     sField::PtrT field(new sField);

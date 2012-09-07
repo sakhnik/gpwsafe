@@ -24,8 +24,8 @@
 #include "Field.hh"
 
 #include <functional>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace gPWS {
 
@@ -33,9 +33,10 @@ class cEntry
     : boost::noncopyable
 {
 public:
-    typedef boost::shared_ptr<cEntry> PtrT;
+    typedef std::shared_ptr<cEntry> PtrT;
 
-    void *operator new(size_t n);
+    static PtrT Create();
+
     void operator delete(void *p, size_t n);
 
     cEntry();
@@ -107,6 +108,8 @@ private:
 
     // Empty string to refer to if a specific field is missing.
     StringX _empty;
+
+    void *operator new(size_t n);
 };
 
 } //namespace gPWS;

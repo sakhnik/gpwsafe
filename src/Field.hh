@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 #include <iosfwd>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/noncopyable.hpp>
 
 namespace gPWS {
@@ -33,20 +33,24 @@ namespace gPWS {
 struct sField
     : boost::noncopyable
 {
-    typedef boost::shared_ptr<sField> PtrT;
+    typedef std::shared_ptr<sField> PtrT;
+
+    static PtrT Create();
 
     uint8_t type;
     StringX value;
 
     sField::PtrT Copy() const;
 
-    void *operator new(size_t n);
     void operator delete(void *p, size_t n);
 
     bool operator!=(sField const &o)
     {
         return type != o.type || value != o.value;
     }
+
+private:
+    void *operator new(size_t n);
 };
 
 std::ostream &operator<<(std::ostream &os, sField const &field);

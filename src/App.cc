@@ -363,7 +363,7 @@ void cApp::_DoAdd()
     char const *name = _argument;
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
-    cEntry::PtrT entry(new cEntry);
+    cEntry::PtrT entry(cEntry::Create());
 
     if (name)
     {
