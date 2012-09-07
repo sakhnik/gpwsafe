@@ -26,7 +26,6 @@
 #include <iostream>
 #include <errno.h>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/random_generator.hpp>
 
@@ -115,10 +114,8 @@ void cDatabase::Write(string const &fname,
     _changed = false;
     _file.OpenWrite(fname.c_str(), pass, true);
 
-    for (_FieldsT::const_iterator i = _fields.begin();
-         i != _fields.end(); ++i)
+    for (auto &field : _fields)
     {
-        sField::PtrT const &field = *i;
         if (field)
             _file.WriteField(field);
     }
@@ -129,14 +126,12 @@ void cDatabase::Write(string const &fname,
     terminator->value.clear();
     _file.WriteField(terminator);
 
-    for (_TitleEntryT::const_iterator i = _entries.begin();
-         i != _entries.end(); ++i)
+    for (auto &title_entry : _entries)
     {
-        cEntry::PtrT const &entry = i->second;
-        entry->ForEachField(boost::bind(&cFile3::WriteField,
-                                        boost::ref(_file),
-                                        _1));
-
+        auto &entry = title_entry.second;
+        entry->ForEachField([this](sField::PtrT const &field) {
+                                _file.WriteField(field);
+                            });
         _file.WriteField(terminator);
     }
 
@@ -183,11 +178,10 @@ cDatabase::EntriesT
 cDatabase::Find(char const *query) const
 {
     EntriesT found;
-    for (_TitleEntryT::const_iterator i = _entries.begin();
-         i != _entries.end(); ++i)
+    for (auto it = _entries.begin(); it != _entries.end(); ++it)
     {
-        StringX const &full_title = i->first;
-        cEntry::PtrT const &entry = i->second;
+        StringX const &full_title = it->first;
+        cEntry::PtrT const &entry = it->second;
 
         if (!query || full_title.find(query) != StringX::npos)
             found.push_back(entry);
@@ -197,10 +191,8 @@ cDatabase::Find(char const *query) const
 
 void cDatabase::Dump() const
 {
-    for (_FieldsT::const_iterator i = _fields.begin();
-         i != _fields.end(); ++i)
+    for (auto &field : _fields)
     {
-        sField::PtrT const& field = *i;
         if (!field)
             continue;
         cout << "{0x"
@@ -212,10 +204,9 @@ void cDatabase::Dump() const
     }
     cout << "==========" << endl;
 
-    for (_TitleEntryT::const_iterator i = _entries.begin();
-         i != _entries.end(); ++i)
+    for (auto &keyval : _entries)
     {
-        cEntry::PtrT const& entry = i->second;
+        auto &entry = keyval.second;
         entry->Dump();
     }
 }

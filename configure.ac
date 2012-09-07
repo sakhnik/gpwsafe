@@ -7,6 +7,10 @@ AM_INIT_AUTOMAKE([1.9 color-tests])
 AM_CONFIG_HEADER([config.h])
 
 AC_PROG_CXX
+AC_LANG_PUSH([C++])
+m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
+AX_CXX_COMPILE_STDCXX_11([noext])
+AC_LANG_POP
 AC_PROG_RANLIB
 
 AC_CHECK_FUNCS(getopt_long)
