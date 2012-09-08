@@ -176,7 +176,7 @@ bool cDatabase::_AddField(sField::PtrT const &field)
 
 void cDatabase::Dump() const
 {
-    for (auto &field : _fields)
+    for (auto const &field : _fields)
     {
         if (!field)
             continue;
@@ -189,9 +189,9 @@ void cDatabase::Dump() const
     }
     cout << "==========" << endl;
 
-    for (auto &keyval : _entries)
+    for (auto const &keyval : _entries)
     {
-        auto &entry = keyval.second;
+        auto const &entry = keyval.second;
         entry->Dump();
     }
 }
@@ -225,4 +225,4 @@ cDatabase::FilterRangeT cDatabase::Find(char const *query) const
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4:
+// vim: set et ts=4 sw=4 tw=80:

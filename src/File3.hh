@@ -79,4 +79,4 @@ private:
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4:
+// vim: set et ts=4 sw=4 tw=80:

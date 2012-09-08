@@ -102,4 +102,4 @@ void cTwofish::Encrypt(uint8_t *out, size_t out_len,
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4:
+// vim: set et ts=4 sw=4 tw=80:
