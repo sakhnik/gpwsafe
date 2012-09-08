@@ -261,19 +261,20 @@ static bool _CheckSingleEntry(EntriesT const &entries)
 {
     assert(!entries.empty() && "Must be analyzed separately");
 
-    if (entries.size() == 1)
+    int count = std::distance(entries.begin(), entries.end());
+    if (1 == count)
         return true;
 
     cerr << "More than one matching entry: ";
     int j = 0;
-    for (auto i = entries.begin();
-         i != entries.end() && j != 3; ++i, ++j)
+    for (auto it = entries.begin();
+         it != entries.end() && j != 3; ++it, ++j)
     {
         if (j)
             cerr << ", ";
-        cerr << (*i)->GetFullTitle();
+        cerr << it->first;
     }
-    int rest = entries.size() - j;
+    int rest = count - j;
     if (rest)
         cerr << ", ... (" << rest << " more)";
     cerr << " ." << endl;
@@ -303,8 +304,7 @@ void cApp::_DoList()
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
 
-    typedef cDatabase::EntriesT EntriesT;
-    EntriesT match = database->Find(_argument);
+    auto match = database->Find(_argument);
     if (match.empty())
     {
         cerr << "No matching entries found" << endl;
@@ -313,24 +313,24 @@ void cApp::_DoList()
 
     if (!_user && !_pass)
     {
-        for (auto const &entry : match)
-            cout << entry->GetFullTitle() << endl;
+        for (auto const &title_entry : match)
+            cout << title_entry.first << endl;
         return;
     }
 
     if (!_CheckSingleEntry(match))
         throw ExitEx(1);
 
-    auto const &entry = match.front();
+    auto const &title_entry = match.front();
     if (_user)
     {
-        emitter->Emit("username for " + entry->GetFullTitle(),
-                      entry->GetUser());
+        emitter->Emit("username for " + title_entry.first,
+                      title_entry.second->GetUser());
     }
     if (_pass)
     {
-        emitter->Emit("password for " + entry->GetFullTitle(),
-                      entry->GetPass());
+        emitter->Emit("password for " + title_entry.first,
+                      title_entry.second->GetPass());
     }
 }
 
@@ -432,7 +432,7 @@ void cApp::_DoEdit()
     }
 
     cDatabase::PtrT database = _OpenDatabase(_file_name);
-    cDatabase::EntriesT entries = database->Find(query);
+    auto entries = database->Find(query);
     if (entries.empty())
     {
         cerr << "No matching entries found" << endl;
@@ -442,7 +442,7 @@ void cApp::_DoEdit()
         throw ExitEx(1);
 
     // Original entry
-    cEntry::PtrT e_orig = entries.front();
+    cEntry::PtrT e_orig = entries.front().second;
 
     // Copied from pwsafe
     cEntry::PtrT e = e_orig->Copy(); // make a local copy to edit
@@ -536,4 +536,4 @@ void cApp::_DoEdit()
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4:
+// vim: set et ts=4 sw=4 tw=80:

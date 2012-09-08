@@ -174,21 +174,6 @@ bool cDatabase::_AddField(sField::PtrT const &field)
     return true;
 }
 
-cDatabase::EntriesT
-cDatabase::Find(char const *query) const
-{
-    EntriesT found;
-    for (auto it = _entries.begin(); it != _entries.end(); ++it)
-    {
-        StringX const &full_title = it->first;
-        cEntry::PtrT const &entry = it->second;
-
-        if (!query || full_title.find(query) != StringX::npos)
-            found.push_back(entry);
-    }
-    return found;
-}
-
 void cDatabase::Dump() const
 {
     for (auto &field : _fields)
@@ -227,6 +212,15 @@ void cDatabase::RemoveEntry(cEntry::PtrT const &entry)
 bool cDatabase::HasEntry(StringX const &full_title) const
 {
     return _entries.find(full_title) != _entries.end();
+}
+
+cDatabase::FilterRangeT cDatabase::Find(char const *query) const
+{
+    auto filter = [query](_TitleEntryT::value_type const &v)
+        { return !query || v.first.find(query) != v.first.npos; };
+    FilterIterT begin(filter, _entries.begin(), _entries.end());
+    FilterIterT end(filter, _entries.end(), _entries.end());
+    return boost::make_iterator_range(begin, end);
 }
 
 } //namespace gPWS;

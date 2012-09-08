@@ -28,6 +28,8 @@
 #include <map>
 #include <memory>
 #include <boost/noncopyable.hpp>
+#include <boost/iterator/filter_iterator.hpp>
+#include <boost/range.hpp>
 
 namespace gPWS {
 
@@ -54,9 +56,6 @@ public:
     void Write();
 
     void Dump() const;
-
-    typedef std::vector<cEntry::PtrT> EntriesT;
-    EntriesT Find(char const *query) const;
 
     void AddEntry(cEntry::PtrT const &entry);
     void RemoveEntry(cEntry::PtrT const &entry);
@@ -86,8 +85,17 @@ private:
     _TitleEntryT _entries;
 
     bool _AddField(sField::PtrT const &field);
+
+public:
+    typedef boost::filter_iterator
+        <std::function<bool(_TitleEntryT::value_type const &)>,
+         _TitleEntryT::const_iterator>
+        FilterIterT;
+    typedef boost::iterator_range<FilterIterT> FilterRangeT;
+
+    FilterRangeT Find(char const *query) const;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4:
+// vim: set et ts=4 sw=4 tw=80:
