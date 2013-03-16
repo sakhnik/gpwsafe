@@ -1,3 +1,5 @@
 *.plk
 *.ibak
 *Test
+*.log
+*.trs

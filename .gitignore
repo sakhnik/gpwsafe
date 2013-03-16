@@ -16,3 +16,4 @@ missing
 *.o
 /nbproject/private/
 /nbproject
+test-driver

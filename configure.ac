@@ -4,7 +4,7 @@ dnl AC_CONFIG_AUX_DIR(config)
 
 AM_INIT_AUTOMAKE([1.9 color-tests])
 
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 AC_PROG_CXX
 AC_LANG_PUSH([C++])
