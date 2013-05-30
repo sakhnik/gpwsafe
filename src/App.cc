@@ -283,7 +283,7 @@ static bool _CheckSingleEntry(EntriesT const &entries)
 
 void cApp::_DoList()
 {
-    auto_ptr<iEmitter> emitter;
+    unique_ptr<iEmitter> emitter;
     switch (_emitter)
     {
     case _E_STDOUT:

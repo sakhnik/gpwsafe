@@ -72,8 +72,8 @@ private:
     StringX _main_key;
     StringX _hmac_key;
 
-    std::auto_ptr<cTwofish> _twofish;
-    std::auto_ptr<cHmac> _hmac_calculator;
+    std::unique_ptr<cTwofish> _twofish;
+    std::unique_ptr<cHmac> _hmac_calculator;
     StringX _data;
 };
 
