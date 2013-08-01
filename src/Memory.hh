@@ -30,38 +30,38 @@ namespace gPWS {
 class cLockedBlockAllocator
 {
 public:
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type;
+	typedef std::size_t size_type;
+	typedef std::ptrdiff_t difference_type;
 
-    static char *malloc(const size_type bytes);
-    static void free(char *const block);
+	static char *malloc(const size_type bytes);
+	static void free(char *const block);
 };
 
 template<typename T>
 class SecureAllocator
-    : public boost::pool_allocator<T, cLockedBlockAllocator>
+	: public boost::pool_allocator<T, cLockedBlockAllocator>
 {
 public:
-    typedef boost::pool_allocator<T, cLockedBlockAllocator> BaseT;
+	typedef boost::pool_allocator<T, cLockedBlockAllocator> BaseT;
 
-    typedef T value_type;
-    typedef value_type * pointer;
-    typedef typename boost::pool<cLockedBlockAllocator>::size_type size_type;
+	typedef T value_type;
+	typedef value_type * pointer;
+	typedef typename boost::pool<cLockedBlockAllocator>::size_type size_type;
 
-    template <typename U>
-    struct rebind
-    {
-        typedef SecureAllocator<U> other;
-    };
+	template <typename U>
+	struct rebind
+	{
+		typedef SecureAllocator<U> other;
+	};
 
-    static void deallocate(const pointer ptr, const size_type n)
-    {
-        // Clear memory before returning it to the system.
-        memset(ptr, 0, n*sizeof(T));
-        BaseT::deallocate (ptr, n);
-    }
+	static void deallocate(const pointer ptr, const size_type n)
+	{
+		// Clear memory before returning it to the system.
+		memset(ptr, 0, n*sizeof(T));
+		BaseT::deallocate (ptr, n);
+	}
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

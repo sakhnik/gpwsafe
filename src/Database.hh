@@ -34,68 +34,68 @@
 namespace gPWS {
 
 class cDatabase
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    typedef std::shared_ptr<cDatabase> PtrT;
+	typedef std::shared_ptr<cDatabase> PtrT;
 
-    void *operator new(size_t n);
-    void operator delete(void *p, size_t n);
+	void *operator new(size_t n);
+	void operator delete(void *p, size_t n);
 
-    cDatabase();
+	cDatabase();
 
-    void Create();
+	void Create();
 
-    void Read(std::string const &fname,
-              StringX const &pass);
+	void Read(std::string const &fname,
+	          StringX const &pass);
 
-    void Write(std::string const &fname,
-               StringX const &pass);
+	void Write(std::string const &fname,
+	           StringX const &pass);
 
-    // Use the cached file name and password
-    void Write();
+	// Use the cached file name and password
+	void Write();
 
-    void Dump() const;
+	void Dump() const;
 
-    void AddEntry(cEntry::PtrT const &entry);
-    void RemoveEntry(cEntry::PtrT const &entry);
-    bool HasEntry(StringX const &full_title) const;
+	void AddEntry(cEntry::PtrT const &entry);
+	void RemoveEntry(cEntry::PtrT const &entry);
+	bool HasEntry(StringX const &full_title) const;
 
 private:
-    cFile3 _file;
-    bool _changed;
-    std::string _fname; // Cached file name
-    StringX _pass;      // Cached password
+	cFile3 _file;
+	bool _changed;
+	std::string _fname; // Cached file name
+	StringX _pass;      // Cached password
 
-    enum _eFieldType
-    {
-        FT_VERSION = 0x00,
-        FT_UUID = 0x01,
+	enum _eFieldType
+	{
+		FT_VERSION = 0x00,
+		FT_UUID = 0x01,
 
-        FT_END = 0xFF
-    };
+		FT_END = 0xFF
+	};
 
-    // Associative vector of fields
-    typedef std::vector<sField::PtrT> _FieldsT;
-    // Database header
-    _FieldsT _fields;
+	// Associative vector of fields
+	typedef std::vector<sField::PtrT> _FieldsT;
+	// Database header
+	_FieldsT _fields;
 
-    // FullTitle -> EntryT
-    typedef std::map<StringX, cEntry::PtrT> _TitleEntryT;
-    _TitleEntryT _entries;
+	// FullTitle -> EntryT
+	typedef std::map<StringX, cEntry::PtrT> _TitleEntryT;
+	_TitleEntryT _entries;
 
-    bool _AddField(sField::PtrT const &field);
+	bool _AddField(sField::PtrT const &field);
 
 public:
-    typedef boost::filter_iterator
-        <std::function<bool(_TitleEntryT::value_type const &)>,
-         _TitleEntryT::const_iterator>
-        FilterIterT;
-    typedef boost::iterator_range<FilterIterT> FilterRangeT;
+	typedef boost::filter_iterator
+		<std::function<bool(_TitleEntryT::value_type const &)>,
+		 _TitleEntryT::const_iterator>
+		FilterIterT;
+	typedef boost::iterator_range<FilterIterT> FilterRangeT;
 
-    FilterRangeT Find(char const *query) const;
+	FilterRangeT Find(char const *query) const;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

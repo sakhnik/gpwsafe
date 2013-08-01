@@ -31,30 +31,30 @@
 namespace gPWS {
 
 struct sField
-    : boost::noncopyable
+	: boost::noncopyable
 {
-    typedef std::shared_ptr<sField> PtrT;
+	typedef std::shared_ptr<sField> PtrT;
 
-    static PtrT Create();
+	static PtrT Create();
 
-    uint8_t type;
-    StringX value;
+	uint8_t type;
+	StringX value;
 
-    sField::PtrT Copy() const;
+	sField::PtrT Copy() const;
 
-    void operator delete(void *p, size_t n);
+	void operator delete(void *p, size_t n);
 
-    bool operator!=(sField const &o)
-    {
-        return type != o.type || value != o.value;
-    }
+	bool operator!=(sField const &o)
+	{
+		return type != o.type || value != o.value;
+	}
 
 private:
-    void *operator new(size_t n);
+	void *operator new(size_t n);
 };
 
 std::ostream &operator<<(std::ostream &os, sField const &field);
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

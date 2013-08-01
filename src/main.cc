@@ -30,39 +30,43 @@
 using namespace std;
 using namespace gPWS;
 
-static char const *_Basename(char const *path)
+namespace {
+
+char const *_Basename(char const *path)
 {
-    char const *res = strrchr(path, '/');
-    if (!res)
-        return path;
-    return res + 1;
+	char const *res = strrchr(path, '/');
+	if (!res)
+		return path;
+	return res + 1;
 }
+
+} //namespace;
 
 int main(int argc, char* argv[])
 {
-    char const *program_name = _Basename(argv[0]);
+	char const *program_name = _Basename(argv[0]);
 
-    // Be nice and paranoid
-    umask(0077);
+	// Be nice and paranoid
+	umask(0077);
 
-    if (int res = cGcrypt::Init())
-    {
-        cerr << "Can't initialize libgcrypt" << endl;
-        return res;
-    }
+	if (int res = cGcrypt::Init())
+	{
+		cerr << "Can't initialize libgcrypt" << endl;
+		return res;
+	}
 
-    try
-    {
-        cApp app(program_name);
-        app.Init(argc, argv);
+	try
+	{
+		cApp app(program_name);
+		app.Init(argc, argv);
 
-        app.Run();
-    }
-    catch (cApp::ExitEx const &e)
-    {
-        return e.retcode;
-    }
-    return 0;
+		app.Run();
+	}
+	catch (cApp::ExitEx const &e)
+	{
+		return e.retcode;
+	}
+	return 0;
 }
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

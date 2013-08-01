@@ -29,14 +29,14 @@ using namespace std;
 
 void cStdoutEmitter::PrintIntention(string const &subject) const
 {
-    cout << "Going to print " << subject << " to stdout" << endl;
+	cout << "Going to print " << subject << " to stdout" << endl;
 }
 
 void cStdoutEmitter::Emit(StringX const &name, StringX const &val)
 {
-    cout << name << ": " << val << endl;
+	cout << name << ": " << val << endl;
 }
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

@@ -35,4 +35,4 @@ std::string Quote(char const *buf, unsigned len);
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

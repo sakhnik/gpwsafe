@@ -26,14 +26,14 @@
 namespace gPWS {
 
 class cStdoutEmitter
-    : public iEmitter
+	: public iEmitter
 {
 private:
-    virtual void PrintIntention(std::string const &subject) const;
+	virtual void PrintIntention(std::string const &subject) const;
 
-    virtual void Emit(StringX const &name, StringX const &val);
+	virtual void Emit(StringX const &name, StringX const &val);
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

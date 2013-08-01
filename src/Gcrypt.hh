@@ -12,9 +12,9 @@ namespace gPWS {
 class cGcrypt
 {
 public:
-    static int Init();
+	static int Init();
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

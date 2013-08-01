@@ -19,8 +19,8 @@ man_MANS = gpwsafe.1
 
 gpwsafe.1: gpwsafe.1.txt Makefile.am
 	$(AM_V_GEN)a2x $(A2X_OPTS) \
-	    --asciidoc-opts="$(ASCIIDOC_OPTS) --out-file=./$@.xml" \
-	    $(srcdir)/$@.txt
+		--asciidoc-opts="$(ASCIIDOC_OPTS) --out-file=./$@.xml" \
+		$(srcdir)/$@.txt
 
 # Files that should be removed
 MOSTLYCLEANFILES = gpwsafe.1

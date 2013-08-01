@@ -31,13 +31,13 @@ namespace gPWS {
 struct iEmitter
     : boost::noncopyable
 {
-    virtual ~iEmitter() { }
+	virtual ~iEmitter() { }
 
-    virtual void PrintIntention(std::string const &subject) const = 0;
+	virtual void PrintIntention(std::string const &subject) const = 0;
 
-    virtual void Emit(StringX const &name, StringX const &val) = 0;
+	virtual void Emit(StringX const &name, StringX const &val) = 0;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

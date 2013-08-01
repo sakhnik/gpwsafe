@@ -31,56 +31,56 @@ namespace gPWS {
 struct iEmitter;
 
 class cApp
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    cApp(char const *program_name);
+	cApp(char const *program_name);
 
-    void Init(int argc, char *argv[]);
+	void Init(int argc, char *argv[]);
 
-    void Run();
+	void Run();
 
-    struct ExitEx
-    {
-        int retcode;
-        ExitEx(int retcode_) : retcode(retcode_) { }
-    };
+	struct ExitEx
+	{
+		int retcode;
+		ExitEx(int retcode_) : retcode(retcode_) { }
+	};
 
 private:
-    char const *_program_name;
-    std::string _file_name;
+	char const *_program_name;
+	std::string _file_name;
 
-    enum eCommand
-    {
-        _C_NOP = 0,
-        _C_LIST,
-        _C_CREATE,
-        _C_ADD,
-        _C_EDIT
-    } _command;
+	enum eCommand
+	{
+		_C_NOP = 0,
+		_C_LIST,
+		_C_CREATE,
+		_C_ADD,
+		_C_EDIT
+	} _command;
 
-    enum eEmitter
-    {
+	enum eEmitter
+	{
 #ifdef ENABLE_XCLIP
-        _E_XCLIP,
+		_E_XCLIP,
 #endif //ENABLE_XCLIP
-        _E_STDOUT
-    } _emitter;
+		_E_STDOUT
+	} _emitter;
 
-    bool _user;
-    bool _pass;
+	bool _user;
+	bool _pass;
 
-    char const *_argument;
+	char const *_argument;
 
-    void _Run();
-    void _Usage(bool fail);
-    void _DoList();
-    void _PrintIntention(iEmitter const *emitter);
-    void _DoCreate();
-    void _DoAdd();
-    void _DoEdit();
+	void _Run();
+	void _Usage(bool fail);
+	void _DoList();
+	void _PrintIntention(iEmitter const *emitter);
+	void _DoCreate();
+	void _DoAdd();
+	void _DoEdit();
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

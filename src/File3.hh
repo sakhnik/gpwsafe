@@ -32,51 +32,51 @@
 namespace gPWS {
 
 class cFile3
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    cFile3();
-    ~cFile3();
+	cFile3();
+	~cFile3();
 
-    void Close();
+	void Close();
 
-    void OpenRead(char const *fname,
-                  StringX const &pass);
+	void OpenRead(char const *fname,
+	              StringX const &pass);
 
-    sField::PtrT ReadField();
+	sField::PtrT ReadField();
 
-    void OpenWrite(char const *fname,
-                   StringX const &pass,
-                   bool new_keys = false,
-                   bool very_strong = true);
+	void OpenWrite(char const *fname,
+	               StringX const &pass,
+	               bool new_keys = false,
+	               bool very_strong = true);
 
-    void WriteField(sField::PtrT const &field);
+	void WriteField(sField::PtrT const &field);
 
-    void CloseWrite();
+	void CloseWrite();
 
 private:
-    enum _eState
-    {
-        S_CLOSED = 0,
-        S_READING,
-        S_WRITING
-    } _state;
+	enum _eState
+	{
+		S_CLOSED = 0,
+		S_READING,
+		S_WRITING
+	} _state;
 
-    std::fstream _fs;
-    std::ios_base::iostate _initial_state;
+	std::fstream _fs;
+	std::ios_base::iostate _initial_state;
 
-    // Count of iterations for the key stretching
-    uint32_t _iterations;
+	// Count of iterations for the key stretching
+	uint32_t _iterations;
 
-    // Main encryption key for TwoFish
-    StringX _main_key;
-    StringX _hmac_key;
+	// Main encryption key for TwoFish
+	StringX _main_key;
+	StringX _hmac_key;
 
-    std::unique_ptr<cTwofish> _twofish;
-    std::unique_ptr<cHmac> _hmac_calculator;
-    StringX _data;
+	std::unique_ptr<cTwofish> _twofish;
+	std::unique_ptr<cHmac> _hmac_calculator;
+	StringX _data;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

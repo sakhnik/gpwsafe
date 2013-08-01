@@ -27,27 +27,27 @@
 namespace gPWS {
 
 class cRandom
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    static void CreateNonce(uint8_t *buffer, unsigned length);
+	static void CreateNonce(uint8_t *buffer, unsigned length);
 
-    static void CreateNonce(char *buffer, unsigned length)
-    {
-        CreateNonce(reinterpret_cast<uint8_t *>(buffer), length);
-    }
+	static void CreateNonce(char *buffer, unsigned length)
+	{
+		CreateNonce(reinterpret_cast<uint8_t *>(buffer), length);
+	}
 
-    static void Randomize(uint8_t *buffer, unsigned length,
-                          bool very_strong);
+	static void Randomize(uint8_t *buffer, unsigned length,
+	                      bool very_strong);
 
-    static void Randomize(char *buffer, unsigned length,
-                          bool very_strong)
-    {
-        Randomize(reinterpret_cast<uint8_t *>(buffer), length,
-                  very_strong);
-    }
+	static void Randomize(char *buffer, unsigned length,
+	                      bool very_strong)
+	{
+		Randomize(reinterpret_cast<uint8_t *>(buffer), length,
+		          very_strong);
+	}
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

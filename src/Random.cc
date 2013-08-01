@@ -27,16 +27,16 @@ namespace gPWS {
 
 void cRandom::CreateNonce(uint8_t *buffer, unsigned len)
 {
-    gcry_create_nonce(buffer, len);
+	gcry_create_nonce(buffer, len);
 }
 
 void cRandom::Randomize(uint8_t *buffer, unsigned length,
                         bool very_strong)
 {
-    gcry_randomize(buffer, length,
-                   very_strong ? GCRY_VERY_STRONG_RANDOM : GCRY_STRONG_RANDOM);
+	gcry_randomize(buffer, length,
+	               very_strong ? GCRY_VERY_STRONG_RANDOM : GCRY_STRONG_RANDOM);
 }
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

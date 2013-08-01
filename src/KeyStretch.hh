@@ -28,25 +28,25 @@
 namespace gPWS {
 
 class cKeyStretch
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    cKeyStretch(void const* pass,
-                unsigned pass_size,
-                void const* salt,
-                unsigned salt_size,
-                unsigned iterations);
+	cKeyStretch(void const* pass,
+	            unsigned pass_size,
+	            void const* salt,
+	            unsigned salt_size,
+	            unsigned iterations);
 
-    ~cKeyStretch();
+	~cKeyStretch();
 
-    static const unsigned LENGTH = cSha256::LENGTH;
+	static const unsigned LENGTH = cSha256::LENGTH;
 
-    uint8_t const *Get() const;
+	uint8_t const *Get() const;
 
 private:
-    cSha256 _sha256;
+	cSha256 _sha256;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

@@ -35,194 +35,194 @@ using namespace std;
 
 void *cDatabase::operator new(size_t n)
 {
-    return SecureAllocator<cDatabase>::allocate(n);
+	return SecureAllocator<cDatabase>::allocate(n);
 }
 
 void cDatabase::operator delete(void *p, size_t n)
 {
-    cDatabase *q = reinterpret_cast<cDatabase *>(p);
-    return SecureAllocator<cDatabase>::deallocate(q, n);
+	cDatabase *q = reinterpret_cast<cDatabase *>(p);
+	return SecureAllocator<cDatabase>::deallocate(q, n);
 }
 
 cDatabase::cDatabase()
-    : _changed(false)
+	: _changed(false)
 {
-    _fields.reserve(0x0F);
+	_fields.reserve(0x0F);
 }
 
 void cDatabase::Create()
 {
-    _fields.clear();
-    _changed = false;
+	_fields.clear();
+	_changed = false;
 
-    sField::PtrT field(sField::Create());
+	sField::PtrT field(sField::Create());
 
-    // Insert default version (mock 3.10)
-    field->type = FT_VERSION;
-    field->value.clear();
-    field->value.push_back(0x0A);
-    field->value.push_back(0x03);
-    _AddField(field);
+	// Insert default version (mock 3.10)
+	field->type = FT_VERSION;
+	field->value.clear();
+	field->value.push_back(0x0A);
+	field->value.push_back(0x03);
+	_AddField(field);
 
-    // Insert new UUID
-    field->type = FT_UUID;
-    field->value.resize(16);
-    boost::uuids::uuid new_uuid = boost::uuids::random_generator()();
-    assert(new_uuid.size() == 16);
-    copy(new_uuid.begin(), new_uuid.end(), field->value.begin());
-    _AddField(field);
+	// Insert new UUID
+	field->type = FT_UUID;
+	field->value.resize(16);
+	boost::uuids::uuid new_uuid = boost::uuids::random_generator()();
+	assert(new_uuid.size() == 16);
+	copy(new_uuid.begin(), new_uuid.end(), field->value.begin());
+	_AddField(field);
 }
 
 void cDatabase::Read(string const &fname,
                      StringX const &pass)
 {
-    // The database must be clear.
-    assert(!_changed && "The changes must be written beforehand");
+	// The database must be clear.
+	assert(!_changed && "The changes must be written beforehand");
 
-    _changed = false;
-    _fname = fname;
-    _pass = pass;
-    _file.OpenRead(fname.c_str(), pass);
+	_changed = false;
+	_fname = fname;
+	_pass = pass;
+	_file.OpenRead(fname.c_str(), pass);
 
-    // Read header fields first
-    sField::PtrT field;
-    while ((field = _file.ReadField()))
-    {
-        if (!_AddField(field))
-            break;
-    }
+	// Read header fields first
+	sField::PtrT field;
+	while ((field = _file.ReadField()))
+	{
+		if (!_AddField(field))
+			break;
+	}
 
-    if (!field)
-        return;
+	if (!field)
+		return;
 
-    cEntry::PtrT entry(cEntry::Create());
-    while ((field = _file.ReadField()))
-    {
-        if (!entry->AddField(field))
-        {
-            // FIXME: Check if such key already exists.
-            // Avoid loosing information.
-            _entries[entry->GetFullTitle()] = entry;
-            entry = cEntry::Create();
-        }
-    }
+	cEntry::PtrT entry(cEntry::Create());
+	while ((field = _file.ReadField()))
+	{
+		if (!entry->AddField(field))
+		{
+			// FIXME: Check if such key already exists.
+			// Avoid loosing information.
+			_entries[entry->GetFullTitle()] = entry;
+			entry = cEntry::Create();
+		}
+	}
 }
 
 void cDatabase::Write(string const &fname,
                       StringX const &pass)
 {
-    _changed = false;
-    _file.OpenWrite(fname.c_str(), pass, true);
+	_changed = false;
+	_file.OpenWrite(fname.c_str(), pass, true);
 
-    for (auto &field : _fields)
-    {
-        if (field)
-            _file.WriteField(field);
-    }
+	for (auto &field : _fields)
+	{
+		if (field)
+			_file.WriteField(field);
+	}
 
-    // Field terminator
-    sField::PtrT terminator(sField::Create());
-    terminator->type = 0xFF;
-    terminator->value.clear();
-    _file.WriteField(terminator);
+	// Field terminator
+	sField::PtrT terminator(sField::Create());
+	terminator->type = 0xFF;
+	terminator->value.clear();
+	_file.WriteField(terminator);
 
-    for (auto &title_entry : _entries)
-    {
-        auto &entry = title_entry.second;
-        entry->ForEachField([this](sField::PtrT const &field) {
-                                _file.WriteField(field);
-                            });
-        _file.WriteField(terminator);
-    }
+	for (auto &title_entry : _entries)
+	{
+		auto &entry = title_entry.second;
+		entry->ForEachField([this](sField::PtrT const &field) {
+							_file.WriteField(field);
+							});
+		_file.WriteField(terminator);
+	}
 
-    _file.CloseWrite();
+	_file.CloseWrite();
 }
 
 void cDatabase::Write()
 {
-    assert(!_fname.empty() && !_pass.empty());
+	assert(!_fname.empty() && !_pass.empty());
 
-    string new_fname = _fname + ".new";
-    string backup = _fname + "~";
+	string new_fname = _fname + ".new";
+	string backup = _fname + "~";
 
-    ::unlink(new_fname.c_str());
-    Write(new_fname, _pass);
+	::unlink(new_fname.c_str());
+	Write(new_fname, _pass);
 
-    // The followin calls will fail unlikely.
-    ::unlink(backup.c_str());
+	// The followin calls will fail unlikely.
+	::unlink(backup.c_str());
 
-    if (-1 == ::rename(_fname.c_str(), backup.c_str()))
-    {
-        cerr << "Failed to create backup: " << strerror(errno) << endl;
-        throw runtime_error("File system");
-    }
+	if (-1 == ::rename(_fname.c_str(), backup.c_str()))
+	{
+		cerr << "Failed to create backup: " << strerror(errno) << endl;
+		throw runtime_error("File system");
+	}
 
-    if (-1 == ::rename(new_fname.c_str(), _fname.c_str()))
-    {
-        cerr << "Failed to move new file: " << strerror(errno) << endl;
-        throw runtime_error("File system");
-    }
+	if (-1 == ::rename(new_fname.c_str(), _fname.c_str()))
+	{
+		cerr << "Failed to move new file: " << strerror(errno) << endl;
+		throw runtime_error("File system");
+	}
 }
 
 bool cDatabase::_AddField(sField::PtrT const &field)
 {
-    if (field->type == 0xFF)
-        return false;
-    if (_fields.size() <= field->type)
-        _fields.resize(static_cast<unsigned>(field->type) + 1);
-    _fields[field->type] = field;
-    return true;
+	if (field->type == 0xFF)
+		return false;
+	if (_fields.size() <= field->type)
+		_fields.resize(static_cast<unsigned>(field->type) + 1);
+	_fields[field->type] = field;
+	return true;
 }
 
 void cDatabase::Dump() const
 {
-    for (auto const &field : _fields)
-    {
-        if (!field)
-            continue;
-        cout << "{0x"
-             << boost::format("%02X") % unsigned(field->type)
-             << ", '"
-             << gPWS::Quote(&field->value[0], field->value.size())
-             << "'}"
-             << endl;
-    }
-    cout << "==========" << endl;
+	for (auto const &field : _fields)
+	{
+		if (!field)
+			continue;
+		cout << "{0x"
+		     << boost::format("%02X") % unsigned(field->type)
+		     << ", '"
+		     << gPWS::Quote(&field->value[0], field->value.size())
+		     << "'}"
+		     << endl;
+	}
+	cout << "==========" << endl;
 
-    for (auto const &keyval : _entries)
-    {
-        auto const &entry = keyval.second;
-        entry->Dump();
-    }
+	for (auto const &keyval : _entries)
+	{
+		auto const &entry = keyval.second;
+		entry->Dump();
+	}
 }
 
 void cDatabase::AddEntry(cEntry::PtrT const &entry)
 {
-    // FIXME: Check if such key already exists. Avoid loosing information.
-    _entries[entry->GetFullTitle()] = entry;
-    _changed = true;
+	// FIXME: Check if such key already exists. Avoid loosing information.
+	_entries[entry->GetFullTitle()] = entry;
+	_changed = true;
 }
 
 void cDatabase::RemoveEntry(cEntry::PtrT const &entry)
 {
-    _entries.erase(entry->GetFullTitle());
-    _changed = true;
+	_entries.erase(entry->GetFullTitle());
+	_changed = true;
 }
 
 bool cDatabase::HasEntry(StringX const &full_title) const
 {
-    return _entries.find(full_title) != _entries.end();
+	return _entries.find(full_title) != _entries.end();
 }
 
 cDatabase::FilterRangeT cDatabase::Find(char const *query) const
 {
-    auto filter = [query](_TitleEntryT::value_type const &v)
-        { return !query || v.first.find(query) != v.first.npos; };
-    FilterIterT begin(filter, _entries.begin(), _entries.end());
-    FilterIterT end(filter, _entries.end(), _entries.end());
-    return boost::make_iterator_range(begin, end);
+	auto filter = [query](_TitleEntryT::value_type const &v)
+		{ return !query || v.first.find(query) != v.first.npos; };
+	FilterIterT begin(filter, _entries.begin(), _entries.end());
+	FilterIterT end(filter, _entries.end(), _entries.end());
+	return boost::make_iterator_range(begin, end);
 }
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

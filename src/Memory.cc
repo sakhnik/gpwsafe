@@ -30,24 +30,24 @@ using namespace std;
 
 char *cLockedBlockAllocator::malloc(const size_type bytes)
 {
-    char *block = reinterpret_cast<char *>(std::malloc(bytes));
-    int ret = mlock(block, bytes);
-    if (ret)
-    {
-        cerr << "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
-             << endl;
-    }
-    return block;
+	char *block = reinterpret_cast<char *>(std::malloc(bytes));
+	int ret = mlock(block, bytes);
+	if (ret)
+	{
+		cerr << "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
+		     << endl;
+	}
+	return block;
 }
 
 void cLockedBlockAllocator::free(char *const block)
 {
-    // We can't do munlock(), because the pool doesn't let us know the size
-    // of the block. Let's not bother, because any way the memory locks
-    // will be removed when the process exits.
-    std::free(block);
+	// We can't do munlock(), because the pool doesn't let us know the size
+	// of the block. Let's not bother, because any way the memory locks
+	// will be removed when the process exits.
+	std::free(block);
 }
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:

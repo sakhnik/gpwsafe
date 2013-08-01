@@ -29,57 +29,57 @@
 namespace gPWS {
 
 class cTwofish
-    : boost::noncopyable
+	: boost::noncopyable
 {
 public:
-    enum eMode
-    {
-        M_ECB = GCRY_CIPHER_MODE_ECB,
-        M_CBC = GCRY_CIPHER_MODE_CBC
-    };
+	enum eMode
+	{
+		M_ECB = GCRY_CIPHER_MODE_ECB,
+		M_CBC = GCRY_CIPHER_MODE_CBC
+	};
 
-    static const unsigned KEY_LENGTH = 32;
-    static const unsigned BLOCK_LENGTH = 16;
+	static const unsigned KEY_LENGTH = 32;
+	static const unsigned BLOCK_LENGTH = 16;
 
-    cTwofish(eMode mode,
-             void const *key, size_t key_len);
+	cTwofish(eMode mode,
+	         void const *key, size_t key_len);
 
-    ~cTwofish();
+	~cTwofish();
 
-    void SetIV(void const *iv, size_t iv_len);
+	void SetIV(void const *iv, size_t iv_len);
 
-    void Decrypt(uint8_t *out, size_t out_len,
-                 uint8_t const *in, size_t in_len);
+	void Decrypt(uint8_t *out, size_t out_len,
+	             uint8_t const *in, size_t in_len);
 
-    template<typename A, typename B>
-    void Decrypt(A *out, size_t out_len,
-                 B const *in, size_t in_len)
-    {
-        BOOST_STATIC_ASSERT(sizeof(A) == sizeof(uint8_t));
-        BOOST_STATIC_ASSERT(sizeof(B) == sizeof(uint8_t));
+	template<typename A, typename B>
+	void Decrypt(A *out, size_t out_len,
+	             B const *in, size_t in_len)
+	{
+		BOOST_STATIC_ASSERT(sizeof(A) == sizeof(uint8_t));
+		BOOST_STATIC_ASSERT(sizeof(B) == sizeof(uint8_t));
 
-        Decrypt(reinterpret_cast<uint8_t *>(out), out_len,
-                reinterpret_cast<uint8_t const *>(in), in_len);
-    }
+		Decrypt(reinterpret_cast<uint8_t *>(out), out_len,
+		        reinterpret_cast<uint8_t const *>(in), in_len);
+	}
 
-    void Encrypt(uint8_t *out, size_t out_len,
-                 uint8_t const *in, size_t in_len);
+	void Encrypt(uint8_t *out, size_t out_len,
+	             uint8_t const *in, size_t in_len);
 
-    template<typename A, typename B>
-    void Encrypt(A *out, size_t out_len,
-                 B const *in, size_t in_len)
-    {
-        BOOST_STATIC_ASSERT(sizeof(A) == sizeof(uint8_t));
-        BOOST_STATIC_ASSERT(sizeof(B) == sizeof(uint8_t));
+	template<typename A, typename B>
+	void Encrypt(A *out, size_t out_len,
+	             B const *in, size_t in_len)
+	{
+		BOOST_STATIC_ASSERT(sizeof(A) == sizeof(uint8_t));
+		BOOST_STATIC_ASSERT(sizeof(B) == sizeof(uint8_t));
 
-        Encrypt(reinterpret_cast<uint8_t *>(out), out_len,
-                reinterpret_cast<uint8_t const *>(in), in_len);
-    }
+		Encrypt(reinterpret_cast<uint8_t *>(out), out_len,
+		        reinterpret_cast<uint8_t const *>(in), in_len);
+	}
 
 private:
-    gcry_cipher_hd_t _h;
+	gcry_cipher_hd_t _h;
 };
 
 } //namespace gPWS;
 
-// vim: set et ts=4 sw=4 tw=80:
+// vim: set noet ts=4 sw=4 tw=80:
