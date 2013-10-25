@@ -1,4 +1,4 @@
-AC_INIT([gpwsafe],[0.1.6],[sakhnik@gmail.com])
+AC_INIT([gpwsafe],[0.2.0],[sakhnik@gmail.com])
 AC_PREREQ(2.59)
 dnl AC_CONFIG_AUX_DIR(config)
 
@@ -20,6 +20,8 @@ AM_PATH_LIBGCRYPT([1.2.0],[],[])
 
 m4_include([m4/ax_boost_base.m4])
 AX_BOOST_BASE([1.40],[],[])
+m4_include([m4/ax_boost_program_options.m4])
+AX_BOOST_PROGRAM_OPTIONS
 m4_include([m4/ax_boost_unit_test_framework.m4])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 dnl There's a bug in boost 1.50 preventing the memory pool

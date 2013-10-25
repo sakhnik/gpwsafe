@@ -1,8 +1,9 @@
 //
-// App.hh
+// Exceptions.hh
 //
-//     Created: 24.01.2012
+//     Created: 25.10.2013
 //      Author: A. Sakhnik
+//
 //
 // This file is part of gpwsafe.
 //
@@ -19,53 +20,15 @@
 // You should have received a copy of the GNU General Public License
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
+
 #pragma once
-
-#include "../config.h"
-#include "Command.hh"
-
-#include <string>
-#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
-struct iEmitter;
-
-class cApp
-	: boost::noncopyable
+struct ExitEx
 {
-public:
-	cApp(char const *program_name);
-
-	void Init(int argc, char *argv[]);
-
-	void Run();
-
-private:
-	char const *_program_name;
-	std::string _file_name;
-	cCommand::PtrT _command;
-
-	enum eEmitter
-	{
-#ifdef ENABLE_XCLIP
-		_E_XCLIP,
-#endif //ENABLE_XCLIP
-		_E_STDOUT
-	} _emitter;
-
-	bool _user;
-	bool _pass;
-
-	char const *_argument;
-
-	void _Run();
-	void _Usage(bool fail);
-	void _DoList();
-	void _PrintIntention(iEmitter const *emitter);
-	void _DoCreate();
-	void _DoEdit();
-	void _SetCommand(cCommand::PtrT command);
+	int retcode;
+	ExitEx(int retcode_) : retcode(retcode_) { }
 };
 
 } //namespace gPWS;

@@ -23,6 +23,8 @@
 #include "Database.hh"
 #include "Terminal.hh"
 #include "StdoutEmitter.hh"
+#include "CommandAdd.hh"
+#include "Exceptions.hh"
 
 #include "../config.h"
 
@@ -32,7 +34,8 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <getopt.h>
+#include <boost/program_options.hpp>
+
 
 namespace gPWS {
 
@@ -42,7 +45,6 @@ char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
 
 cApp::cApp(char const *program_name)
 	: _program_name(program_name)
-	, _command(_C_NOP)
 	, _emitter(
 #ifdef ENABLE_XCLIP
 	           _E_XCLIP
@@ -96,108 +98,181 @@ void cApp::_Usage(bool fail)
 	throw ExitEx(fail ? 1 : 0);
 }
 
+template <typename T>
+std::unique_ptr<T> make_unique(T *t)
+{
+	return unique_ptr<T>{t};
+}
+
 void cApp::Init(int argc, char *argv[])
 {
-	while (true)
+	using namespace boost::program_options;
+
+	auto name_option = make_unique(new typed_value<string>(nullptr));
+	name_option->value_name("NAME");
+
+	auto regex_option = make_unique(new typed_value<string>(nullptr));
+	regex_option->value_name("REGEX");
+
+	options_description desc_cmd("Commands");
+	desc_cmd.add_options()
+		("create", "create an empty database")
+		("list", "list all [matching] entries. If either -u or -p are given,"
+		         " only one entry may match")
+		("add,a", name_option.release()
+			->implicit_value("")
+			->notifier(
+				[this](string const &name)
+				{
+					this->_SetCommand(cCommandAdd::Create(name));
+				}), "add an entry")
+		("edit,e", regex_option.release(), "edit an entry")
+		;
+
+	options_description desc_opts("Options");
+	desc_opts.add_options()
+		("file,f", value<string>(&_file_name)->default_value(_file_name),
+		           "specify the database file")
+		("help,h", "display this help and exit")
+		("version,V", "output version information and exit")
+		;
+
+	options_description desc;
+	desc.add(desc_cmd).add(desc_opts);
+
+	positional_options_description p;
+	p.add("argument", -1);
+
+	variables_map vm;
+	store(command_line_parser(argc, argv)
+	              .options(desc)
+	              .positional(p)
+	              .run(),
+	          vm);
+	notify(vm);
+
+	if (vm.count("help"))
 	{
-		static struct option long_options[] =
-		{
-			{ "help",       no_argument,        0, 'h' },
-			{ "file",       required_argument,  0, 'f' },
-			{ "list",       no_argument,        0, 'L' },
-			{ "create",     no_argument,        0, 'C' },
-			{ "add",        no_argument,        0, 'a' },
-			{ "edit",       no_argument,        0, 'e' },
-			{ "user",       no_argument,        0, 'u' },
-			{ "pass",       no_argument,        0, 'p' },
-			{ "echo",       no_argument,        0, 'E' },
-#ifdef ENABLE_XCLIP
-			{ "xclip",      no_argument,        0, 'x' },
-#endif //ENABLE_XCLIP
-			{ 0, 0, 0, 0 }
-		};
-		char const *const short_options =
-			"h"   // help
-			"V"   // version
-			"a"   // add
-			"e"   // edit
-			"f:"  // file
-			"u"   // user
-			"p"   // pass
-			"E"   // force echo to stdout
-#ifdef ENABLE_XCLIP
-			"x"   // force copying to xclip
-#endif //ENABLE_XCLIP
-			"";
-		int option_index = 0;
-		int c = getopt_long(argc, argv,
-		                    short_options,
-		                    long_options, &option_index);
-		if (-1 == c)
-			break;
-		switch (c)
-		{
-		case 'h':
-			return _Usage(false);
-		case 'V':
-			cout << _program_name << " " << VERSION << endl;
-			throw ExitEx(0);
-		case 'f':
-			_file_name = optarg;
-			break;
-		case 'L':
-			if (_command != _C_NOP)
-				return _Usage(false);
-			_command = _C_LIST;
-			break;
-		case 'a':
-			if (_command != _C_NOP)
-				return _Usage(false);
-			_command = _C_ADD;
-			break;
-		case 'e':
-			if (_command != _C_NOP)
-				return _Usage(false);
-			_command = _C_EDIT;
-			break;
-		case 'C':
-			if (_command != _C_NOP)
-				return _Usage(false);
-			_command = _C_CREATE;
-			break;
-		case 'u':
-			_user = true;
-			break;
-		case 'p':
-			_pass = true;
-			break;
-		case 'E':
-			_emitter = _E_STDOUT;
-			break;
-#ifdef ENABLE_XCLIP
-		case 'x':
-			_emitter = _E_XCLIP;
-			break;
-#endif //ENABLE_XCLIP
-		default:
-			return _Usage(true);
-		};
+		cout << desc << endl;
+		throw ExitEx(0);
 	}
 
-	if (_command == _C_NOP)
-		_command = _C_LIST;
-
-	if ((_command == _C_LIST || _command == _C_ADD || _command == _C_EDIT)
-	    && optind != argc)
+	if (vm.count("version"))
 	{
-		_argument = argv[optind++];
+		cout << _program_name << " " << VERSION << endl;
+		throw ExitEx(0);
 	}
 
-	if (optind != argc)
+//	while (true)
+//	{
+//		static struct option long_options[] =
+//		{
+//			{ "help",       no_argument,        0, 'h' },
+//			{ "file",       required_argument,  0, 'f' },
+//			{ "list",       no_argument,        0, 'L' },
+//			{ "create",     no_argument,        0, 'C' },
+//			{ "add",        no_argument,        0, 'a' },
+//			{ "edit",       no_argument,        0, 'e' },
+//			{ "user",       no_argument,        0, 'u' },
+//			{ "pass",       no_argument,        0, 'p' },
+//			{ "echo",       no_argument,        0, 'E' },
+//#ifdef ENABLE_XCLIP
+//			{ "xclip",      no_argument,        0, 'x' },
+//#endif //ENABLE_XCLIP
+//			{ 0, 0, 0, 0 }
+//		};
+//		char const *const short_options =
+//			"h"   // help
+//			"V"   // version
+//			"a"   // add
+//			"e"   // edit
+//			"f:"  // file
+//			"u"   // user
+//			"p"   // pass
+//			"E"   // force echo to stdout
+//#ifdef ENABLE_XCLIP
+//			"x"   // force copying to xclip
+//#endif //ENABLE_XCLIP
+//			"";
+//		int option_index = 0;
+//		int c = getopt_long(argc, argv,
+//		                    short_options,
+//		                    long_options, &option_index);
+//		if (-1 == c)
+//			break;
+//		switch (c)
+//		{
+//		case 'h':
+//			return _Usage(false);
+//		case 'V':
+//			cout << _program_name << " " << VERSION << endl;
+//			throw ExitEx(0);
+//		case 'f':
+//			_file_name = optarg;
+//			break;
+//		case 'L':
+//			if (_command != _C_NOP)
+//				return _Usage(false);
+//			_command = _C_LIST;
+//			break;
+//		case 'a':
+//			if (_command != _C_NOP)
+//				return _Usage(false);
+//			_command = _C_ADD;
+//			break;
+//		case 'e':
+//			if (_command != _C_NOP)
+//				return _Usage(false);
+//			_command = _C_EDIT;
+//			break;
+//		case 'C':
+//			if (_command != _C_NOP)
+//				return _Usage(false);
+//			_command = _C_CREATE;
+//			break;
+//		case 'u':
+//			_user = true;
+//			break;
+//		case 'p':
+//			_pass = true;
+//			break;
+//		case 'E':
+//			_emitter = _E_STDOUT;
+//			break;
+//#ifdef ENABLE_XCLIP
+//		case 'x':
+//			_emitter = _E_XCLIP;
+//			break;
+//#endif //ENABLE_XCLIP
+//		default:
+//			return _Usage(true);
+//		};
+//	}
+//
+//	if (_command == _C_NOP)
+//		_command = _C_LIST;
+//
+//	if ((_command == _C_LIST || _command == _C_ADD || _command == _C_EDIT)
+//	    && optind != argc)
+//	{
+//		_argument = argv[optind++];
+//	}
+//
+//	if (optind != argc)
+//	{
+//		cerr << "Too many arguments" << endl;
+//		throw ExitEx(1);
+//	}
+}
+
+void cApp::_SetCommand(cCommand::PtrT command)
+{
+	if (_command)
 	{
-		cerr << "Too many arguments" << endl;
+		cerr << "Ambiguous command" << endl;
 		throw ExitEx(1);
 	}
+	_command.reset(command.release());
 }
 
 void cApp::Run()
@@ -215,20 +290,12 @@ void cApp::Run()
 
 void cApp::_Run()
 {
-	switch (_command)
+	if (!_command)
 	{
-	case _C_LIST:
-		return _DoList();
-	case _C_CREATE:
-		return _DoCreate();
-	case _C_ADD:
-		return _DoAdd();
-	case _C_EDIT:
-		return _DoEdit();
-	default:
-		cerr << "Command " << _command << " isn't implemented" << endl;
+		cerr << "No command" << endl;
 		throw ExitEx(1);
 	}
+	_command->Execute(_file_name);
 }
 
 namespace {
@@ -363,71 +430,6 @@ void cApp::_DoCreate()
 	cDatabase::PtrT database(new cDatabase);
 	database->Create();
 	database->Write(_file_name, pass1);
-}
-
-void cApp::_DoAdd()
-{
-	// Copied from pwsafe
-	char const *name = _argument;
-
-	cDatabase::PtrT database = _OpenDatabase(_file_name);
-	cEntry::PtrT entry(cEntry::Create());
-
-	if (name)
-	{
-		// group.title may be given via command line
-		char const *dot = strchr(name, '.');
-		if (dot &&
-		    dot != name &&
-		    dot[1] &&
-		    strrchr(name, '.') == dot)
-		{
-			entry->SetTitle(dot + 1);
-			entry->SetGroup(StringX(name, dot - name));
-		}
-		else
-		{
-			entry->SetTitle(name);
-		}
-	}
-
-    // FIXME: Limit count of retries.
-	while (true)
-	{
-		if (entry->GetTitle().empty())
-			entry->SetTitle(cTerminal::GetText("name: "));
-		if (entry->GetGroup().empty())
-			entry->SetGroup(cTerminal::GetText("group [<none>]: "));
-
-		if (database->HasEntry(entry->GetFullTitle()))
-		{
-			cerr << entry->GetFullTitle() << " already exists" << endl;
-			if (name)
-				throw ExitEx(1);
-			entry->SetTitle("");
-			entry->SetGroup("");
-		}
-		else if (!entry->GetTitle().empty())
-			break;
-	}
-
-	entry->SetUser(cTerminal::GetText("username: "));
-	if (entry->GetUser().empty())
-	{
-		// FIXME!!!
-		throw ExitEx(1);
-		//e.default_login = getyn("use default username ("+e.the_default_login+") ? [n] ", false);
-	}
-
-	StringX pass =
-		cTerminal::EnterPassword("password [return for random]: ",
-		                         "password again: ");
-	entry->SetPass(pass);
-
-	entry->SetNotes(cTerminal::GetText("notes: "));
-
-	database->AddEntry(entry);
-	database->Write();
 }
 
 void cApp::_DoEdit()

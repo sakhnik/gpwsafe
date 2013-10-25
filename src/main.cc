@@ -22,6 +22,7 @@
 #include "../config.h"
 #include "App.hh"
 #include "Gcrypt.hh"
+#include "Exceptions.hh"
 
 #include <sys/stat.h>
 #include <iostream>
@@ -62,9 +63,14 @@ int main(int argc, char* argv[])
 
 		app.Run();
 	}
-	catch (cApp::ExitEx const &e)
+	catch (ExitEx const &e)
 	{
 		return e.retcode;
+	}
+	catch (std::exception const &e)
+	{
+		cerr << e.what() << endl;
+		return 1;
 	}
 	return 0;
 }

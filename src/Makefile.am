@@ -6,30 +6,35 @@ AM_CXXFLAGS = -Wall \
 noinst_LIBRARIES = libgpwsafe.a
 
 libgpwsafe_a_SOURCES = \
+		Database.cc Database.hh \
+		Debug.cc Debug.hh \
 		Defs.hh \
+		Entry.cc Entry.hh \
 		Field.cc Field.hh \
 		File3.cc File3.hh \
-		Database.cc Database.hh \
-		Entry.cc Entry.hh \
-		Sha256.cc Sha256.hh \
-		Twofish.cc Twofish.hh \
+		Gcrypt.cc Gcrypt.hh \
 		Hmac.cc Hmac.hh \
 		KeyStretch.cc KeyStretch.hh \
-		Random.cc Random.hh \
 		Memory.cc Memory.hh \
-		Gcrypt.cc Gcrypt.hh \
-		Debug.cc Debug.hh
+		Random.cc Random.hh \
+		Sha256.cc Sha256.hh \
+		Twofish.cc Twofish.hh
 
 bin_PROGRAMS = gpwsafe
 
-gpwsafe_SOURCES = main.cc \
+gpwsafe_SOURCES = \
+		main.cc \
 		App.cc App.hh \
+		Command.hh \
+		CommandAdd.cc CommandAdd.hh \
+		Exceptions.hh \
 		IEmitter.hh \
-		Terminal.cc Terminal.hh \
-		StdoutEmitter.cc StdoutEmitter.hh
+		StdoutEmitter.cc StdoutEmitter.hh \
+		Terminal.cc Terminal.hh
 
 gpwsafe_LDADD = libgpwsafe.a \
-		$(LIBGCRYPT_LIBS)
+		$(LIBGCRYPT_LIBS) \
+		$(BOOST_PROGRAM_OPTIONS_LIB)
 
 gpwsafe_CXXFLAGS = -Werror $(AM_CXXFLAGS)
 
