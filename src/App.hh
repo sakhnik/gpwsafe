@@ -53,6 +53,7 @@ private:
 	void _DoCreate();
 	void _DoEdit();
 	void _SetCommand(cCommand::PtrT command);
+	void _SetEmitter(iEmitter *emitter);
 };
 
 } //namespace gPWS;

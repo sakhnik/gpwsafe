@@ -39,22 +39,9 @@ cCommandAdd::cCommandAdd(string const &name)
 {
 }
 
-namespace {
-
-cDatabase::PtrT _OpenDatabase(string const &file_name)
-{
-	cDatabase::PtrT database(new cDatabase);
-	string prompt = "Enter password for " + file_name + ": ";
-	StringX password = cTerminal::GetPassword(prompt);
-	database->Read(file_name, password);
-	return database;
-}
-
-} //namespace
-
 void cCommandAdd::Execute(Params const &params)
 {
-	cDatabase::PtrT database = _OpenDatabase(params.file_name);
+	cDatabase::PtrT database = OpenDatabase(params.file_name);
 	cEntry::PtrT entry(cEntry::Create());
 
 	if (!_name.empty())

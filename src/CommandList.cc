@@ -40,55 +40,41 @@ cCommandList::cCommandList(string const &regex)
 
 void cCommandList::Execute(Params const &params)
 {
-//	unique_ptr<iEmitter> emitter;
-//	switch (_emitter)
-//	{
-//	case _E_STDOUT:
-//		emitter.reset(new cStdoutEmitter);
-//		break;
-//#ifdef ENABLE_XCLIP
-//	case _E_XCLIP:
-//#ifdef ENABLE_GTK
-//		emitter.reset(new cGtkEmitter);
-//#endif //ENABLE_GTK
-//		break;
-//#endif //ENABLE_XCLIP
-//	}
-//
-//	assert(emitter.get() && "Not implemented _emitter");
-//
-//	_PrintIntention(emitter.get());
-//
-//	cDatabase::PtrT database = _OpenDatabase(_file_name);
-//
-//	auto match = database->Find(_argument);
-//	if (match.empty())
-//	{
-//		cerr << "No matching entries found" << endl;
-//		throw ExitEx(1);
-//	}
-//
-//	if (!_user && !_pass)
-//	{
-//		for (auto const &title_entry : match)
-//			cout << title_entry.first << endl;
-//		return;
-//	}
-//
-//	if (!_CheckSingleEntry(match))
-//		throw ExitEx(1);
-//
-//	auto const &title_entry = match.front();
-//	if (_user)
-//	{
-//		emitter->Emit("username for " + title_entry.first,
-//		              title_entry.second->GetUser());
-//	}
-//	if (_pass)
-//	{
-//		emitter->Emit("password for " + title_entry.first,
-//		              title_entry.second->GetPass());
-//	}
+	assert(params.emitter && "Not implemented _emitter");
+	auto &emitter = params.emitter;
+
+	_PrintIntention(params);
+
+	cDatabase::PtrT database = OpenDatabase(params.file_name);
+
+	auto match = database->Find(_regex.c_str());
+	if (match.empty())
+	{
+		cerr << "No matching entries found" << endl;
+		throw ExitEx(1);
+	}
+
+	if (!params.user && !params.pass)
+	{
+		for (auto const &title_entry : match)
+			cout << title_entry.first << endl;
+		return;
+	}
+
+	if (!CheckSingleEntry(match))
+		throw ExitEx(1);
+
+	auto const &title_entry = match.front();
+	if (params.user)
+	{
+		emitter->Emit("username for " + title_entry.first,
+		              title_entry.second->GetUser());
+	}
+	if (params.pass)
+	{
+		emitter->Emit("password for " + title_entry.first,
+		              title_entry.second->GetPass());
+	}
 }
 
 void cCommandList::_PrintIntention(Params const &params)

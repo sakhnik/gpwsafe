@@ -111,7 +111,7 @@ void cApp::Init(int argc, char *argv[])
 			bool_switch(nullptr)->notifier(
 				[this](bool)
 				{
-					cout << "Echo" << endl;
+					this->_SetEmitter(new cStdoutEmitter);
 				}
 			), "force echoing of entry to stdout")
 #ifdef ENABLE_XCLIP
@@ -119,7 +119,7 @@ void cApp::Init(int argc, char *argv[])
 			bool_switch(nullptr)->notifier(
 				[this](bool)
 				{
-					cout << "Xclip" << endl;
+					this->_SetEmitter(new cGtkEmitter);
 				}
 			),
 			"force copying of entry to X selection")
@@ -266,6 +266,11 @@ void cApp::_SetCommand(cCommand::PtrT command)
 	_command.reset(command.release());
 }
 
+void cApp::_SetEmitter(iEmitter *emitter)
+{
+	_params.emitter.reset(emitter);
+}
+
 void cApp::Run()
 {
 	try
@@ -285,48 +290,6 @@ void cApp::_Run()
 		_command.reset(cCommandList::Create("").release());
 	_command->Execute(_params);
 }
-
-namespace {
-
-cDatabase::PtrT _OpenDatabase(string const &file_name)
-{
-	cDatabase::PtrT database(new cDatabase);
-	string prompt = "Enter password for " + file_name + ": ";
-	StringX password = cTerminal::GetPassword(prompt);
-	database->Read(file_name, password);
-	return database;
-}
-
-} //namespace
-
-namespace {
-
-template<typename EntriesT>
-bool _CheckSingleEntry(EntriesT const &entries)
-{
-	assert(!entries.empty() && "Must be analyzed separately");
-
-	int count = std::distance(entries.begin(), entries.end());
-	if (1 == count)
-		return true;
-
-	cerr << "More than one matching entry: ";
-	int j = 0;
-	for (auto it = entries.begin();
-	     it != entries.end() && j != 3; ++it, ++j)
-	{
-		if (j)
-			cerr << ", ";
-		cerr << it->first;
-	}
-	int rest = count - j;
-	if (rest)
-		cerr << ", ... (" << rest << " more)";
-	cerr << " ." << endl;
-	return false;
-}
-
-} //namespace;
 
 //void cApp::_DoCreate()
 //{

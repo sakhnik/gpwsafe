@@ -22,6 +22,8 @@
 #pragma once
 
 #include "IEmitter.hh"
+#include "Database.hh"
+
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <memory>
@@ -46,6 +48,10 @@ public:
 
 	virtual ~cCommand() { }
 	virtual void Execute(Params const &params) = 0;
+
+protected:
+	static cDatabase::PtrT OpenDatabase(std::string const &file_name);
+	static bool CheckSingleEntry(cDatabase::FilterRangeT const &entries);
 };
 
 } //namespace gPWS;
