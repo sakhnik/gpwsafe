@@ -25,8 +25,9 @@ bin_PROGRAMS = gpwsafe
 gpwsafe_SOURCES = \
 		main.cc \
 		App.cc App.hh \
-		Command.hh \
+		Command.cc Command.hh \
 		CommandAdd.cc CommandAdd.hh \
+		CommandList.cc CommandList.hh \
 		Exceptions.hh \
 		IEmitter.hh \
 		StdoutEmitter.cc StdoutEmitter.hh \

@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "IEmitter.hh"
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <memory>
@@ -33,8 +34,18 @@ class cCommand
 public:
 	typedef std::unique_ptr<cCommand> PtrT;
 
+	struct Params
+	{
+		std::string file_name;
+		bool user;
+		bool pass;
+		std::unique_ptr<iEmitter> emitter;
+
+		Params();
+	};
+
 	virtual ~cCommand() { }
-	virtual void Execute(std::string const &file_name) = 0;
+	virtual void Execute(Params const &params) = 0;
 };
 
 } //namespace gPWS;

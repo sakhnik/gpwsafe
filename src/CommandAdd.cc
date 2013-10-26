@@ -52,9 +52,9 @@ cDatabase::PtrT _OpenDatabase(string const &file_name)
 
 } //namespace
 
-void cCommandAdd::Execute(string const &file_name)
+void cCommandAdd::Execute(Params const &params)
 {
-	cDatabase::PtrT database = _OpenDatabase(file_name);
+	cDatabase::PtrT database = _OpenDatabase(params.file_name);
 	cEntry::PtrT entry(cEntry::Create());
 
 	if (!_name.empty())

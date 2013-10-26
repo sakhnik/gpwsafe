@@ -33,7 +33,7 @@ class cCommandAdd
 public:
 	static PtrT Create(std::string const &name);
 
-	virtual void Execute(std::string const &file_name);
+	virtual void Execute(Params const &params);
 
 private:
 	std::string _name;

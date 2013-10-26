@@ -1,7 +1,7 @@
 //
-// App.hh
+// CommandList.hh
 //
-//     Created: 24.01.2012
+//     Created: 26.10.2013
 //      Author: A. Sakhnik
 //
 // This file is part of gpwsafe.
@@ -19,40 +19,29 @@
 // You should have received a copy of the GNU General Public License
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
+
 #pragma once
 
-#include "../config.h"
 #include "Command.hh"
-
 #include <string>
-#include <boost/noncopyable.hpp>
 
 namespace gPWS {
 
 struct iEmitter;
 
-class cApp
-	: boost::noncopyable
+class cCommandList
+	: public cCommand
 {
 public:
-	cApp(char const *program_name);
+	static PtrT Create(std::string const &regex);
 
-	void Init(int argc, char *argv[]);
-
-	void Run();
+	virtual void Execute(Params const &params);
 
 private:
-	char const *_program_name;
-	cCommand::PtrT _command;
-	cCommand::Params _params;
+	std::string _regex;
 
-	char const *_argument;
-
-	void _Run();
-	void _Usage(bool fail);
-	void _DoCreate();
-	void _DoEdit();
-	void _SetCommand(cCommand::PtrT command);
+	cCommandList(std::string const &regex);
+	void _PrintIntention(Params const &params);
 };
 
 } //namespace gPWS;

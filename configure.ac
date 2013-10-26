@@ -19,7 +19,7 @@ AC_CHECK_LIB(readline,readline,[],[AC_MSG_ERROR(cannot find libreadline)])
 AM_PATH_LIBGCRYPT([1.2.0],[],[])
 
 m4_include([m4/ax_boost_base.m4])
-AX_BOOST_BASE([1.40],[],[])
+AX_BOOST_BASE([1.53],[],[])
 m4_include([m4/ax_boost_program_options.m4])
 AX_BOOST_PROGRAM_OPTIONS
 m4_include([m4/ax_boost_unit_test_framework.m4])
