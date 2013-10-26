@@ -27,6 +27,7 @@ gpwsafe_SOURCES = \
 		App.cc App.hh \
 		Command.cc Command.hh \
 		CommandAdd.cc CommandAdd.hh \
+		CommandCreate.cc CommandCreate.hh \
 		CommandList.cc CommandList.hh \
 		Exceptions.hh \
 		IEmitter.hh \

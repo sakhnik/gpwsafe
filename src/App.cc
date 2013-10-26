@@ -26,6 +26,7 @@
 #include "Exceptions.hh"
 #include "CommandAdd.hh"
 #include "CommandList.hh"
+#include "CommandCreate.hh"
 
 #include "../config.h"
 
@@ -45,7 +46,6 @@ using namespace std;
 
 cApp::cApp(char const *program_name)
 	: _program_name(program_name)
-	, _argument(0)
 {
 }
 
@@ -73,7 +73,14 @@ void cApp::Init(int argc, char *argv[])
 
 	options_description desc_cmd("Commands");
 	desc_cmd.add_options()
-		("create", "create an empty database")
+		("create",
+			bool_switch(nullptr)
+			->notifier([this](bool arg)
+				{
+					if (arg)
+						this->_SetCommand(cCommandCreate::Create());
+				}),
+			"create an empty database")
 		("list",
 			named_option("REGEX")
 			->implicit_value("")
@@ -109,17 +116,19 @@ void cApp::Init(int argc, char *argv[])
 			"emit password of listed account")
 		("echo,E",
 			bool_switch(nullptr)->notifier(
-				[this](bool)
+				[this](bool arg)
 				{
-					this->_SetEmitter(new cStdoutEmitter);
+					if (arg)
+						this->_SetEmitter(new cStdoutEmitter);
 				}
 			), "force echoing of entry to stdout")
 #ifdef ENABLE_XCLIP
 		("xclip,x",
 			bool_switch(nullptr)->notifier(
-				[this](bool)
+				[this](bool arg)
 				{
-					this->_SetEmitter(new cGtkEmitter);
+					if (arg)
+						this->_SetEmitter(new cGtkEmitter);
 				}
 			),
 			"force copying of entry to X selection")
@@ -290,29 +299,6 @@ void cApp::_Run()
 		_command.reset(cCommandList::Create("").release());
 	_command->Execute(_params);
 }
-
-//void cApp::_DoCreate()
-//{
-//	if (!::access(_file_name.c_str(), F_OK))
-//	{
-//		cerr << _file_name << " already exists" << endl;
-//		throw ExitEx(1);
-//	}
-//
-//	string prompt1 = "Enter passphrase for " + _file_name + ": ";
-//	StringX pass1 = cTerminal::GetPassword(prompt1);
-//	string prompt2 = "Reenter passphrase for " + _file_name + ": ";
-//	StringX pass2 = cTerminal::GetPassword(prompt2);
-//	if (pass1 != pass2)
-//	{
-//		cerr << "Passphrases do not match" << endl;
-//		throw ExitEx(1);
-//	}
-//
-//	cDatabase::PtrT database(new cDatabase);
-//	database->Create();
-//	database->Write(_file_name, pass1);
-//}
 
 //void cApp::_DoEdit()
 //{
