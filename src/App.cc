@@ -35,7 +35,9 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <boost/program_options.hpp>
+#include <sys/ioctl.h>
 
 
 namespace gPWS {
@@ -52,12 +54,16 @@ void cApp::Init(int argc, char *argv[])
 {
 	using namespace boost::program_options;
 
+	struct winsize w;
+	ioctl(0, TIOCGWINSZ, &w);
+	int line_length = w.ws_col;
+
 	auto named_option = [](char const *name)->typed_value<string>*
 	{
 		return (new typed_value<string>(nullptr))->value_name(name);
 	};
 
-	options_description desc_cmd("Commands");
+	options_description desc_cmd("Commands", line_length, line_length / 2);
 	desc_cmd.add_options()
 		("create",
 			bool_switch(nullptr)
@@ -97,7 +103,7 @@ void cApp::Init(int argc, char *argv[])
 			"edit an entry")
 		;
 
-	options_description desc_opts("Options");
+	options_description desc_opts("Options", line_length, line_length / 2);
 	desc_opts.add_options()
 		("file,f",
 			value<string>(&_params.file_name)->default_value(_params.file_name),
@@ -131,11 +137,11 @@ void cApp::Init(int argc, char *argv[])
 		("version,V", "output version information and exit")
 		;
 
-	options_description desc;
+	options_description desc(line_length, line_length / 2);
 	desc.add(desc_cmd).add(desc_opts);
 
 	positional_options_description p;
-	p.add("argument", -1);
+	p.add("list", 1);
 
 	variables_map vm;
 	store(command_line_parser(argc, argv)
