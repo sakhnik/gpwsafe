@@ -1,0 +1,14 @@
+set file "/tmp/test.ps3"
+set passwd "asdfqwer"
+
+pass "Ok"
+#spawn $GPWSAFE -f $file --create
+#
+#expect {
+#	"Enter passphrase *" { pass "Spawn" }
+#	default              { fail "Spawn" }
+#}
+#
+#send "$passwd\r"
+#
+#expect eof
