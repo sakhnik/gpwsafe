@@ -3,27 +3,32 @@ AUTOMAKE_OPTIONS = dejagnu
 EXTRA_DIST = testsuite
 RUNTESTDEFAULTFLAGS = --tool gpwsafe --srcdir $$srcdir GPWSAFE=$(top_builddir)/src/gpwsafe
 
-TESTS = KeyStretchTest \
+TESTS = \
+	KeyStretchTest \
 	File3Test \
 	EntryTest
 
-check_PROGRAMS = KeyStretchTest \
-		File3Test \
-		EntryTest
+check_PROGRAMS = \
+	KeyStretchTest \
+	File3Test \
+	EntryTest
 
 KeyStretchTest_SOURCES = KeyStretchTest.cc
-KeyStretchTest_LDADD = $(top_builddir)/src/libgpwsafe.a \
-		$(LIBGCRYPT_LIBS) \
-		$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+KeyStretchTest_LDADD = \
+	$(top_builddir)/src/libgpwsafe.a \
+	$(LIBGCRYPT_LIBS) \
+	$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 File3Test_SOURCES = File3Test.cc
-File3Test_LDADD = $(top_builddir)/src/libgpwsafe.a \
-		$(LIBGCRYPT_LIBS) \
-		$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+File3Test_LDADD = \
+	$(top_builddir)/src/libgpwsafe.a \
+	$(LIBGCRYPT_LIBS) \
+	$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 EntryTest_SOURCES = EntryTest.cc
-EntryTest_LDADD = $(top_builddir)/src/libgpwsafe.a \
-		$(LIBGCRYPT_LIBS) \
-		$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+EntryTest_LDADD = \
+	$(top_builddir)/src/libgpwsafe.a \
+	$(LIBGCRYPT_LIBS) \
+	$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DBOOST_TEST_DYN_LINK
