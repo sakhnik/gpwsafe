@@ -10,6 +10,8 @@
 #include "StdoutEmitter.hh"
 #include "GtkEmitter.hh"
 
+#include "config.h"
+
 namespace gPWS {
 
 using namespace std;
