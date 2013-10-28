@@ -176,8 +176,7 @@ sField::PtrT cFile3::ReadField()
 
 void cFile3::OpenWrite(char const *fname,
                        StringX const &pass,
-                       bool new_keys,
-                       bool very_strong)
+                       bool new_keys)
 {
 	assert(_state == S_CLOSED);
 	_state = S_WRITING;
@@ -215,7 +214,7 @@ void cFile3::OpenWrite(char const *fname,
 	if (_main_key.empty() || new_keys)
 	{
 		_main_key.resize(cTwofish::KEY_LENGTH);
-		cRandom::Randomize(&_main_key[0], _main_key.size(), very_strong);
+		cRandom::Randomize(&_main_key[0], _main_key.size(), true);
 	}
 	// Encrypt the main key before writing
 	StringX main_key_enc(_main_key);
@@ -226,7 +225,7 @@ void cFile3::OpenWrite(char const *fname,
 	if (_hmac_key.empty() || new_keys)
 	{
 		_hmac_key.resize(cHmac::KEY_LENGTH);
-		cRandom::Randomize(&_hmac_key[0], _hmac_key.size(), very_strong);
+		cRandom::Randomize(&_hmac_key[0], _hmac_key.size(), true);
 	}
 	StringX hmac_key_enc(_hmac_key);
 	twofish.Encrypt(&hmac_key_enc[0], hmac_key_enc.size(),

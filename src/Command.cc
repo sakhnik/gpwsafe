@@ -19,7 +19,7 @@ using namespace std;
 cCommand::Params::Params()
 	: user(false)
 	, pass(false)
-#if defined(ENABLE_XCLIP) && defined(ENABLE_GTK)
+#if ENABLE_XCLIP && ENABLE_GTK
 	, emitter(new cGtkEmitter)
 #else
 	, emitter(new cStdoutEmitter)

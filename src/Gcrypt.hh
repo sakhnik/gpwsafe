@@ -12,7 +12,7 @@ namespace gPWS {
 class cGcrypt
 {
 public:
-	static int Init();
+	static int Init(bool quick_random);
 };
 
 } //namespace gPWS;

@@ -47,8 +47,7 @@ public:
 
 	void OpenWrite(char const *fname,
 	               StringX const &pass,
-	               bool new_keys = false,
-	               bool very_strong = true);
+	               bool new_keys = false);
 
 	void WriteField(sField::PtrT const &field);
 

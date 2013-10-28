@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 	// Be nice and paranoid
 	umask(0077);
 
-	if (int res = cGcrypt::Init())
+	if (int res = cGcrypt::Init(false))
 	{
 		cerr << "Can't initialize libgcrypt" << endl;
 		return res;

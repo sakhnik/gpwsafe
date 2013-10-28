@@ -33,7 +33,7 @@ _GcryProgressHandler(void *cb_data, const char *what,
 
 } //namespace;
 
-int cGcrypt::Init()
+int cGcrypt::Init(bool quick_random)
 {
 	char const *const REQ_GCRYPT_VERSION = "1.2.0";
 	if (!gcry_check_version(REQ_GCRYPT_VERSION))
@@ -45,6 +45,8 @@ int cGcrypt::Init()
 	// Allocate secure memory for sensitive information (won't be swapped)
 	gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);
 	gcry_set_progress_handler(_GcryProgressHandler, NULL);
+	if (quick_random)
+		gcry_control(GCRYCTL_ENABLE_QUICK_RANDOM, 0, 0);
 	gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
 
 	return 0;

@@ -21,7 +21,7 @@ struct sGlobalFixture
 {
 	sGlobalFixture()
 	{
-		gPWS::cGcrypt::Init();
+		gPWS::cGcrypt::Init(true);
 	}
 
 } global_fixture;
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
 	char const *const pass = "!23$QweR";
 
 	cFile3 file1;
-	file1.OpenWrite(fname, pass, true, false);
+	file1.OpenWrite(fname, pass, true);
 
 	for (FieldsT::const_iterator i = fields1.begin(); i != fields1.end(); ++i)
 		file1.WriteField(*i);
