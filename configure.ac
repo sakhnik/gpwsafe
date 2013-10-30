@@ -3,6 +3,7 @@ AC_PREREQ(2.59)
 dnl AC_CONFIG_AUX_DIR(config)
 
 AM_INIT_AUTOMAKE([1.9 color-tests])
+AM_SILENT_RULES([yes])
 
 AC_CONFIG_HEADERS([config.h])
 

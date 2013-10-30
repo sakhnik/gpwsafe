@@ -14,6 +14,7 @@
 #include "../src/Debug.hh"
 
 #include <boost/iterator/indirect_iterator.hpp>
+#include <boost/scope_exit.hpp>
 
 using namespace std;
 
@@ -50,6 +51,9 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
 
 	cFile3 file1;
 	file1.OpenWrite(fname, pass, true);
+	BOOST_SCOPE_EXIT((&fname)) {
+		::unlink(fname);
+	} BOOST_SCOPE_EXIT_END
 
 	for (FieldsT::const_iterator i = fields1.begin(); i != fields1.end(); ++i)
 		file1.WriteField(*i);
@@ -71,8 +75,6 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
 		boost::make_indirect_iterator(fields2.begin()),
 		boost::make_indirect_iterator(fields2.end())
 		);
-
-	::unlink(fname);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

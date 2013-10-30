@@ -39,12 +39,16 @@ public:
 
 	void Init(int argc, char *argv[]);
 
+	bool UseWeakRandomnessForTests() const
+		{ return _use_weak_randomness_for_tests; }
+
 	void Run();
 
 private:
 	char const *_program_name;
 	cCommand::PtrT _command;
 	cCommand::Params _params;
+	bool _use_weak_randomness_for_tests;
 
 	void _Run();
 	void _SetCommand(cCommand::PtrT command);

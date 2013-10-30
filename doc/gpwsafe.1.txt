@@ -69,6 +69,10 @@ ifdef::enable_xclip[]
         by default is $DISPLAY is set.
 endif::enable_xclip[]
 
+--use-weak-randomness-for-tests::
+        Don't drain the use entropy pool during automated tests.
+        Encryption keys will be generated from /dev/urandom on Linux.
+
 -h, --help::
         Show summary of options
 

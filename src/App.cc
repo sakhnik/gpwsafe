@@ -47,6 +47,7 @@ using namespace std;
 
 cApp::cApp(char const *program_name)
 	: _program_name(program_name)
+	, _use_weak_randomness_for_tests(false)
 {
 }
 
@@ -133,6 +134,9 @@ void cApp::Init(int argc, char *argv[])
 			),
 			"force copying of entry to X selection")
 #endif //ENABLE_XCLIP
+		("use-weak-randomness-for-tests",
+			bool_switch(&_use_weak_randomness_for_tests),
+			"don't press on the pool of randomness")
 		("help,h", "display this help and exit")
 		("version,V", "output version information and exit")
 		;

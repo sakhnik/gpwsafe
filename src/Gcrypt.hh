@@ -12,6 +12,7 @@ namespace gPWS {
 class cGcrypt
 {
 public:
+	static int CheckVersion();
 	static int Init(bool quick_random);
 };
 

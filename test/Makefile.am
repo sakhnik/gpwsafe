@@ -1,8 +1,3 @@
-
-AUTOMAKE_OPTIONS = dejagnu
-EXTRA_DIST = testsuite
-RUNTESTDEFAULTFLAGS = --tool gpwsafe --srcdir $$srcdir GPWSAFE=$(top_builddir)/src/gpwsafe
-
 TESTS = \
 	KeyStretchTest \
 	File3Test \

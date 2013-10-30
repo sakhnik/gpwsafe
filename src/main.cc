@@ -50,9 +50,9 @@ int main(int argc, char* argv[])
 	// Be nice and paranoid
 	umask(0077);
 
-	if (int res = cGcrypt::Init(false))
+	if (int res = cGcrypt::CheckVersion())
 	{
-		cerr << "Can't initialize libgcrypt" << endl;
+		cerr << "libgcrypt version mismatch\n" << endl;
 		return res;
 	}
 
@@ -60,6 +60,12 @@ int main(int argc, char* argv[])
 	{
 		cApp app(program_name);
 		app.Init(argc, argv);
+
+		if (int res = cGcrypt::Init(app.UseWeakRandomnessForTests()))
+		{
+			cerr << "Can't initialize libgcrypt" << endl;
+			return res;
+		}
 
 		app.Run();
 	}
