@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Expect;
 
-my $gpwsafe = "./src/gpwsafe";
+my $gpwsafe = "../src/gpwsafe";
 my $test_file = "/tmp/test.ps3";
 my $password = "asdfqwer";
 
@@ -15,19 +15,26 @@ my @records = (
         'group'     => 'bar',
         'username'  => 'foo@bar.baz',
         'password'  => 'Qwer!234',
-        'notes'     => 'First account'
+        'notes'     => 'First account',
+
+        'query_req' => 'bar.foo'
     },
     {
-        'add_req'   => 'foo2',
-        'name'      => 'foo2',
+        'add_req'   => 'baz',
+        'name'      => 'baz',
         'group'     => 'bar',
         'username'  => 'foo@bar.baz',
         'password'  => 'ZxcvAsdf',
-        'notes'     => 'Second account'
+        'notes'     => 'Second account',
+
+        'query_req' => 'bar.baz'
     }
 );
 
-unlink $test_file or die "Failed to remove $test_file: $!\n";
+unlink $test_file;
+if (-e $test_file) {
+    die "Failed to remove $test_file: $!\n";
+}
 
 sub create() {
     my $exp = Expect->spawn($gpwsafe, "--use-weak-randomness-for-tests",
@@ -94,18 +101,42 @@ sub check_list() {
     $exp->soft_close();
 
     my @actual = sort split("\n", $a);
-    my @expected = map { $_->{'group'}.".".$_->{'name'} } @records;
+    my @expected = sort map { $_->{'group'}.".".$_->{'name'} } @records;
 
     $#actual == $#expected or die "Lists' lengths don't match\n";
     foreach (my $i = 0; $i < $#actual; $i++) {
         $actual[$i] =~ s/^\s+|\s+$//;
-        $actual[$i] eq $expected[$i] or die "Lists don't match at position $i\n";
+        $actual[$i] eq $expected[$i]
+            or die "Lists don't match at position $i: $actual[$i] != $expected[$i]\n";
     }
 }
+
+sub check_passwords() {
+    foreach my $params (@records) {
+
+        my $exp = Expect->spawn($gpwsafe, "--use-weak-randomness-for-tests",
+                                "-f", $test_file, "-Eup", "$params->{'query_req'}")
+            or die "Can't spawn command: $!\n";
+
+        $exp->expect(1, "Going to print login and password to stdout") or die "Failed";
+        $exp->expect(1, "Enter password for $test_file: ") or die "Failed";
+        $exp->send("$password\n");
+
+        $exp->expect(1, "username for ".$params->{'query_req'}.": ".$params->{'username'});
+        $exp->expect(1, "password for ".$params->{'query_req'}.": ".$params->{'password'});
+
+
+        $exp->expect(1, "") or die "Failed";
+        $exp->soft_close();
+    }
+}
+
+
 
 &create();
 &populate();
 &check_list();
+&check_passwords();
 
 print "PASS";
 

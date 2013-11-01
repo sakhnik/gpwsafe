@@ -85,6 +85,18 @@ AS_IF([test "x$enable_xclip" = "xyes"],[
 
 AM_CONDITIONAL([ENABLE_XCLIP],[test "x$enable_xclip" != "xno"])
 
+
+dnl --------------------------------------------------------------------------
+dnl Perl modules
+
+m4_include([m4/ax_prog_perl_modules.m4])
+AX_PROG_PERL_MODULES(Expect, [have_perl_expect=yes], [have_perl_expect=no])
+AS_IF([test "x$have_perl_expect" = "xno"],[
+    AC_MSG_WARN([No perl module Expect, will not run automatic test for CLI])
+])
+AM_CONDITIONAL([HAVE_PERL_EXPECT],[test "x$have_perl_expect" = "xyes"])
+
+
 dnl --------------------------------------------------------------------------
 dnl Documentation support
 
