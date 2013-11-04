@@ -44,6 +44,7 @@ public:
 		std::unique_ptr<iEmitter> emitter;
 
 		Params();
+		std::string ExpandFileName() const;
 	};
 
 	virtual ~cCommand() { }

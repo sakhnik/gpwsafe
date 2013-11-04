@@ -26,13 +26,16 @@
 #include "GtkEmitter.hh"
 
 #include "config.h"
+#include <wordexp.h>
+#include <boost/scope_exit.hpp>
 
 namespace gPWS {
 
 using namespace std;
 
 cCommand::Params::Params()
-	: user(false)
+	: file_name("~/.gpwsafe.psafe3")
+	, user(false)
 	, pass(false)
 #if ENABLE_XCLIP && ENABLE_GTK
 	, emitter(new cGtkEmitter)
@@ -40,14 +43,17 @@ cCommand::Params::Params()
 	, emitter(new cStdoutEmitter)
 #endif
 {
-	char const *const DEFAULT_FILE = ".gpwsafe.psafe3";
-	char const *home = getenv("HOME");
-	if (home)
-	{
-		file_name = home;
-		file_name += "/";
-	}
-	file_name += DEFAULT_FILE;
+}
+
+string cCommand::Params::ExpandFileName() const
+{
+	wordexp_t exp_result = { 0 };
+	BOOST_SCOPE_EXIT((&exp_result)) {
+		wordfree(&exp_result);
+	} BOOST_SCOPE_EXIT_END
+
+	wordexp(file_name.c_str(), &exp_result, 0);
+	return exp_result.we_wordv[0];
 }
 
 cDatabase::PtrT cCommand::OpenDatabase(string const &file_name)

@@ -41,7 +41,7 @@ cCommandAdd::cCommandAdd(string const &name)
 
 void cCommandAdd::Execute(Params const &params)
 {
-	cDatabase::PtrT database = OpenDatabase(params.file_name);
+	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
 	cEntry::PtrT entry(cEntry::Create());
 
 	if (!_name.empty())

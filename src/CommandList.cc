@@ -45,7 +45,7 @@ void cCommandList::Execute(Params const &params)
 
 	_PrintIntention(params);
 
-	cDatabase::PtrT database = OpenDatabase(params.file_name);
+	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
 
 	auto match = database->Find(_regex.c_str());
 	if (match.empty())

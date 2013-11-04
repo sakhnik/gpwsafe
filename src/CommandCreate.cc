@@ -39,7 +39,7 @@ cCommandCreate::cCommandCreate()
 
 void cCommandCreate::Execute(Params const &params)
 {
-	string const &file_name = params.file_name;
+	string file_name = params.ExpandFileName();
 
 	if (!::access(file_name.c_str(), F_OK))
 	{

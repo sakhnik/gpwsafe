@@ -46,7 +46,7 @@ void cCommandEdit::Execute(Params const &params)
 	}
 	char const *query = _regex.c_str();
 
-	cDatabase::PtrT database = OpenDatabase(params.file_name);
+	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
 	auto entries = database->Find(query);
 	if (entries.empty())
 	{
