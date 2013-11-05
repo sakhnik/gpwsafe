@@ -190,20 +190,15 @@ void cApp::Run()
 {
 	try
 	{
-		_Run();
+		if (!_command)
+			_command.reset(cCommandList::Create("").release());
+		_command->Execute(_params);
 	}
 	catch (std::exception const &e)
 	{
 		cerr << "Exception: " << e.what() << endl;
 		throw ExitEx(1);
 	}
-}
-
-void cApp::_Run()
-{
-	if (!_command)
-		_command.reset(cCommandList::Create("").release());
-	_command->Execute(_params);
 }
 
 } //namespace gPWS;

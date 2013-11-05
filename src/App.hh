@@ -50,7 +50,6 @@ private:
 	cCommand::Params _params;
 	bool _use_weak_randomness_for_tests;
 
-	void _Run();
 	void _SetCommand(cCommand::PtrT command);
 	void _SetEmitter(iEmitter *emitter);
 };
