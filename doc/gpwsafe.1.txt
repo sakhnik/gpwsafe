@@ -35,6 +35,7 @@ SYNOPSIS
 DESCRIPTION
 -----------
 *gpwsafe* manipulates Counterpane's PasswordSafe username/password databases.
+By default it requests the password for the default file and lists just the Groups and Titles for every entry.
 
 It is compatible with Counterpane's PasswordSafe 3.x databases.
 
@@ -72,6 +73,9 @@ OPTIONS
 
 -p, --pass::
         Show password of listed account(s)
+
+-n, --notes::
+        Show notes of listed account(s)
 
 -E, --echo::
         Echo the entry to stdout.
