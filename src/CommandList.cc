@@ -95,10 +95,10 @@ void cCommandList::_PrintIntention(Params const &params)
 			subject += " and ";
 		subject += "password";
 	}
-		if (params.notes)
+	if (params.notes)
 	{
 		if (params.user || params.pass)
-				subject += " and ";
+			subject += " and ";
 		subject += "notes";
 	}
 	params.emitter->PrintIntention(subject);
