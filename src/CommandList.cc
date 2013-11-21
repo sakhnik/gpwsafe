@@ -54,7 +54,7 @@ void cCommandList::Execute(Params const &params)
 		throw ExitEx(1);
 	}
 
-	if (!params.user && !params.pass)
+	if (!params.user && !params.pass && !params.notes)
 	{
 		for (auto const &title_entry : match)
 			cout << title_entry.first << endl;
@@ -75,11 +75,16 @@ void cCommandList::Execute(Params const &params)
 		emitter->Emit("password for " + title_entry.first,
 		              title_entry.second->GetPass());
 	}
+	if (params.notes)
+	{
+		emitter->Emit("notes for " + title_entry.first,
+		              title_entry.second->GetNotes());
+	}
 }
 
 void cCommandList::_PrintIntention(Params const &params)
 {
-	if (!params.user && !params.pass)
+	if (!params.user && !params.pass && !params.notes)
 		return;
 	string subject;
 	if (params.user)
@@ -89,6 +94,12 @@ void cCommandList::_PrintIntention(Params const &params)
 		if (params.user)
 			subject += " and ";
 		subject += "password";
+	}
+		if (params.notes)
+	{
+		if (params.user || params.pass)
+				subject += " and ";
+		subject += "notes";
 	}
 	params.emitter->PrintIntention(subject);
 }
