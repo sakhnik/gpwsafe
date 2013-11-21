@@ -100,10 +100,7 @@ void cCommandList::_PrintIntention(Params const &params)
 		if (params.user || params.pass)
 				subject += " and ";
 		subject += "notes";
-}
-
-
-
+	}
 	params.emitter->PrintIntention(subject);
 }
 
