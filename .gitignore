@@ -8,6 +8,8 @@ configure
 config.log
 config.status
 config.h*
+config.guess
+config.sub
 stamp-h1
 depcomp
 install-sh
