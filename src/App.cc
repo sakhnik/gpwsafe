@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <boost/version.hpp>
 #include <boost/program_options.hpp>
 #include <sys/ioctl.h>
 
@@ -61,7 +62,24 @@ void cApp::Init(int argc, char *argv[])
 
 	auto named_option = [](char const *name)->typed_value<string>*
 	{
+#if BOOST_VERSION / 100 < 1053
+		struct NamedOption
+			: public typed_value<string>
+		{
+			const char *_name;
+
+			NamedOption(const char *name)
+				: typed_value<string>(nullptr)
+				, _name(name)
+			{
+			}
+
+			string name() const { return _name; }
+		};
+		return new NamedOption(name);
+#else
 		return (new typed_value<string>(nullptr))->value_name(name);
+#endif
 	};
 
 	options_description desc_cmd("Commands", line_length, line_length / 2);
