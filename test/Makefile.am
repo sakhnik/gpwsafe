@@ -16,6 +16,7 @@
 check_PROGRAMS = \
 	KeyStretchTest \
 	File3Test \
+	DatabaseTest \
 	EntryTest
 
 KeyStretchTest_SOURCES = KeyStretchTest.cc
@@ -26,6 +27,12 @@ KeyStretchTest_LDADD = \
 
 File3Test_SOURCES = File3Test.cc
 File3Test_LDADD = \
+	$(top_builddir)/src/libgpwsafe.a \
+	$(LIBGCRYPT_LIBS) \
+	$(BOOST_UNIT_TEST_FRAMEWORK_LIB)
+
+DatabaseTest_SOURCES = DatabaseTest.cc
+DatabaseTest_LDADD = \
 	$(top_builddir)/src/libgpwsafe.a \
 	$(LIBGCRYPT_LIBS) \
 	$(BOOST_UNIT_TEST_FRAMEWORK_LIB)

@@ -85,6 +85,7 @@ private:
 	_TitleEntryT _entries;
 
 	bool _AddField(sField::PtrT const &field);
+	static std::string FollowSymlink(const std::string &fname);
 
 public:
 	typedef boost::filter_iterator
