@@ -46,18 +46,18 @@ BOOST_AUTO_TEST_SUITE(File3Test)
 
 BOOST_AUTO_TEST_CASE(TestWriteRead)
 {
-	srand(static_cast<unsigned>(time(NULL)));
+	srandom(static_cast<unsigned>(time(NULL)));
 
 	using namespace gPWS;
 
 	typedef vector<sField::PtrT> FieldsT;
 	FieldsT fields1;
-	for (unsigned i = 0, n = rand() % 999; i != n; ++i)
+	for (unsigned i = 0, n = random() % 999; i != n; ++i)
 	{
 		sField::PtrT field(sField::Create());
-		field->type = rand() % 256;
-		field->value.resize(rand() % 256);
-		generate(field->value.begin(), field->value.end(), &rand);
+		field->type = random() % 256;
+		field->value.resize(random() % 256);
+		generate(field->value.begin(), field->value.end(), &random);
 		fields1.push_back(field);
 	}
 
