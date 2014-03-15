@@ -27,9 +27,8 @@
 #include <stdint.h>
 #include <map>
 #include <memory>
+#include <vector>
 #include <boost/noncopyable.hpp>
-#include <boost/iterator/filter_iterator.hpp>
-#include <boost/range.hpp>
 
 namespace gPWS {
 
@@ -88,13 +87,9 @@ private:
 	static std::string FollowSymlink(const std::string &fname);
 
 public:
-	typedef boost::filter_iterator
-		<std::function<bool(_TitleEntryT::value_type const &)>,
-		 _TitleEntryT::const_iterator>
-		FilterIterT;
-	typedef boost::iterator_range<FilterIterT> FilterRangeT;
+	typedef std::vector<_TitleEntryT::const_iterator> MatchT;
 
-	FilterRangeT Find(char const *query) const;
+	MatchT Find(char const *query) const;
 };
 
 } //namespace gPWS;

@@ -53,7 +53,7 @@ public:
 
 protected:
 	static cDatabase::PtrT OpenDatabase(std::string const &file_name);
-	static bool CheckSingleEntry(cDatabase::FilterRangeT const &entries);
+	static bool CheckSingleEntry(cDatabase::MatchT const &entries);
 };
 
 } //namespace gPWS;

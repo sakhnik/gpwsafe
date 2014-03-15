@@ -66,24 +66,23 @@ cDatabase::PtrT cCommand::OpenDatabase(string const &file_name)
 	return database;
 }
 
-bool cCommand::CheckSingleEntry(cDatabase::FilterRangeT const &entries)
+bool cCommand::CheckSingleEntry(cDatabase::MatchT const &entries)
 {
 	assert(!entries.empty() && "Must be analyzed separately");
 
-	int count = std::distance(entries.begin(), entries.end());
-	if (1 == count)
+	if (1 == entries.size())
 		return true;
 
 	cerr << "More than one matching entry: ";
 	int j = 0;
-	for (auto it = entries.begin();
-	     it != entries.end() && j != 3; ++it, ++j)
+	for (auto it = begin(entries);
+	     it != end(entries) && j != 3; ++it, ++j)
 	{
 		if (j)
 			cerr << ", ";
-		cerr << it->first;
+		cerr << (*it)->first;
 	}
-	int rest = count - j;
+	int rest = entries.size() - j;
 	if (rest)
 		cerr << ", ... (" << rest << " more)";
 	cerr << " ." << endl;

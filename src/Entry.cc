@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <boost/format.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace gPWS {
 
@@ -75,10 +76,8 @@ bool cEntry::AddField(sField::PtrT const &field)
 
 void cEntry::ForEachField(OnFieldT on_field)
 {
-	for (_FieldsT::const_iterator i = _fields.begin();
-	     i != _fields.end(); ++i)
+	for (auto &field : _fields)
 	{
-		sField::PtrT const &field(*i);
 		if (!field)
 			continue;
 		on_field(field);
@@ -87,10 +86,8 @@ void cEntry::ForEachField(OnFieldT on_field)
 
 void cEntry::Dump() const
 {
-	for (_FieldsT::const_iterator i = _fields.begin();
-	     i != _fields.end(); ++i)
+	for (auto &field : _fields)
 	{
-		sField::PtrT const& field = *i;
 		if (!field)
 			continue;
 		cout << "{0x"
@@ -101,6 +98,49 @@ void cEntry::Dump() const
 			<< endl;
 	}
 	cout << "----------" << endl;
+}
+
+void cEntry::PrettyPrint() const
+{
+	for (auto &field : _fields)
+	{
+		if (!field)
+			continue;
+		switch (field->type)
+		{
+		case FT_UUID:
+			{
+				assert(field->value.size() == 16);
+				boost::uuids::uuid u;
+				memcpy(&u, &field->value[0], 16);
+				cout << "UUID:\t\t" << u << "\n";
+				break;
+			}
+		case FT_GROUP:
+			cout << "Group:\t\t" << field->value << "\n";
+			break;
+		case FT_TITLE:
+			cout << "Title:\t\t" << field->value << "\n";
+			break;
+		case FT_USER:
+			cout << "User:\t\t" << field->value << "\n";
+			break;
+		case FT_NOTES:
+			cout << "Notes:\t\t" << field->value << "\n";
+			break;
+		case FT_PASS:
+			cout << "Pass:\t\t*************\n";
+			break;
+		case FT_URL:
+			cout << "Url:\t\t" << field->value << "\n";
+			break;
+		default:
+			cout << boost::format("0x%02X") % unsigned(field->type) << "\t\t";
+			cout << "'" << gPWS::Quote(&field->value[0], field->value.size());
+			cout << "'\n";
+			break;
+		}
+	}
 }
 
 StringX const &cEntry::GetValue(eFieldType field_type) const

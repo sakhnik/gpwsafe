@@ -57,7 +57,7 @@ void cCommandEdit::Execute(Params const &params)
 		throw ExitEx(1);
 
 	// Original entry
-	cEntry::PtrT e_orig = entries.front().second;
+	cEntry::PtrT e_orig = entries.front()->second;
 
 	// Copied from pwsafe
 	cEntry::PtrT e = e_orig->Copy(); // make a local copy to edit

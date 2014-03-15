@@ -23,6 +23,7 @@
 #include "Database.hh"
 #include "Terminal.hh"
 #include "Exceptions.hh"
+#include "Entry.hh"
 
 namespace gPWS {
 
@@ -56,8 +57,16 @@ void cCommandList::Execute(Params const &params)
 
 	if (!params.user && !params.pass && !params.notes)
 	{
-		for (auto const &title_entry : match)
-			cout << title_entry.first << endl;
+		if (match.size() > 1)
+		{
+			for (auto const &title_entry : match)
+				cout << title_entry->first << endl;
+		}
+		else
+		{
+			auto entry = match.front()->second;
+			entry->PrettyPrint();
+		}
 		return;
 	}
 
@@ -67,18 +76,18 @@ void cCommandList::Execute(Params const &params)
 	auto const &title_entry = match.front();
 	if (params.user)
 	{
-		emitter->Emit("username for " + title_entry.first,
-		              title_entry.second->GetUser());
+		emitter->Emit("username for " + title_entry->first,
+		              title_entry->second->GetUser());
 	}
 	if (params.pass)
 	{
-		emitter->Emit("password for " + title_entry.first,
-		              title_entry.second->GetPass());
+		emitter->Emit("password for " + title_entry->first,
+		              title_entry->second->GetPass());
 	}
 	if (params.notes)
 	{
-		emitter->Emit("notes for " + title_entry.first,
-		              title_entry.second->GetNotes());
+		emitter->Emit("notes for " + title_entry->first,
+		              title_entry->second->GetNotes());
 	}
 }
 

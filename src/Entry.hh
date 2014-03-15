@@ -51,9 +51,11 @@ public:
 	void ForEachField(OnFieldT on_field);
 
 	void Dump() const;
+	void PrettyPrint() const;
 
 	enum eFieldType
 	{
+		FT_UUID = 0x01,
 		FT_GROUP = 0x02,
 		FT_TITLE = 0x03,
 		FT_USER = 0x04,

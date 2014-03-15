@@ -234,13 +234,17 @@ bool cDatabase::HasEntry(StringX const &full_title) const
 	return _entries.find(full_title) != _entries.end();
 }
 
-cDatabase::FilterRangeT cDatabase::Find(char const *query) const
+cDatabase::MatchT cDatabase::Find(char const *query) const
 {
-	auto filter = [query](_TitleEntryT::value_type const &v)
-		{ return !query || v.first.find(query) != v.first.npos; };
-	FilterIterT begin(filter, _entries.begin(), _entries.end());
-	FilterIterT end(filter, _entries.end(), _entries.end());
-	return boost::make_iterator_range(begin, end);
+	MatchT match;
+	for (auto first = begin(_entries), last = end(_entries);
+	     first != last;
+	     ++first)
+	{
+		if (!query || first->first.find(query) != first->first.npos)
+			match.push_back(first);
+	}
+	return match;
 }
 
 } //namespace gPWS;
