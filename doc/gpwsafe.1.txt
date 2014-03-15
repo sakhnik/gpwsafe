@@ -48,9 +48,10 @@ COMMANDS
         Create a new database.
 
 --list[=REGEX]::
-        List all [matching] entries in database. If -u or -p is given,
+        List all [matching] entries in database. If either -u or -p is given,
         then REGEX must match only one entry, and only the requested
-        field(s) are emitted.
+        field(s) are emitted. If neither -u nor -p is given, and the regex
+        matches a single entry, the details of the entry are printed out.
 
 -a, --add[=ENTRY]::
         Add an entry to database.
@@ -73,9 +74,6 @@ OPTIONS
 
 -p, --pass::
         Show password of listed account(s)
-
--n, --notes::
-        Show notes of listed account(s)
 
 -E, --echo::
         Echo the entry to stdout.
@@ -174,3 +172,7 @@ SEE ALSO
 https://github.com/sakhnik/gpwsafe
 
 http://passwordsafe.sourceforge.net/, http://www.counterpane.com/
+
+////
+vim: set et ts=4 sw=4:
+////

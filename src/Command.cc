@@ -37,7 +37,6 @@ cCommand::Params::Params()
 	: file_name("~/.gpwsafe.psafe3")
 	, user(false)
 	, pass(false)
-	, notes(false)
 #if ENABLE_XCLIP && ENABLE_GTK
 	, emitter(new cGtkEmitter)
 #else

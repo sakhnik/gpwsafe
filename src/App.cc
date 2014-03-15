@@ -133,9 +133,6 @@ void cApp::Init(int argc, char *argv[])
 		("pass,p",
 			bool_switch(&_params.pass),
 			"emit password of listed account")
-		("notes,n",
-			bool_switch(&_params.notes),
-			"emit notes of listed account")
 		("echo,E",
 			bool_switch(nullptr)->notifier(
 				[this](bool arg)
