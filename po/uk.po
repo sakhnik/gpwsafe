@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: sakhnik@gmail.com\n"
-"POT-Creation-Date: 2014-03-16 16:24+0200\n"
+"POT-Creation-Date: 2014-03-16 18:09+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -42,9 +42,9 @@ msgid ""
 "entry may match. If neither -u or -p are given and one entry matches, print "
 "details."
 msgstr ""
-"перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -p, має бути знайдено "
-"єдиний запис. Якщо не задано жодне з -u чи -p, і знайдено єдиний запис, роздрукувати "
-"подробиці."
+"перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -"
+"p, має бути знайдено єдиний запис. Якщо не задано жодне з -u чи -p, і "
+"знайдено єдиний запис, роздрукувати подробиці."
 
 #: src/App.cc:115
 msgid "add an entry"
@@ -113,3 +113,297 @@ msgstr "Неоднозначна команда"
 #: src/App.cc:219
 msgid "Exception: "
 msgstr "Виняток: "
+
+#: src/Terminal.cc:70
+msgid "Can't get password"
+msgstr "Не вдалося отримати пароль"
+
+#: src/Terminal.cc:85
+msgid "Can't get text"
+msgstr "Не вдалося отримати текст"
+
+#: src/Terminal.cc:105
+msgid "Generate random password? [y] "
+msgstr "Згенерувати випадковий пароль? [y] "
+
+#: src/Terminal.cc:122
+msgid "Passwords do not match"
+msgstr "Паролі не співпадають"
+
+#: src/Terminal.cc:168
+msgid "Read error"
+msgstr "Помилка читання"
+
+#: src/Terminal.cc:219
+msgid "alpha/digit/symbol"
+msgstr "букви/цифри/символи"
+
+#: src/Terminal.cc:226
+msgid "alpha/digit"
+msgstr "букви/цифри"
+
+#: src/Terminal.cc:231
+msgid "easy-to-read alpha/digit"
+msgstr "легкий для читання букви/цифри"
+
+#: src/Terminal.cc:237
+msgid "easy-to-read alpha/digit/symbol"
+msgstr "легкий для читання букви/цифри/символи"
+
+#: src/Terminal.cc:243
+msgid "digits only"
+msgstr "тільки цифри"
+
+#: src/Terminal.cc:249
+msgid "hex digits only"
+msgstr "тільки шістнадцяткові цифри"
+
+#: src/Terminal.cc:330
+#, c-format
+msgid "Use %s"
+msgstr "Використати %s"
+
+#: src/Terminal.cc:331
+#, c-format
+msgid "type %s, length %d, %d bits of entropy [y/N/ /+/-/q/?] ? "
+msgstr "тип %s, довжина %d, %d бітів ентропії [y/N/ /+/-/q/?] ? "
+
+#: src/Terminal.cc:363
+msgid ""
+"Commands:\n"
+"  Y      Yes, accept this password\n"
+"  N      No, generate another password of same type\n"
+"  <space> Cycle through password types\n"
+"  -      Lower the entropy & password length\n"
+"  +      Raise the entropy & password length\n"
+"  Q      Quit\n"
+"  ?      Help\n"
+msgstr ""
+"Команди:\n"
+"  Y      Так, прийняти цей пароль\n"
+"  N      Ні, згенерувати інший пароль такого самого типу\n"
+"  <пробіл> Змінити тип паролю\n"
+"  -      Зменшити ентропію і довжину паролю\n"
+"  +      Збільшити ентропію і довжину паролю\n"
+"  Q      Вийти\n"
+"  ?      Допомога\n"
+
+#: src/Memory.cc:38
+msgid "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
+msgstr "ПОПЕРЕДЖЕННЯ: не вдалося використати безпечну пам’ять (треба мати CAP_IPC_LOCK)"
+
+#: src/GtkEmitter.cc:45
+#, c-format
+msgid "Going to copy %s to X selection"
+msgstr "Буде скопійовано %s у буфер обміну Х"
+
+#: src/GtkEmitter.cc:96
+msgid "Failed to get clipboard"
+msgstr "Не вдалося отримати буфер обміну"
+
+#: src/GtkEmitter.cc:116
+#, c-format
+msgid "You are ready to paste the %s from PRIMARY"
+msgstr "Вставте %s з буферу обміну PRIMARY"
+
+#: src/GtkEmitter.cc:117
+msgid "Press any key when done"
+msgstr "Натисніть будь-яку клавішу, як зроблено"
+
+#: src/Gcrypt.cc:43
+#, c-format
+msgid "Entropy pool: %d of %d bytes available."
+msgstr "Резерв ентропії: доступно %d з %d байтів."
+
+#: src/Gcrypt.cc:46
+msgid " Done.              "
+msgstr " Зроблено.          "
+
+#: src/Gcrypt.cc:48
+msgid " Waiting for more..."
+msgstr " Чекаємо ще...      "
+
+#: src/File3.cc:73
+msgid "Can't open file for reading"
+msgstr "Не вдалося відкрити файл для читання"
+
+#: src/File3.cc:79
+msgid "Invalid tag"
+msgstr "Неправильна мітка"
+
+#: src/File3.cc:101
+msgid "Key mismatch"
+msgstr "Ключ не співпадає"
+
+#: src/File3.cc:142
+msgid "HMAC check failed"
+msgstr "Не пройдено перевірку HMAC"
+
+#: src/File3.cc:188
+msgid "Can't open file for writing"
+msgstr "Не вдалося відкрити файл для запису"
+
+#: src/Entry.cc:121
+msgid "Group:\t\t"
+msgstr "Група:\t\t"
+
+#: src/Entry.cc:124
+msgid "Title:\t\t"
+msgstr "Назва:\t\t"
+
+#: src/Entry.cc:127
+msgid "User:\t\t"
+msgstr "Користувач:\t\t"
+
+#: src/Entry.cc:130
+msgid "Notes:\t\t"
+msgstr "Нотатки:\t\t"
+
+#: src/Entry.cc:133
+msgid "Pass:\t\t*************\n"
+msgstr "Пароль:\t\t*************\n"
+
+#: src/Database.cc:154
+msgid "Couldn't follow a symbolic link "
+msgstr "Не вдалося відслідкувати по символічне посилання "
+
+#: src/Database.cc:177
+msgid "Failed to create backup: "
+msgstr "Не вдалося створити резервну копію: "
+
+#: src/Database.cc:183
+msgid "Failed to move new file: "
+msgstr "Не вдалося перемістити новий файл: "
+
+#: src/CommandList.cc:55 src/CommandEdit.cc:54
+msgid "No matching entries found"
+msgstr "Не знайдено відповідних записів"
+
+#: src/CommandList.cc:80
+msgid "username for "
+msgstr "користувач для "
+
+#: src/CommandList.cc:85
+msgid "password for "
+msgstr "пароль для "
+
+#: src/CommandList.cc:95
+msgid "login and password"
+msgstr "користувач і пароль"
+
+#: src/CommandList.cc:97
+msgid "login"
+msgstr "користувач"
+
+#: src/CommandList.cc:102 src/CommandEdit.cc:132
+msgid "password"
+msgstr "пароль"
+
+#: src/CommandEdit.cc:45
+msgid "An entry must be specified"
+msgstr "Має бути вказаний запис"
+
+#: src/CommandEdit.cc:68
+msgid "name: ["
+msgstr "назва: ["
+
+#: src/CommandEdit.cc:70
+msgid "group: ["
+msgstr "група: ["
+
+#: src/CommandEdit.cc:78 src/CommandCreate.cc:47 src/CommandAdd.cc:78
+msgid " already exists"
+msgstr " вже існує"
+
+#: src/CommandEdit.cc:92
+msgid "change password ? [n] "
+msgstr "змінити пароль ? [n] "
+
+#: src/CommandEdit.cc:96
+msgid "new password: [return for random] "
+msgstr "новий пароль: [return щоб випадковий] "
+
+#: src/CommandEdit.cc:97
+msgid "new password again: "
+msgstr "новий пароль ще раз: "
+
+#: src/CommandEdit.cc:100
+msgid "Confirm changing to an empty password? [n] "
+msgstr "Справді скинути пароль? [n] "
+
+#: src/CommandEdit.cc:108
+msgid "notes: [<keep same>] "
+msgstr "нотатки: [<залишити без змін>] "
+
+#: src/CommandEdit.cc:114
+msgid "No change"
+msgstr "Без змін"
+
+#: src/CommandEdit.cc:118
+msgid "Confirm changing "
+msgstr "Справді змінити "
+
+#: src/CommandEdit.cc:126
+msgid "group"
+msgstr "групу"
+
+#: src/CommandEdit.cc:129
+msgid "name"
+msgstr "назву"
+
+#: src/CommandEdit.cc:135
+msgid "notes"
+msgstr "нотатки"
+
+#: src/CommandEdit.cc:144
+msgid "Changes abandoned"
+msgstr "Зміни скасовано"
+
+#: src/CommandCreate.cc:51
+msgid "Enter passphrase for "
+msgstr "Уведіть пароль для "
+
+#: src/CommandCreate.cc:53
+msgid "Reenter passphrase for "
+msgstr "Уведіть ще раз пароль для "
+
+#: src/CommandCreate.cc:57
+msgid "Passphrases do not match"
+msgstr "Паролі не співпадають"
+
+#: src/CommandAdd.cc:72
+msgid "name: "
+msgstr "назва: "
+
+#: src/CommandAdd.cc:74
+msgid "group [<none>]: "
+msgstr "група [<немає>]: "
+
+#: src/CommandAdd.cc:88
+msgid "username: "
+msgstr "користувач: "
+
+#: src/CommandAdd.cc:97
+msgid "password [return for random]: "
+msgstr "пароль [return щоб випадковий]: "
+
+#: src/CommandAdd.cc:98
+msgid "password again: "
+msgstr "пароль знову: "
+
+#: src/CommandAdd.cc:101
+msgid "notes: "
+msgstr "нотатки: "
+
+#: src/Command.cc:65
+msgid "Enter password for "
+msgstr "Уведіть пароль для "
+
+#: src/Command.cc:78
+msgid "More than one matching entry: "
+msgstr "Не єдиний збіг: "
+
+#: src/Command.cc:89
+#, c-format
+msgid "%d more"
+msgstr "ще %d"
