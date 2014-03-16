@@ -20,6 +20,8 @@ AM_INIT_AUTOMAKE([1.9 color-tests])
 AM_SILENT_RULES([yes])
 
 AC_CONFIG_HEADERS([config.h])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.18.2)
 
 AC_PROG_CXX
 AC_LANG_PUSH([C++])
@@ -133,7 +135,7 @@ AM_CONDITIONAL(WANT_DOC, [test "x$wantdoc" = "xyes"])
 
 dnl --------------------------------------------------------------------------
 
-AC_OUTPUT([Makefile
+AC_OUTPUT([Makefile po/Makefile.in
            src/Makefile
            test/Makefile
            doc/Makefile])

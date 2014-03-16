@@ -10,7 +10,7 @@ config.status
 config.h*
 config.guess
 config.sub
-stamp-h1
+stamp-*
 depcomp
 install-sh
 missing
@@ -20,3 +20,7 @@ missing
 /nbproject
 test-driver
 compile
+ABOUT-NLS
+config.rpath
+gettext.h
+*~

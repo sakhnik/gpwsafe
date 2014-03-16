@@ -13,4 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
-SUBDIRS = src test doc
+SUBDIRS = po src test doc
+
+ACLOCAL_AMFLAGS = -I m4

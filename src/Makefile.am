@@ -33,7 +33,8 @@ libgpwsafe_a_SOURCES = \
 		Memory.cc Memory.hh \
 		Random.cc Random.hh \
 		Sha256.cc Sha256.hh \
-		Twofish.cc Twofish.hh
+		Twofish.cc Twofish.hh \
+		i18n.h
 
 bin_PROGRAMS = gpwsafe
 
@@ -54,6 +55,8 @@ gpwsafe_LDADD = libgpwsafe.a \
 		$(LIBGCRYPT_LIBS) \
 		$(BOOST_PROGRAM_OPTIONS_LIB)
 
+gpwsafe_LDFLAGS = $(LTLIBINTL)
+
 gpwsafe_CXXFLAGS = -Werror $(AM_CXXFLAGS)
 
 if ENABLE_GTK
@@ -61,3 +64,5 @@ gpwsafe_SOURCES += GtkEmitter.cc GtkEmitter.hh
 gpwsafe_LDADD += $(GTK_LIBS)
 gpwsafe_CXXFLAGS += $(GTK_CFLAGS)
 endif # Enable_GTK
+
+DEFS = -DLOCALEDIR=\"$(datadir)/locale\" @DEFS@

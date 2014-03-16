@@ -23,10 +23,12 @@
 #include "App.hh"
 #include "Gcrypt.hh"
 #include "Exceptions.hh"
+#include "i18n.h"
 
 #include <sys/stat.h>
 #include <iostream>
 #include <cstring>
+#include <clocale>
 
 using namespace std;
 using namespace gPWS;
@@ -47,12 +49,17 @@ int main(int argc, char* argv[])
 {
 	char const *program_name = _Basename(argv[0]);
 
+	// Initialize gettext
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
+
 	// Be nice and paranoid
 	umask(0077);
 
 	if (int res = cGcrypt::CheckVersion())
 	{
-		cerr << "libgcrypt version mismatch\n" << endl;
+		cerr << _("libgcrypt version mismatch") << endl;
 		return res;
 	}
 
@@ -63,7 +70,7 @@ int main(int argc, char* argv[])
 
 		if (int res = cGcrypt::Init(app.UseWeakRandomnessForTests()))
 		{
-			cerr << "Can't initialize libgcrypt" << endl;
+			cerr << _("Can't initialize libgcrypt") << endl;
 			return res;
 		}
 
