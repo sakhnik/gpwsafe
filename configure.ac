@@ -13,7 +13,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
-AC_INIT([gpwsafe],[0.9.0],[sakhnik@gmail.com])
+AC_INIT([gpwsafe],[0.9.1],[sakhnik@gmail.com])
 AC_PREREQ(2.59)
 
 AM_INIT_AUTOMAKE([1.9 color-tests])

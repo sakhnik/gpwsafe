@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: sakhnik@gmail.com\n"
-"POT-Creation-Date: 2014-03-16 10:45+0200\n"
+"POT-Creation-Date: 2014-03-16 11:15+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -22,3 +22,8 @@ msgstr "Не співпадає версія libgcrypt"
 #: src/main.cc:73
 msgid "Can't initialize libgcrypt"
 msgstr "Не вдалося ініціалізувати libgcrypt"
+
+#: src/StdoutEmitter.cc:35
+#, c-format
+msgid "Going to print %s to stdout"
+msgstr "Буде надруковано %s у стандартний вивід"

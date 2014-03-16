@@ -20,16 +20,19 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 #include "StdoutEmitter.hh"
+#include "i18n.h"
 
 #include <iostream>
+#include <boost/format.hpp>
 
 namespace gPWS {
 
 using namespace std;
+typedef boost::format bfmt;
 
 void cStdoutEmitter::PrintIntention(string const &subject) const
 {
-	cout << "Going to print " << subject << " to stdout" << endl;
+	cout << bfmt(_("Going to print %s to stdout")) % subject << endl;
 }
 
 void cStdoutEmitter::Emit(StringX const &name, StringX const &val)
