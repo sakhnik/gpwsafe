@@ -80,34 +80,36 @@ msgstr "примусово скопіювати у буфер обміну Х"
 
 #: src/App.cc:159
 msgid "don't press on the pool of randomness"
-msgstr ""
+msgstr "не виснажувати збірник випадковості"
 
 #: src/App.cc:160
 msgid "display this help and exit"
-msgstr ""
+msgstr "показати цю допомогу і вийти"
 
 #: src/App.cc:161
 msgid "output version information and exit"
-msgstr ""
+msgstr "вивести відомості про версію і вийти"
 
 #: src/App.cc:180
 msgid ""
 " - command line tool compatible with Conterpane's PasswordSafe\n"
 "\n"
 msgstr ""
+" — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
+"\n"
 
 #: src/App.cc:182
 msgid "Usage: "
-msgstr ""
+msgstr "Вживання: "
 
 #: src/App.cc:182
 msgid " [OPTION] command [ARG]\n"
-msgstr ""
+msgstr " [OPTION] команда [ARG]\n"
 
 #: src/App.cc:198
 msgid "Ambiguous command"
-msgstr ""
+msgstr "Неоднозначна команда"
 
 #: src/App.cc:219
 msgid "Exception: "
-msgstr ""
+msgstr "Виняток: "

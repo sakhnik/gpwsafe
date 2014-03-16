@@ -25,6 +25,7 @@
 #include "Memory.hh"
 #include "Random.hh"
 #include "Debug.hh"
+#include "i18n.h"
 
 #include <stdint.h>
 #include <cstring>
@@ -69,13 +70,13 @@ void cFile3::OpenRead(char const *fname,
 	_fs.exceptions(_initial_state);
 	_fs.open(fname, ios::in|ios::binary);
 	if (!_fs)
-		throw runtime_error("Can't open file for reading");
+		throw runtime_error(_("Can't open file for reading"));
 	_fs.exceptions(ios::failbit|ios::badbit);
 
 	char tag[MAGIC_TAG.size()];
 	_fs.read(tag, MAGIC_TAG.size());
 	if (!std::equal(MAGIC_TAG.begin(), MAGIC_TAG.end(), tag))
-		throw runtime_error("Invalid tag");
+		throw runtime_error(_("Invalid tag"));
 
 	char salt[SALT_LEN];
 	_fs.read(salt, SALT_LEN);
@@ -97,7 +98,7 @@ void cFile3::OpenRead(char const *fname,
 	_fs.read(&key[0], key.size());
 
 	if (memcmp(&key[0], key_md.Get(), key.size()))
-		throw runtime_error("Key mismatch");
+		throw runtime_error(_("Key mismatch"));
 
 	cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
@@ -138,7 +139,7 @@ sField::PtrT cFile3::ReadField()
 		_state = S_CLOSED;
 		_fs.close();
 		if (memcmp(_hmac_calculator->Get(), &hmac[0], hmac.size()))
-			throw runtime_error("HMAC check failed");
+			throw runtime_error(_("HMAC check failed"));
 		return sField::PtrT();
 	}
 
@@ -184,7 +185,7 @@ void cFile3::OpenWrite(char const *fname,
 	_fs.exceptions(_initial_state);
 	_fs.open(fname, ios::out|ios::binary|ios::trunc);
 	if (!_fs)
-		throw runtime_error("Can't open file for writing");
+		throw runtime_error(_("Can't open file for writing"));
 	_fs.exceptions(ios::failbit|ios::badbit);
 
 	_fs.write(&MAGIC_TAG[0], MAGIC_TAG.size());

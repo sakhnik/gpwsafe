@@ -23,6 +23,7 @@
 #include "CommandCreate.hh"
 #include "Exceptions.hh"
 #include "Terminal.hh"
+#include "i18n.h"
 
 namespace gPWS {
 
@@ -43,17 +44,17 @@ void cCommandCreate::Execute(Params const &params)
 
 	if (!::access(file_name.c_str(), F_OK))
 	{
-		cerr << file_name << " already exists" << endl;
+		cerr << file_name << _(" already exists") << endl;
 		throw ExitEx(1);
 	}
 
-	string prompt1 = "Enter passphrase for " + file_name + ": ";
+	string prompt1 = _("Enter passphrase for ") + file_name + ": ";
 	StringX pass1 = cTerminal::GetPassword(prompt1);
-	string prompt2 = "Reenter passphrase for " + file_name + ": ";
+	string prompt2 = _("Reenter passphrase for ") + file_name + ": ";
 	StringX pass2 = cTerminal::GetPassword(prompt2);
 	if (pass1 != pass2)
 	{
-		cerr << "Passphrases do not match" << endl;
+		cerr << _("Passphrases do not match") << endl;
 		throw ExitEx(1);
 	}
 

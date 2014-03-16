@@ -24,6 +24,7 @@
 #include "Database.hh"
 #include "Terminal.hh"
 #include "Exceptions.hh"
+#include "i18n.h"
 
 namespace gPWS {
 
@@ -68,13 +69,13 @@ void cCommandAdd::Execute(Params const &params)
 	while (true)
 	{
 		if (entry->GetTitle().empty())
-			entry->SetTitle(cTerminal::GetText("name: "));
+			entry->SetTitle(cTerminal::GetText(_("name: ")));
 		if (entry->GetGroup().empty())
-			entry->SetGroup(cTerminal::GetText("group [<none>]: "));
+			entry->SetGroup(cTerminal::GetText(_("group [<none>]: ")));
 
 		if (database->HasEntry(entry->GetFullTitle()))
 		{
-			cerr << entry->GetFullTitle() << " already exists" << endl;
+			cerr << entry->GetFullTitle() << _(" already exists") << endl;
 			if (!_name.empty())
 				throw ExitEx(1);
 			entry->SetTitle("");
@@ -84,7 +85,7 @@ void cCommandAdd::Execute(Params const &params)
 			break;
 	}
 
-	entry->SetUser(cTerminal::GetText("username: "));
+	entry->SetUser(cTerminal::GetText(_("username: ")));
 	if (entry->GetUser().empty())
 	{
 		// FIXME!!!
@@ -93,11 +94,11 @@ void cCommandAdd::Execute(Params const &params)
 	}
 
 	StringX pass =
-		cTerminal::EnterPassword("password [return for random]: ",
-		                         "password again: ");
+		cTerminal::EnterPassword(_("password [return for random]: "),
+		                         _("password again: "));
 	entry->SetPass(pass);
 
-	entry->SetNotes(cTerminal::GetText("notes: "));
+	entry->SetNotes(cTerminal::GetText(_("notes: ")));
 
 	database->AddEntry(entry);
 	database->Write();

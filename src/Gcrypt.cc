@@ -21,13 +21,16 @@
 
 
 #include "Gcrypt.hh"
+#include "i18n.h"
 
 #include <iostream>
 #include <gcrypt.h>
+#include <boost/format.hpp>
 
 namespace gPWS {
 
 using namespace std;
+typedef boost::format bfmt;
 
 namespace {
 
@@ -37,12 +40,12 @@ _GcryProgressHandler(void *cb_data, const char *what,
 {
 	if (!strcmp(what, "need_entropy"))
 	{
-		cerr << "\rEntropy pool: " << current << " of " << total
-			<< " bytes are available.";
+		cerr << "\r" << bfmt(_("Entropy pool: %d of %d bytes available."))
+			% current % total;
 		if (current == total)
-			cerr << " Done.              " << endl;
+			cerr << _(" Done.              ") << endl;
 		else
-			cerr << " Waiting for more..." << flush;
+			cerr << _(" Waiting for more...") << flush;
 	}
 }
 

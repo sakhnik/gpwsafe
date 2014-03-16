@@ -21,13 +21,16 @@
 
 #include "GtkEmitter.hh"
 #include "Terminal.hh"
+#include "i18n.h"
 
 #include <iostream>
 #include <gtk/gtk.h>
+#include <boost/format.hpp>
 
 namespace gPWS {
 
 using namespace std;
+typedef boost::format bfmt;
 
 cGtkEmitter::cGtkEmitter()
 {
@@ -39,7 +42,7 @@ cGtkEmitter::~cGtkEmitter()
 
 void cGtkEmitter::PrintIntention(string const &subject) const
 {
-	cout << "Going to copy " << subject << " to X selection" << endl;
+	cout << bfmt(_("Going to copy %s to X selection")) % subject << endl;
 }
 
 namespace {
@@ -90,7 +93,7 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	GtkClipboard *clipboard = gtk_clipboard_get(primary);
 	if (!clipboard)
 	{
-		cerr << "Failed to get clipboard" << endl;
+		cerr << _("Failed to get clipboard") << endl;
 		return;
 	}
 
@@ -110,8 +113,8 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	gtk_target_table_free (targets, n_targets);
 	gtk_target_list_unref (list);
 
-	cout << "You are ready to paste the " << name << " from PRIMARY" << endl;
-	cout << "Press any key when done" << endl;
+	cout << bfmt(_("You are ready to paste the %s from PRIMARY")) % name << endl;
+	cout << _("Press any key when done") << endl;
 
 	// Switch off the canonical mode
 	cRawTerminal raw_terminal;

@@ -21,17 +21,20 @@
 
 #include "Terminal.hh"
 #include "Random.hh"
+#include "i18n.h"
 
 #include <iostream>
 #include <sstream>
 #include <cstdio>
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
+#include <boost/format.hpp>
 #include <readline/readline.h>
 
 namespace gPWS {
 
 using namespace std;
+typedef boost::format bfmt;
 
 cRawTerminal::cRawTerminal(bool new_line)
 	: _new_line(new_line)
@@ -64,7 +67,7 @@ StringX cTerminal::GetPassword(char const *prompt)
 	rl_completion_entry_function = NULL;
 	char *input = readline(prompt);
 	if (!input)
-		throw runtime_error("Can't get password");
+		throw runtime_error(_("Can't get password"));
 	BOOST_SCOPE_EXIT((&input)) {
 		memset(input, 0, strlen(input));
 		delete input;
@@ -79,7 +82,7 @@ StringX cTerminal::GetText(char const *prompt,
 	rl_completion_entry_function = NULL;
 	char *input = readline(prompt);
 	if (!input)
-		throw runtime_error("Can't get text");
+		throw runtime_error(_("Can't get text"));
 	BOOST_SCOPE_EXIT((&input)) {
 		memset(input, 0, strlen(input));
 		delete input;
@@ -99,7 +102,7 @@ StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
 		StringX pw1 = GetPassword(prompt1);
 		if (pw1.empty())
 		{
-			if (GetYN("Generate random password? [y] ", true))
+			if (GetYN(_("Generate random password? [y] "), true))
 			{
 				pw1 = RandomPassword();
 				if (!pw1.empty())
@@ -116,7 +119,7 @@ StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
 		{
 			return pw1;
 		}
-		cerr << "Passwords do not match" << endl;
+		cerr << _("Passwords do not match") << endl;
 	}
 }
 
@@ -162,7 +165,7 @@ char cTerminal::GetChar(char const *prompt, const int def_val)
 		ssize_t rc = read(STDIN_FILENO, &x, 1);
 
 		if (rc != 1)
-			throw runtime_error("Read error");
+			throw runtime_error(_("Read error"));
 		switch (x)
 		{
 		case '\r':
@@ -213,37 +216,37 @@ StringX cTerminal::RandomPassword()
 		switch (type)
 		{
 		case 0:
-			type_name = "alpha/digit/symbol";
+			type_name = _("alpha/digit/symbol");
 			sets[0] = all_alphanum;
 			sets[1] = easyvision_symbol;
 			entropy_per_char = 628;
 			// 100 * log2(26+26+10+16) = log2(78); best case
 			break;
 		case 1:
-			type_name = "alpha/digit";
+			type_name = _("alpha/digit");
 			sets[0] = all_alphanum;
 			entropy_per_char = 595;
 			break;
 		case 2:
-			type_name = "easy-to-read alpha/digit";
+			type_name = _("easy-to-read alpha/digit");
 			sets[0] = easyvision_alphanum;
 			entropy_per_char = 555;
 			// 100 * log2(25+22+10) = log2(57); worse case
 			break;
 		case 3:
-			type_name = "easy-to-read alpha/digit/symbol";
+			type_name = _("easy-to-read alpha/digit/symbol");
 			sets[0] = easyvision_alphanum;
 			sets[1] = easyvision_symbol;
 			entropy_per_char = 597;
 			break;
 		case 4:
-			type_name = "digits only";
+			type_name = _("digits only");
 			sets[0] = digits_only;
 			entropy_per_char = 332; // 100 * log2(10)
 			one_char_from_each_type = false;
 			break;
 		case 5:
-			type_name = "hex digits only";
+			type_name = _("hex digits only");
 			sets[0] = hex_only;
 			entropy_per_char = 400; // 100 * log2(16)
 			one_char_from_each_type = false;
@@ -324,11 +327,9 @@ StringX cTerminal::RandomPassword()
 
 		// see what the user thinks of this one
 		OStringStreamX prompt_oss;
-		prompt_oss << "Use " << pw << "\n"
-		              "type " << type_name << ", "
-		              "length " << pw.length() << ", "
-		           << entropy_needed
-		           << " bits of entropy [y/N/ /+/-/q/?] ? ";
+		prompt_oss << bfmt(_("Use %s")) % pw << "\n"
+		           << bfmt(_("type %s, length %d, %d bits of entropy [y/N/ /+/-/q/?] ? "))
+		               % type_name % pw.length() % entropy_needed;
 		StringX prompt = prompt_oss.str();
 		switch (tolower(GetChar(prompt, 'n')))
 		{
@@ -359,14 +360,14 @@ StringX cTerminal::RandomPassword()
 			break;
 		case '?': case 'h':
 			cout <<
-				"Commands:\n"
-				"  Y      Yes, accept this password\n"
-				"  N      No, generate another password of same type\n"
-				"  <space> Cycle through password types\n"
-				"  -      Lower the entropy & password length\n"
-				"  +      Raise the entropy & password length\n"
-				"  Q      Quit\n"
-				"  ?      Help\n"
+				_("Commands:\n"
+				  "  Y      Yes, accept this password\n"
+				  "  N      No, generate another password of same type\n"
+				  "  <space> Cycle through password types\n"
+				  "  -      Lower the entropy & password length\n"
+				  "  +      Raise the entropy & password length\n"
+				  "  Q      Quit\n"
+				  "  ?      Help\n")
 				<< endl;
 			continue;
 			// default: show another password

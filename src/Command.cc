@@ -24,14 +24,17 @@
 #include "Terminal.hh"
 #include "StdoutEmitter.hh"
 #include "GtkEmitter.hh"
+#include "i18n.h"
 
 #include "config.h"
 #include <wordexp.h>
 #include <boost/scope_exit.hpp>
+#include <boost/format.hpp>
 
 namespace gPWS {
 
 using namespace std;
+typedef boost::format bfmt;
 
 cCommand::Params::Params()
 	: file_name("~/.gpwsafe.psafe3")
@@ -59,7 +62,7 @@ string cCommand::Params::ExpandFileName() const
 cDatabase::PtrT cCommand::OpenDatabase(string const &file_name)
 {
 	cDatabase::PtrT database(new cDatabase);
-	string prompt = "Enter password for " + file_name + ": ";
+	string prompt = _("Enter password for ") + file_name + ": ";
 	StringX password = cTerminal::GetPassword(prompt);
 	database->Read(file_name, password);
 	return database;
@@ -72,7 +75,7 @@ bool cCommand::CheckSingleEntry(cDatabase::MatchT const &entries)
 	if (1 == entries.size())
 		return true;
 
-	cerr << "More than one matching entry: ";
+	cerr << _("More than one matching entry: ");
 	int j = 0;
 	for (auto it = begin(entries);
 	     it != end(entries) && j != 3; ++it, ++j)
@@ -83,7 +86,7 @@ bool cCommand::CheckSingleEntry(cDatabase::MatchT const &entries)
 	}
 	int rest = entries.size() - j;
 	if (rest)
-		cerr << ", ... (" << rest << " more)";
+		cerr << ", ... (" << bfmt(_("%d more")) % rest << ")";
 	cerr << " ." << endl;
 	return false;
 }

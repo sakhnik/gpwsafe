@@ -22,6 +22,7 @@
 #include "CommandEdit.hh"
 #include "Exceptions.hh"
 #include "Terminal.hh"
+#include "i18n.h"
 
 namespace gPWS {
 
@@ -41,7 +42,7 @@ void cCommandEdit::Execute(Params const &params)
 {
 	if (_regex.empty())
 	{
-		cerr << "An entry must be specified" << endl;
+		cerr << _("An entry must be specified") << endl;
 		throw ExitEx(1);
 	}
 	char const *query = _regex.c_str();
@@ -50,7 +51,7 @@ void cCommandEdit::Execute(Params const &params)
 	auto entries = database->Find(query);
 	if (entries.empty())
 	{
-		cerr << "No matching entries found" << endl;
+		cerr << _("No matching entries found") << endl;
 		throw ExitEx(1);
 	}
 	if (!CheckSingleEntry(entries))
@@ -64,9 +65,9 @@ void cCommandEdit::Execute(Params const &params)
 
 	while (true)
 	{
-		e->SetTitle(cTerminal::GetText("name: [" + e_orig->GetTitle() + "] ",
+		e->SetTitle(cTerminal::GetText(_("name: [") + e_orig->GetTitle() + "] ",
 		                               e_orig->GetTitle()));
-		e->SetGroup(cTerminal::GetText("group: [" + e_orig->GetGroup() + "] ",
+		e->SetGroup(cTerminal::GetText(_("group: [") + e_orig->GetGroup() + "] ",
 		                               e_orig->GetGroup()));
 		if ((e->GetTitle() == e_orig->GetTitle() &&
 		     e->GetGroup() == e_orig->GetGroup()) ||
@@ -74,7 +75,7 @@ void cCommandEdit::Execute(Params const &params)
 			// e.name cannot be empty b/c if the user entered an empty string
 			// they got the old name
 			break;
-		cout << e->GetFullTitle() << " already exists" << endl;
+		cout << e->GetFullTitle() << _(" already exists") << endl;
 	}
 
 	// FIXME!!!: What's the default login?
@@ -88,33 +89,33 @@ void cCommandEdit::Execute(Params const &params)
 
 	while (true)
 	{
-		if (!cTerminal::GetYN("change password ? [n] ", false))
+		if (!cTerminal::GetYN(_("change password ? [n] "), false))
 			break;
 
 		StringX new_pw =
-			cTerminal::EnterPassword("new password: [return for random] ",
-			                         "new password again: ");
+			cTerminal::EnterPassword(_("new password: [return for random] "),
+			                         _("new password again: "));
 		if (new_pw.empty() && !e->GetPass().empty())
 		{
-			if (!cTerminal::GetYN("Confirm changing to an empty password?"
-			                      " [n] "))
+			if (!cTerminal::GetYN(_("Confirm changing to an empty password?"
+			                        " [n] ")))
 				continue;
 		}
 		e->SetPass(new_pw);
 		break;
 	}
 
-	e->SetNotes(cTerminal::GetText("notes: [<keep same>] ",
+	e->SetNotes(cTerminal::GetText(_("notes: [<keep same>] "),
 	                               e_orig->GetNotes()));
 
 	cEntry::DiffT diff = e->Diff(e_orig);
 	if (diff.empty())
 	{
-		cout << "No change" << endl;
+		cout << _("No change") << endl;
 		return;
 	}
 
-	std::string prompt = "Confirm changing ";
+	std::string prompt = _("Confirm changing ");
 	for (auto i = diff.begin(); i != diff.end(); ++i)
 	{
 		if (i != diff.begin())
@@ -122,16 +123,16 @@ void cCommandEdit::Execute(Params const &params)
 		switch (i->type)
 		{
 		case cEntry::FT_GROUP:
-			prompt += "group";
+			prompt += _("group");
 			break;
 		case cEntry::FT_TITLE:
-			prompt += "name";
+			prompt += _("name");
 			break;
 		case cEntry::FT_PASS:
-			prompt += "password";
+			prompt += _("password");
 			break;
 		case cEntry::FT_NOTES:
-			prompt += "notes";
+			prompt += _("notes");
 			break;
 		default:
 			assert(!"Implement this");
@@ -140,7 +141,7 @@ void cCommandEdit::Execute(Params const &params)
 	prompt += "? [y] ";
 	if (!cTerminal::GetYN(prompt, true))
 	{
-		cout << "Changes abandoned" << endl;
+		cout << _("Changes abandoned") << endl;
 		return;
 	}
 

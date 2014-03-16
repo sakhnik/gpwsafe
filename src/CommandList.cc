@@ -24,6 +24,7 @@
 #include "Terminal.hh"
 #include "Exceptions.hh"
 #include "Entry.hh"
+#include "i18n.h"
 
 namespace gPWS {
 
@@ -51,7 +52,7 @@ void cCommandList::Execute(Params const &params)
 	auto match = database->Find(_regex.c_str());
 	if (match.empty())
 	{
-		cerr << "No matching entries found" << endl;
+		cerr << _("No matching entries found") << endl;
 		throw ExitEx(1);
 	}
 
@@ -76,30 +77,32 @@ void cCommandList::Execute(Params const &params)
 	auto const &title_entry = match.front();
 	if (params.user)
 	{
-		emitter->Emit("username for " + title_entry->first,
+		emitter->Emit(_("username for ") + title_entry->first,
 		              title_entry->second->GetUser());
 	}
 	if (params.pass)
 	{
-		emitter->Emit("password for " + title_entry->first,
+		emitter->Emit(_("password for ") + title_entry->first,
 		              title_entry->second->GetPass());
 	}
 }
 
 void cCommandList::_PrintIntention(Params const &params)
 {
-	if (!params.user && !params.pass)
-		return;
-	string subject;
 	if (params.user)
-		subject += "login";
-	if (params.pass)
 	{
-		if (params.user)
-			subject += " and ";
-		subject += "password";
+		if (params.pass)
+			params.emitter->PrintIntention(_("login and password"));
+		else
+			params.emitter->PrintIntention(_("login"));
 	}
-	params.emitter->PrintIntention(subject);
+	else
+	{
+		if (params.pass)
+			params.emitter->PrintIntention(_("password"));
+		else
+			return;
+	}
 }
 
 } //namespace gPWS;

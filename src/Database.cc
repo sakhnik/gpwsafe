@@ -22,6 +22,7 @@
 #include "Database.hh"
 #include "Memory.hh"
 #include "Debug.hh"
+#include "i18n.h"
 
 #include <iostream>
 #include <errno.h>
@@ -150,7 +151,7 @@ string cDatabase::FollowSymlink(const string &fname)
 	if (errno != EINVAL)
 	{
 		auto e = errno;
-		cerr << "Couldn't follow a symbolic link " << buf << ": "
+		cerr << _("Couldn't follow a symbolic link ") << buf << ": "
 			<< strerror(e) << endl;
 	}
 
@@ -173,13 +174,13 @@ void cDatabase::Write()
 
 	if (-1 == ::rename(fname.c_str(), backup.c_str()))
 	{
-		cerr << "Failed to create backup: " << strerror(errno) << endl;
+		cerr << _("Failed to create backup: ") << strerror(errno) << endl;
 		throw runtime_error("File system");
 	}
 
 	if (-1 == ::rename(new_fname.c_str(), fname.c_str()))
 	{
-		cerr << "Failed to move new file: " << strerror(errno) << endl;
+		cerr << _("Failed to move new file: ") << strerror(errno) << endl;
 		throw runtime_error("File system");
 	}
 }

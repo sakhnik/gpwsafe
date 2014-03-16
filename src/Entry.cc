@@ -22,6 +22,7 @@
 #include "Entry.hh"
 #include "Memory.hh"
 #include "Debug.hh"
+#include "i18n.h"
 
 #include <iostream>
 #include <boost/format.hpp>
@@ -117,22 +118,22 @@ void cEntry::PrettyPrint() const
 				break;
 			}
 		case FT_GROUP:
-			cout << "Group:\t\t" << field->value << "\n";
+			cout << _("Group:\t\t") << field->value << "\n";
 			break;
 		case FT_TITLE:
-			cout << "Title:\t\t" << field->value << "\n";
+			cout << _("Title:\t\t") << field->value << "\n";
 			break;
 		case FT_USER:
-			cout << "User:\t\t" << field->value << "\n";
+			cout << _("User:\t\t") << field->value << "\n";
 			break;
 		case FT_NOTES:
-			cout << "Notes:\t\t" << field->value << "\n";
+			cout << _("Notes:\t\t") << field->value << "\n";
 			break;
 		case FT_PASS:
-			cout << "Pass:\t\t*************\n";
+			cout << _("Pass:\t\t*************\n");
 			break;
 		case FT_URL:
-			cout << "Url:\t\t" << field->value << "\n";
+			cout << "URL:\t\t" << field->value << "\n";
 			break;
 		default:
 			cout << boost::format("0x%02X") % unsigned(field->type) << "\t\t";

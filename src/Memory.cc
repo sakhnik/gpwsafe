@@ -20,6 +20,7 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 #include "Memory.hh"
+#include "i18n.h"
 
 #include <sys/mman.h>
 #include <iostream>
@@ -34,7 +35,7 @@ char *cLockedBlockAllocator::malloc(const size_type bytes)
 	int ret = mlock(block, bytes);
 	if (ret)
 	{
-		cerr << "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
+		cerr << _("WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)")
 		     << endl;
 	}
 	return block;
