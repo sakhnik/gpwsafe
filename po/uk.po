@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: sakhnik@gmail.com\n"
-"POT-Creation-Date: 2014-03-16 11:15+0200\n"
+"POT-Creation-Date: 2014-03-16 16:24+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -27,3 +27,87 @@ msgstr "Не вдалося ініціалізувати libgcrypt"
 #, c-format
 msgid "Going to print %s to stdout"
 msgstr "Буде надруковано %s у стандартний вивід"
+
+#: src/App.cc:86
+msgid "Commands"
+msgstr "Команди"
+
+#: src/App.cc:95
+msgid "create an empty database"
+msgstr "створити порожню базу даних"
+
+#: src/App.cc:104
+msgid ""
+"list all entries matching [REGEX]. If either -u or -p are given, only one "
+"entry may match. If neither -u or -p are given and one entry matches, print "
+"details."
+msgstr ""
+"перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -p, має бути знайдено "
+"єдиний запис. Якщо не задано жодне з -u чи -p, і знайдено єдиний запис, роздрукувати "
+"подробиці."
+
+#: src/App.cc:115
+msgid "add an entry"
+msgstr "додати запис"
+
+#: src/App.cc:124
+msgid "edit an entry"
+msgstr "редагувати запис"
+
+#: src/App.cc:127
+msgid "Options"
+msgstr "Опції"
+
+#: src/App.cc:131
+msgid "specify the database file"
+msgstr "зазначити файл бази даних"
+
+#: src/App.cc:134
+msgid "emit username of listed account"
+msgstr "видати назву користувача"
+
+#: src/App.cc:137
+msgid "emit password of listed account"
+msgstr "видати пароль"
+
+#: src/App.cc:145
+msgid "force echoing of entry to stdout"
+msgstr "примусово надрукувати у стандартний вивід"
+
+#: src/App.cc:155
+msgid "force copying of entry to X selection"
+msgstr "примусово скопіювати у буфер обміну Х"
+
+#: src/App.cc:159
+msgid "don't press on the pool of randomness"
+msgstr ""
+
+#: src/App.cc:160
+msgid "display this help and exit"
+msgstr ""
+
+#: src/App.cc:161
+msgid "output version information and exit"
+msgstr ""
+
+#: src/App.cc:180
+msgid ""
+" - command line tool compatible with Conterpane's PasswordSafe\n"
+"\n"
+msgstr ""
+
+#: src/App.cc:182
+msgid "Usage: "
+msgstr ""
+
+#: src/App.cc:182
+msgid " [OPTION] command [ARG]\n"
+msgstr ""
+
+#: src/App.cc:198
+msgid "Ambiguous command"
+msgstr ""
+
+#: src/App.cc:219
+msgid "Exception: "
+msgstr ""

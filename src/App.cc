@@ -26,6 +26,7 @@
 #include "CommandList.hh"
 #include "CommandCreate.hh"
 #include "CommandEdit.hh"
+#include "i18n.h"
 
 #include "../config.h"
 
@@ -82,7 +83,7 @@ void cApp::Init(int argc, char *argv[])
 #endif
 	};
 
-	options_description desc_cmd("Commands", line_length, line_length / 2);
+	options_description desc_cmd(_("Commands"), line_length, line_length / 2);
 	desc_cmd.add_options()
 		("create",
 			bool_switch(nullptr)
@@ -91,7 +92,7 @@ void cApp::Init(int argc, char *argv[])
 					if (arg)
 						this->_SetCommand(cCommandCreate::Create());
 				}),
-			"create an empty database")
+			_("create an empty database"))
 		("list",
 			named_option("REGEX")
 			->implicit_value("")
@@ -100,8 +101,9 @@ void cApp::Init(int argc, char *argv[])
 				{
 					this->_SetCommand(cCommandList::Create(regex));
 				}),
-			"list all entries matching [REGEX]. If either -u or -p are given,"
-			" only one entry may match")
+			_("list all entries matching [REGEX]. If either -u or -p are given,"
+			  " only one entry may match. If neither -u or -p are given and one"
+			  " entry matches, print details."))
 		("add,a",
 			named_option("NAME")
 			->implicit_value("")
@@ -110,7 +112,7 @@ void cApp::Init(int argc, char *argv[])
 				{
 					this->_SetCommand(cCommandAdd::Create(name));
 				}),
-			"add an entry")
+			_("add an entry"))
 		("edit,e",
 			named_option("REGEX")
 			->notifier(
@@ -119,20 +121,20 @@ void cApp::Init(int argc, char *argv[])
 					this->_SetCommand(cCommandEdit::Create(regex));
 				}
 			),
-			"edit an entry")
+			_("edit an entry"))
 		;
 
-	options_description desc_opts("Options", line_length, line_length / 2);
+	options_description desc_opts(_("Options"), line_length, line_length / 2);
 	desc_opts.add_options()
 		("file,f",
 			value<string>(&_params.file_name)->default_value(_params.file_name),
-			"specify the database file")
+			_("specify the database file"))
 		("user,u",
 			bool_switch(&_params.user),
-			"emit username of listed account")
+			_("emit username of listed account"))
 		("pass,p",
 			bool_switch(&_params.pass),
-			"emit password of listed account")
+			_("emit password of listed account"))
 		("echo,E",
 			bool_switch(nullptr)->notifier(
 				[this](bool arg)
@@ -140,7 +142,7 @@ void cApp::Init(int argc, char *argv[])
 					if (arg)
 						this->_SetEmitter(new cStdoutEmitter);
 				}
-			), "force echoing of entry to stdout")
+			), _("force echoing of entry to stdout"))
 #ifdef ENABLE_XCLIP
 		("xclip,x",
 			bool_switch(nullptr)->notifier(
@@ -150,13 +152,13 @@ void cApp::Init(int argc, char *argv[])
 						this->_SetEmitter(new cGtkEmitter);
 				}
 			),
-			"force copying of entry to X selection")
+			_("force copying of entry to X selection"))
 #endif //ENABLE_XCLIP
 		("use-weak-randomness-for-tests",
 			bool_switch(&_use_weak_randomness_for_tests),
-			"don't press on the pool of randomness")
-		("help,h", "display this help and exit")
-		("version,V", "output version information and exit")
+			_("don't press on the pool of randomness"))
+		("help,h", _("display this help and exit"))
+		("version,V", _("output version information and exit"))
 		;
 
 	options_description desc(line_length, line_length / 2);
@@ -175,9 +177,9 @@ void cApp::Init(int argc, char *argv[])
 
 	if (vm.count("help"))
 	{
-		cout << _program_name << " - command line tool compatible with"
-			" Conterpane's PasswordSafe\n\n";
-		cout << "Usage: " << _program_name << " [OPTION] command [ARG]\n";
+		cout << _program_name << _(" - command line tool compatible with"
+			" Conterpane's PasswordSafe\n\n");
+		cout << _("Usage: ") << _program_name << _(" [OPTION] command [ARG]\n");
 		cout << desc << endl;
 		throw ExitEx(0);
 	}
@@ -193,7 +195,7 @@ void cApp::_SetCommand(cCommand::PtrT command)
 {
 	if (_command)
 	{
-		cerr << "Ambiguous command" << endl;
+		cerr << _("Ambiguous command") << endl;
 		throw ExitEx(1);
 	}
 	_command.reset(command.release());
@@ -214,7 +216,7 @@ void cApp::Run()
 	}
 	catch (std::exception const &e)
 	{
-		cerr << "Exception: " << e.what() << endl;
+		cerr << _("Exception: ") << e.what() << endl;
 		throw ExitEx(1);
 	}
 }
