@@ -48,27 +48,28 @@ void cGtkEmitter::PrintIntention(string const &subject) const
 namespace {
 
 void
-_TextGetFunc(GtkClipboard     *clipboard,
+_TextGetFunc(GtkClipboard     *,
              GtkSelectionData *selection_data,
-             guint             info,
+             guint             /*info*/,
              gpointer          data)
 {
 	StringX const *val = reinterpret_cast<StringX const *>(data);
 	gtk_selection_data_set_text (selection_data, val->c_str(), val->size());
 	//gtk_clipboard_clear(clipboard);
-	gtk_main_quit();
+	if (gtk_main_level())
+		gtk_main_quit();
 }
 
 void
-_TextClearFunc(GtkClipboard *clipboard,
-               gpointer      data)
+_TextClearFunc(GtkClipboard *,
+               gpointer      /*data*/)
 {
 }
 
 gboolean
 _OnStdin(GIOChannel *source,
-         GIOCondition condition,
-         gpointer data)
+         GIOCondition /*condition*/,
+         gpointer /*data*/)
 {
 	// Read the ready byte from the stdin
 	char ch;
@@ -77,8 +78,37 @@ _OnStdin(GIOChannel *source,
 	{
 	}
 	// Quit the clipboard waiting
-	gtk_main_quit();
+	if (gtk_main_level())
+		gtk_main_quit();
 	return FALSE;
+}
+
+template<typename T, typename D>
+unique_ptr<T, D> mk_ptr(T *t, D d)
+{
+	return unique_ptr<T, D>(t, d);
+}
+
+template <typename ClipboardsT>
+void ClipboardSetup(ClipboardsT &clipboards, const StringX &val)
+{
+	auto list = mk_ptr(gtk_target_list_new(NULL, 0), &gtk_target_list_unref);
+	gtk_target_list_add_text_targets (list.get(), 0);
+
+	gint n_targets;
+	GtkTargetEntry *targets =
+		gtk_target_table_new_from_list (list.get(), &n_targets);
+
+	for (auto &clipboard : clipboards)
+	{
+		gtk_clipboard_set_with_data (clipboard.get(),
+									 targets, n_targets,
+									 _TextGetFunc, _TextClearFunc,
+									 const_cast<StringX *>(&val));
+		gtk_clipboard_set_can_store (clipboard.get(), NULL, 0);
+	}
+
+	gtk_target_table_free (targets, n_targets);
 }
 
 } //namespace;
@@ -89,29 +119,30 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	char **argv = { NULL };
 	gtk_init(&argc, &argv);
 
-	GdkAtom primary = gdk_atom_intern("PRIMARY", TRUE);
-	GtkClipboard *clipboard = gtk_clipboard_get(primary);
-	if (!clipboard)
+	typedef vector<decltype(mk_ptr(gtk_clipboard_get(GdkAtom{}),
+	                                                 &gtk_clipboard_clear))>
+		ClipboardsT;
+	ClipboardsT clipboards;
+
+	const char *CLIPS[] =
 	{
-		cerr << _("Failed to get clipboard") << endl;
-		return;
+		"PRIMARY",
+		"CLIPBOARD"
+	};
+
+	for (auto clip : CLIPS)
+	{
+		GdkAtom primary = gdk_atom_intern(clip, TRUE);
+		auto clipboard = mk_ptr(gtk_clipboard_get(primary), &gtk_clipboard_clear);
+		if (!clipboard)
+		{
+			cerr << _("Failed to get ") << clip << endl;
+			return;
+		}
+		clipboards.push_back(move(clipboard));
 	}
 
-	GtkTargetList *list = gtk_target_list_new(NULL, 0);
-	gtk_target_list_add_text_targets (list, 0);
-
-	gint n_targets;
-	GtkTargetEntry *targets =
-		gtk_target_table_new_from_list (list, &n_targets);
-
-	gtk_clipboard_set_with_data (clipboard,
-	                             targets, n_targets,
-	                             _TextGetFunc, _TextClearFunc,
-	                             const_cast<StringX *>(&val));
-	gtk_clipboard_set_can_store (clipboard, NULL, 0);
-
-	gtk_target_table_free (targets, n_targets);
-	gtk_target_list_unref (list);
+	ClipboardSetup(clipboards, val);
 
 	cout << bfmt(_("You are ready to paste the %s from PRIMARY")) % name << endl;
 	cout << _("Press any key when done") << endl;
@@ -120,13 +151,11 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	cRawTerminal raw_terminal;
 
 	// Poll the stdin for any events to react on key press
-	GIOChannel *channel = g_io_channel_unix_new(STDIN_FILENO);
-	/*gint evt_id =*/ g_io_add_watch(channel, G_IO_IN, _OnStdin, NULL);
+	auto channel = mk_ptr(g_io_channel_unix_new(STDIN_FILENO),
+	                      &g_io_channel_unref);
+	/*gint evt_id =*/ g_io_add_watch(channel.get(), G_IO_IN, _OnStdin, NULL);
 
 	gtk_main();
-
-	gtk_clipboard_clear(clipboard);
-	g_io_channel_unref(channel);
 }
 
 } //namespace gPWS;
