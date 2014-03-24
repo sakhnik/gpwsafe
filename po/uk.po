@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: sakhnik@gmail.com\n"
-"POT-Creation-Date: 2014-03-17 11:30+0200\n"
+"POT-Creation-Date: 2014-03-24 21:03+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -113,16 +113,16 @@ msgstr ""
 msgid "Going to copy %s to X selection"
 msgstr "Буде скопійовано %s у буфер обміну Х"
 
-#: src/GtkEmitter.cc:96
-msgid "Failed to get clipboard"
-msgstr "Не вдалося отримати буфер обміну"
+#: src/GtkEmitter.cc:173
+msgid "Failed to get "
+msgstr "Не вдалося отримати буфер обміну "
 
-#: src/GtkEmitter.cc:116
+#: src/GtkEmitter.cc:185
 #, c-format
-msgid "You are ready to paste the %s from PRIMARY"
-msgstr "Вставте %s з буферу обміну PRIMARY"
+msgid "You are ready to paste the %s from "
+msgstr "Вставте %s з буферу обміну "
 
-#: src/GtkEmitter.cc:117
+#: src/GtkEmitter.cc:187
 msgid "Press any key when done"
 msgstr "Натисніть будь-яку клавішу, як зроблено"
 
@@ -191,27 +191,27 @@ msgstr "Не вдалося створити резервну копію: "
 msgid "Failed to move new file: "
 msgstr "Не вдалося перемістити новий файл: "
 
-#: src/CommandList.cc:55 src/CommandEdit.cc:54
+#: src/CommandList.cc:56 src/CommandEdit.cc:54
 msgid "No matching entries found"
 msgstr "Не знайдено відповідних записів"
 
-#: src/CommandList.cc:80
+#: src/CommandList.cc:81
 msgid "username for "
 msgstr "користувач для "
 
-#: src/CommandList.cc:85
+#: src/CommandList.cc:86
 msgid "password for "
 msgstr "пароль для "
 
-#: src/CommandList.cc:95
+#: src/CommandList.cc:96
 msgid "login and password"
 msgstr "користувач і пароль"
 
-#: src/CommandList.cc:97
+#: src/CommandList.cc:98
 msgid "login"
 msgstr "користувач"
 
-#: src/CommandList.cc:102 src/CommandEdit.cc:132
+#: src/CommandList.cc:103 src/CommandEdit.cc:132
 msgid "password"
 msgstr "пароль"
 
@@ -311,15 +311,15 @@ msgstr "пароль знову: "
 msgid "notes: "
 msgstr "нотатки: "
 
-#: src/Command.cc:65
+#: src/Command.cc:66
 msgid "Enter password for "
 msgstr "Уведіть пароль для "
 
-#: src/Command.cc:78
+#: src/Command.cc:79
 msgid "More than one matching entry: "
 msgstr "Не єдиний збіг: "
 
-#: src/Command.cc:89
+#: src/Command.cc:90
 #, c-format
 msgid "%d more"
 msgstr "ще %d"
@@ -374,19 +374,23 @@ msgstr "примусово надрукувати у стандартний ви
 msgid "force copying of entry to X selection"
 msgstr "примусово скопіювати у буфер обміну Х"
 
-#: src/App.cc:159
+#: src/App.cc:158
+msgid "X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
+msgstr "тип буфера обміну X ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
+
+#: src/App.cc:162
 msgid "don't press on the pool of randomness"
 msgstr "не виснажувати збірник випадковості"
 
-#: src/App.cc:160
+#: src/App.cc:163
 msgid "display this help and exit"
 msgstr "показати цю допомогу і вийти"
 
-#: src/App.cc:161
+#: src/App.cc:164
 msgid "output version information and exit"
 msgstr "вивести відомості про версію і вийти"
 
-#: src/App.cc:180
+#: src/App.cc:183
 msgid ""
 " - command line tool compatible with Conterpane's PasswordSafe\n"
 "\n"
@@ -394,18 +398,18 @@ msgstr ""
 " — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
 "\n"
 
-#: src/App.cc:182
+#: src/App.cc:185
 msgid "Usage: "
 msgstr "Вживання: "
 
-#: src/App.cc:182
+#: src/App.cc:185
 msgid " [OPTION] command [ARG]\n"
 msgstr " [OPTION] команда [ARG]\n"
 
-#: src/App.cc:198
+#: src/App.cc:201
 msgid "Ambiguous command"
 msgstr "Неоднозначна команда"
 
-#: src/App.cc:219
+#: src/App.cc:222
 msgid "Exception: "
 msgstr "Виняток: "
