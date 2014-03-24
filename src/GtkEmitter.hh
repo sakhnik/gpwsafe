@@ -33,6 +33,9 @@ public:
 	~cGtkEmitter();
 
 private:
+	std::string _selection;
+
+	virtual void SetSelection(const std::string &selection);
 	virtual void PrintIntention(std::string const &subject) const;
 	virtual void Emit(StringX const &name, StringX const &val);
 };

@@ -45,6 +45,11 @@ void cGtkEmitter::PrintIntention(string const &subject) const
 	cout << bfmt(_("Going to copy %s to X selection")) % subject << endl;
 }
 
+void cGtkEmitter::SetSelection(const string &selection)
+{
+	_selection = selection;
+}
+
 namespace {
 
 void
@@ -129,6 +134,23 @@ string ListItems(const ItemsT &items)
 	return result;
 }
 
+vector<const char *> ParseSelection(string selection)
+{
+	if (selection.empty())
+		return {"BOTH"};
+
+	switch (selection[0])
+	{
+	case 'P':
+		return {"PRIMARY"};
+	case 'C':
+		return {"CLIPBOARD"};
+	case 'B':
+	default:
+		return {"PRIMARY", "CLIPBOARD"};
+	}
+}
+
 } //namespace;
 
 void cGtkEmitter::Emit(StringX const &name, StringX const &val)
@@ -142,23 +164,17 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 		clipboards;
 	vector<const char *> names;
 
-	const char *CLIPS[] =
+	for (auto selection : ParseSelection(_selection))
 	{
-		"PRIMARY",
-		"CLIPBOARD"
-	};
-
-	for (auto clip : CLIPS)
-	{
-		GdkAtom primary = gdk_atom_intern(clip, TRUE);
+		GdkAtom primary = gdk_atom_intern(selection, TRUE);
 		auto clipboard = mk_ptr(gtk_clipboard_get(primary), &gtk_clipboard_clear);
 		if (!clipboard)
 		{
-			cerr << _("Failed to get ") << clip << endl;
+			cerr << _("Failed to get ") << selection << endl;
 			continue;
 		}
 		clipboards.push_back(move(clipboard));
-		names.push_back(clip);
+		names.push_back(selection);
 	}
 	assert(clipboards.size() == names.size());
 	if (clipboards.empty())

@@ -143,7 +143,7 @@ void cApp::Init(int argc, char *argv[])
 						this->_SetEmitter(new cStdoutEmitter);
 				}
 			), _("force echoing of entry to stdout"))
-#ifdef ENABLE_XCLIP
+#if ENABLE_XCLIP && ENABLE_GTK
 		("xclip,x",
 			bool_switch(nullptr)->notifier(
 				[this](bool arg)
@@ -153,6 +153,9 @@ void cApp::Init(int argc, char *argv[])
 				}
 			),
 			_("force copying of entry to X selection"))
+		("selection,s",
+			value<string>(&_params.selection)->default_value(_params.selection),
+			_("X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"))
 #endif //ENABLE_XCLIP
 		("use-weak-randomness-for-tests",
 			bool_switch(&_use_weak_randomness_for_tests),

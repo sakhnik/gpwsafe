@@ -42,6 +42,7 @@ public:
 		bool user;
 		bool pass;
 		std::unique_ptr<iEmitter> emitter;
+		std::string selection;
 
 		Params();
 		std::string ExpandFileName() const;

@@ -44,6 +44,7 @@ void cCommandList::Execute(Params const &params)
 {
 	assert(params.emitter && "Not implemented _emitter");
 	auto &emitter = params.emitter;
+	emitter->SetSelection(params.selection);
 
 	_PrintIntention(params);
 

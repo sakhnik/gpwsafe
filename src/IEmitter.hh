@@ -33,6 +33,8 @@ struct iEmitter
 {
 	virtual ~iEmitter() { }
 
+	virtual void SetSelection(const std::string &selection) { }
+
 	virtual void PrintIntention(std::string const &subject) const = 0;
 
 	virtual void Emit(StringX const &name, StringX const &val) = 0;

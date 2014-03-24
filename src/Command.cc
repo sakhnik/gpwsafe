@@ -45,12 +45,13 @@ cCommand::Params::Params()
 #else
 	, emitter(new cStdoutEmitter)
 #endif
+	, selection("BOTH")
 {
 }
 
 string cCommand::Params::ExpandFileName() const
 {
-	wordexp_t exp_result = { 0 };
+	wordexp_t exp_result = { };
 	BOOST_SCOPE_EXIT((&exp_result)) {
 		wordfree(&exp_result);
 	} BOOST_SCOPE_EXIT_END

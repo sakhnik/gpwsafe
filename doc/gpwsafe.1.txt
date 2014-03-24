@@ -85,6 +85,10 @@ ifdef::enable_xclip[]
 -x, --xclip::
         Copy the login and password to X clipboard. This is selected
         by default is $DISPLAY is set.
+
+-s, --selection::
+        Specify X selection to use: PRIMARY, CLIPBOARD or BOTH.
+        Initial letter is enough.
 endif::enable_xclip[]
 
 --use-weak-randomness-for-tests::
