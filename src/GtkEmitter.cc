@@ -111,6 +111,24 @@ void ClipboardSetup(ClipboardsT &clipboards, const StringX &val)
 	gtk_target_table_free (targets, n_targets);
 }
 
+template <typename ItemsT>
+string ListItems(const ItemsT &items)
+{
+	string result;
+
+	bool first{true};
+	for (auto &item : items)
+	{
+		if (first)
+			first = false;
+		else
+			result += ", ";
+		result += item;
+	}
+
+	return result;
+}
+
 } //namespace;
 
 void cGtkEmitter::Emit(StringX const &name, StringX const &val)
@@ -119,10 +137,10 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	char **argv = { NULL };
 	gtk_init(&argc, &argv);
 
-	typedef vector<decltype(mk_ptr(gtk_clipboard_get(GdkAtom{}),
-	                                                 &gtk_clipboard_clear))>
-		ClipboardsT;
-	ClipboardsT clipboards;
+	vector<decltype(mk_ptr(gtk_clipboard_get(GdkAtom{}),
+	                                         &gtk_clipboard_clear))>
+		clipboards;
+	vector<const char *> names;
 
 	const char *CLIPS[] =
 	{
@@ -137,14 +155,19 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 		if (!clipboard)
 		{
 			cerr << _("Failed to get ") << clip << endl;
-			return;
+			continue;
 		}
 		clipboards.push_back(move(clipboard));
+		names.push_back(clip);
 	}
+	assert(clipboards.size() == names.size());
+	if (clipboards.empty())
+		return;
 
 	ClipboardSetup(clipboards, val);
 
-	cout << bfmt(_("You are ready to paste the %s from PRIMARY")) % name << endl;
+	cout << bfmt(_("You are ready to paste the %s from ")) % name;
+	cout << ListItems(names) << endl;
 	cout << _("Press any key when done") << endl;
 
 	// Switch off the canonical mode
