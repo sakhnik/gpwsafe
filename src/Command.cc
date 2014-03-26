@@ -26,7 +26,6 @@
 #include "GtkEmitter.hh"
 #include "i18n.h"
 
-#include "config.h"
 #include <wordexp.h>
 #include <boost/scope_exit.hpp>
 #include <boost/format.hpp>

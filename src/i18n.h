@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../config.h"
-#include "../gettext.h"
+#include <libintl.h>
 
 #define _(x) gettext(x)

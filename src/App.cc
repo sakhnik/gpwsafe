@@ -28,8 +28,6 @@
 #include "CommandEdit.hh"
 #include "i18n.h"
 
-#include "../config.h"
-
 #ifdef ENABLE_GTK
 #include "GtkEmitter.hh"
 #endif //ENABLE_GTK

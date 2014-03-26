@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "../config.h"
 #include "Command.hh"
 
 #include <string>
