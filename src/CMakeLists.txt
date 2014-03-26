@@ -45,3 +45,20 @@ target_link_libraries(
 	readline
 	${Boost_PROGRAM_OPTIONS_LIBRARIES}
 	)
+
+if(GTK_FOUND)
+	#link_directories(${GTK_LIBRARY_DIRS})
+
+	add_library(gtk_emitter STATIC GtkEmitter.cc GtkEmitter.hh)
+	set_property(
+		TARGET gtk_emitter
+		PROPERTY COMPILE_DEFINITIONS ${GTK_DEFINITIONS}
+		PROPERTY INCLUDE_DIRECTORIES ${GTK_INCLUDE_DIRS}
+		)
+
+	target_link_libraries(
+		${APP_TARGET}
+		gtk_emitter
+		${GTK_LIBRARIES}
+		)
+endif()
