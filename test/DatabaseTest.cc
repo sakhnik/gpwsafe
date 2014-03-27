@@ -65,6 +65,8 @@ TEST(TestDatabase, FollowSymlink)
 
 	EXPECT_EQ(0, system(DEFS "test asdf = `cat $t~`\n"));
 	EXPECT_EQ(0, system(DEFS "test $t = `readlink -f $f`\n"));
+
+	system("rm -rf /tmp/gpws");
 }
 
 // vim: set noet ts=4 sw=4 tw=80:
