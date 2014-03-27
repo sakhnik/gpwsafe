@@ -39,7 +39,7 @@ add_custom_command(
 	COMMAND ${ASCIIDOC} ${A2X_OPTS}
 	    --asciidoc-opts="${ASCIIDOC_OPTS} --out-file=${_out}.xml"
 	    ${_in}
-	COMMAND gzip ${_out}
+	COMMAND gzip -f ${_out}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	)
 add_custom_target(manpage ALL DEPENDS ${_out}.gz)
