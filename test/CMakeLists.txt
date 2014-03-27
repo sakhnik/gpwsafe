@@ -31,6 +31,9 @@ foreach(TEST ${UNIT_TESTS})
 	add_test(NAME ${TEST} COMMAND ${TEST})
 endforeach()
 
-#if HAVE_PERL_EXPECT
-#TESTS += generic_test.pl
-#endif  # HAVE_PERL_EXPECT
+if(NOT ${PERLMODULES_EXPECT_MODULE} STREQUAL "NOTFOUND")
+	add_test(
+		NAME functional.generic 
+		COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/generic_test.pl
+		)
+endif()

@@ -74,6 +74,8 @@ else()
 	add_subdirectory(doc)
 endif()
 
+find_package(PerlModules COMPONENTS Expect)
+
 add_subdirectory(src)
 add_subdirectory(po)
 add_subdirectory(test)
