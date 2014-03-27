@@ -15,6 +15,8 @@
 
 enable_testing()
 
+add_subdirectory(/usr/src/gtest gtest)
+
 set(UNIT_TESTS
 	KeyStretchTest
 	File3Test
@@ -22,7 +24,7 @@ set(UNIT_TESTS
 	EntryTest
 	)
 
-set(LIBRARIES libgpwsafe ${LIBGCRYPT_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARIES})
+set(LIBRARIES libgpwsafe ${LIBGCRYPT_LIBRARIES} gtest gtest_main)
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
 foreach(TEST ${UNIT_TESTS})

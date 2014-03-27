@@ -20,8 +20,7 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #define private public
 #include "../src/Database.hh"
@@ -40,9 +39,7 @@ struct sGlobalFixture
 
 } global_fixture;
 
-BOOST_AUTO_TEST_SUITE(DatabaseTest)
-
-BOOST_AUTO_TEST_CASE(TestFollowSymlink)
+TEST(TestDatabase, FollowSymlink)
 {
 #define DEFS \
 		"#/bin/bash\n" \
@@ -50,8 +47,8 @@ BOOST_AUTO_TEST_CASE(TestFollowSymlink)
 		"t=$d/sym/link/1.psafe3\n" \
 		"f=$d/f.psafe3\n"
 
-	BOOST_ASSERT(
-		0 ==
+	ASSERT_EQ(
+		0,
 		system(DEFS
 		       "rm -rf $d\n"
 		       "mkdir -p `dirname $t`\n"
@@ -59,17 +56,15 @@ BOOST_AUTO_TEST_CASE(TestFollowSymlink)
 		       "ln -s $t $f\n")
 		);
 
-	BOOST_CHECK_EQUAL("/tmp/gpws/sym/link/1.psafe3",
-	                  cDatabase::FollowSymlink("/tmp/gpws/f.psafe3"));
+	EXPECT_EQ("/tmp/gpws/sym/link/1.psafe3",
+	          cDatabase::FollowSymlink("/tmp/gpws/f.psafe3"));
 	cDatabase d;
 	d._fname = "/tmp/gpws/f.psafe3";
 	d._pass = "password";
 	d.Write();
 
-	BOOST_ASSERT(0 == system(DEFS "test asdf = `cat $t~`\n"));
-	BOOST_ASSERT(0 == system(DEFS "test $t = `readlink -f $f`\n"));
+	EXPECT_EQ(0, system(DEFS "test asdf = `cat $t~`\n"));
+	EXPECT_EQ(0, system(DEFS "test $t = `readlink -f $f`\n"));
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 // vim: set noet ts=4 sw=4 tw=80:

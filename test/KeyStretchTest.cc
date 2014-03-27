@@ -20,19 +20,15 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include "../src/KeyStretch.hh"
 #include "../src/Defs.hh"
 
-#include <boost/range.hpp>
-
 using namespace std;
 
-BOOST_AUTO_TEST_SUITE(KeyStretchTest)
 
-BOOST_AUTO_TEST_CASE(First)
+TEST(KeyStretchTest, First)
 {
 	using namespace gPWS;
 	StringX pass("first123");
@@ -50,12 +46,10 @@ BOOST_AUTO_TEST_CASE(First)
 		0xD9, 0xF4, 0xB2, 0x88, 0xB4, 0x73, 0x14, 0x07,
 		0xDC, 0x76, 0xD0, 0x1B, 0xEC, 0x2A, 0x02, 0x65
 	};
-	BOOST_CHECK_EQUAL_COLLECTIONS(boost::begin(ref),
-	                              boost::end(ref),
-	                              key_stretch.Get(),
-	                              key_stretch.Get() + key_stretch.LENGTH);
-}
 
-BOOST_AUTO_TEST_SUITE_END()
+	ASSERT_EQ(end(ref) - begin(ref), key_stretch.LENGTH);
+	for (size_t i{0}; i != key_stretch.LENGTH; ++i)
+		EXPECT_EQ(int{ref[i]}, int{key_stretch.Get()[i]});
+}
 
 // vim: set noet ts=4 sw=4 tw=80:

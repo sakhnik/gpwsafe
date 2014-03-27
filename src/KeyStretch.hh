@@ -39,7 +39,7 @@ public:
 
 	~cKeyStretch();
 
-	static const unsigned LENGTH = cSha256::LENGTH;
+	enum { LENGTH = cSha256::LENGTH };
 
 	uint8_t const *Get() const;
 

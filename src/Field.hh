@@ -44,10 +44,12 @@ struct sField
 
 	void operator delete(void *p, size_t n);
 
-	bool operator!=(sField const &o)
+	bool operator!=(const sField &o) const
 	{
 		return type != o.type || value != o.value;
 	}
+
+	bool operator==(const sField &o) const { return !operator!=(o); }
 
 private:
 	void *operator new(size_t n);

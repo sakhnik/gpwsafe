@@ -20,8 +20,7 @@
 // along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
 
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include "../src/File3.hh"
 #include "../src/Defs.hh"
@@ -42,9 +41,8 @@ struct sGlobalFixture
 
 } global_fixture;
 
-BOOST_AUTO_TEST_SUITE(File3Test)
 
-BOOST_AUTO_TEST_CASE(TestWriteRead)
+TEST(TestFile3, WriteRead)
 {
 	srandom(static_cast<unsigned>(time(NULL)));
 
@@ -84,14 +82,19 @@ BOOST_AUTO_TEST_CASE(TestWriteRead)
 		fields2.push_back(field);
 	}
 
-	BOOST_CHECK_EQUAL_COLLECTIONS(
-		boost::make_indirect_iterator(fields1.begin()),
-		boost::make_indirect_iterator(fields1.end()),
-		boost::make_indirect_iterator(fields2.begin()),
-		boost::make_indirect_iterator(fields2.end())
-		);
-}
+	ASSERT_EQ(fields1.size(), fields2.size());
 
-BOOST_AUTO_TEST_SUITE_END()
+	for (FieldsT::const_iterator it1{begin(fields1)}, it2{begin(fields2)};
+	     it1 != end(fields1);
+	     ++it1, ++it2)
+	{
+		const sField &f1 = *(*it1);
+		const sField &f2 = *(*it2);
+
+		EXPECT_EQ(f1, f2);
+		EXPECT_EQ(f1.type, f2.type);
+		EXPECT_EQ(f1.value, f2.value);
+	}
+}
 
 // vim: set noet ts=4 sw=4 tw=80:
