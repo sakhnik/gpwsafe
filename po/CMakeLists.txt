@@ -16,7 +16,6 @@
 
 set(DOMAIN ${PACKAGE})
 set(LINGUAS uk)
-set(LOCALE_INSTALL_DIR locale)
 set(POT_FILE ${CMAKE_CURRENT_BINARY_DIR}/messages.pot)
 
 set(_gmoFiles)
@@ -32,7 +31,7 @@ foreach(LANG ${LINGUAS})
 			)
 		install(
 			FILES ${_gmo}
-			DESTINATION ${LOCALE_INSTALL_DIR}/${LANG}/LC_MESSAGES
+			DESTINATION share/locale/${LANG}/LC_MESSAGES
 			RENAME ${DOMAIN}.mo
 			)
 		list(APPEND _gmoFiles ${_gmo})

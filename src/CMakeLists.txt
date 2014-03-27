@@ -77,3 +77,5 @@ if(GTK_FOUND)
 		${GTK_LIBRARIES}
 		)
 endif()
+
+install(TARGETS ${PACKAGE} DESTINATION bin)

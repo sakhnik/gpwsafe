@@ -42,4 +42,7 @@ add_custom_command(
 	COMMAND gzip -f ${_out}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	)
+
 add_custom_target(manpage ALL DEPENDS ${_out}.gz)
+
+install(FILES ${_out}.gz DESTINATION share/man/man1)
