@@ -24,7 +24,7 @@ add_library(
 	)
 
 add_executable(
-	${APP_TARGET}
+	${PACKAGE}
 	main.cc
 	App.cc App.hh
 	Command.cc Command.hh
@@ -39,7 +39,7 @@ add_executable(
 	)
 
 target_link_libraries(
-	${APP_TARGET}
+	${PACKAGE}
 	libgpwsafe
 	${LIBGCRYPT_LIBRARIES}
 	readline
@@ -57,7 +57,7 @@ if(GTK_FOUND)
 		)
 
 	target_link_libraries(
-		${APP_TARGET}
+		${PACKAGE}
 		gtk_emitter
 		${GTK_LIBRARIES}
 		)

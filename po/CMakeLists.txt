@@ -1,5 +1,5 @@
 
-set(DOMAIN ${APP_TARGET})
+set(DOMAIN ${PACKAGE})
 set(LINGUAS uk)
 set(LOCALE_INSTALL_DIR locale)
 set(POT_FILE ${CMAKE_CURRENT_BINARY_DIR}/messages.pot)
