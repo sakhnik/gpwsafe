@@ -16,9 +16,9 @@
 
 set(DOMAIN ${PACKAGE})
 set(LINGUAS uk)
-set(POT_FILE ${CMAKE_CURRENT_BINARY_DIR}/messages.pot)
+set(_pot_file ${CMAKE_CURRENT_BINARY_DIR}/messages.pot)
 
-set(_gmoFiles)
+set(_gmo_files)
 
 foreach(LANG ${LINGUAS})
 	set(_po ${CMAKE_CURRENT_SOURCE_DIR}/${LANG}.po)
@@ -34,29 +34,35 @@ foreach(LANG ${LINGUAS})
 			DESTINATION share/locale/${LANG}/LC_MESSAGES
 			RENAME ${DOMAIN}.mo
 			)
-		list(APPEND _gmoFiles ${_gmo})
+		list(APPEND _gmo_files ${_gmo})
 	endif(EXISTS ${_po})
 endforeach()
 
-add_custom_target(translation ALL DEPENDS ${_gmoFiles})
+add_custom_target(translation ALL DEPENDS ${_gmo_files})
 
 
 file(GLOB _src ../src/*.cc)
 
-#foreach(LANG ${LINGUAS})
-#	set(_po ${LANG}.po)
-#	if(EXISTS ${_po})
-#		set(PO_FILE_NEW ${CMAKE_CURRENT_BINARY_DIR}/${LANG}.po)
-#		set(GMO_FILE_NEW ${CMAKE_CURRENT_BINARY_DIR}/${LANG}.gmo)
-#		add_custom_command(
-#			TARGET translation
-#			COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} ${_po} ${POT_FILE} -o ${PO_FILE_NEW}
-#			COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -c -o ${GMO_FILE_NEW} ${PO_FILE_NEW}
-#			)
-#		install(
-#			FILES ${GMO_FILE_NEW}
-#			DESTINATION ${LOCALE_INSTALL_DIR}/${LANG}/LC_MESSAGES
-#			RENAME ${DOMAIN}.mo
-#			)
-#	endif(EXISTS ${_po})
-#endforeach()
+add_custom_command(
+	OUTPUT ${_pot_file}
+	COMMAND xgettext --c++ -k_ -o ${_pot_file} ${_src}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	)
+
+set(_po_files)
+
+foreach(LANG ${LINGUAS})
+	set(_po ${CMAKE_CURRENT_SOURCE_DIR}/${LANG}.po)
+	if(EXISTS ${_po})
+		set(_po_file_new ${CMAKE_CURRENT_BINARY_DIR}/${LANG}.po)
+		add_custom_command(
+			OUTPUT ${_po_file_new}
+			MAIN_DEPENDENCY ${_pot_file}
+			COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} ${_po} ${_pot_file} -o ${_po_file_new}
+			COMMAND cp -f ${_po_file_new} ${_po}
+			)
+		list(APPEND _po_files ${_po_file_new})
+	endif(EXISTS ${_po})
+endforeach()
+
+add_custom_target(update-po DEPENDS ${_po_files})
