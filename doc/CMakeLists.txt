@@ -25,13 +25,17 @@ set(A2X_OPTS -d manpage -f manpage)
 
 set(_out ${CMAKE_CURRENT_BINARY_DIR}/gpwsafe.1)
 set(_src ${CMAKE_CURRENT_SOURCE_DIR}/gpwsafe.1.txt)
-set(_in ${CMAKE_CURRENT_BINARY_DIR}/gpwsafe.1.txt)
 
-add_custom_command(
-	OUTPUT ${_in}
-	MAIN_DEPENDENCY ${_src}
-	COMMAND ln -s ${_src} ${_in}
-	)
+if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+	set(_in ${_src})
+else()
+	set(_in ${CMAKE_CURRENT_BINARY_DIR}/gpwsafe.1.txt)
+	add_custom_command(
+		OUTPUT ${_in}
+		MAIN_DEPENDENCY ${_src}
+		COMMAND ln -s ${_src} ${_in}
+		)
+endif()
 
 add_custom_command(
 	OUTPUT ${_out}.gz
