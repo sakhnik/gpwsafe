@@ -45,6 +45,7 @@ add_executable(
 	Command.cc Command.hh
 	CommandAdd.cc CommandAdd.hh
 	CommandCreate.cc CommandCreate.hh
+	CommandDelete.cc CommandDelete.hh
 	CommandEdit.cc CommandEdit.hh
 	CommandList.cc CommandList.hh
 	Exceptions.hh

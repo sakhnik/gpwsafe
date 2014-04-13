@@ -59,6 +59,9 @@ COMMANDS
 -e, --edit=REGEX::
         Edit an entry.
 
+--delete=REGEX::
+        Delete an entry.
+
 If no command is given, --list is assumed.
 
 

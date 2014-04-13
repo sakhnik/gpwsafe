@@ -26,6 +26,7 @@
 #include "CommandList.hh"
 #include "CommandCreate.hh"
 #include "CommandEdit.hh"
+#include "CommandDelete.hh"
 #include "i18n.h"
 
 #ifdef ENABLE_GTK
@@ -120,6 +121,15 @@ void cApp::Init(int argc, char *argv[])
 				}
 			),
 			_("edit an entry"))
+		("delete",
+			named_option("REGEX")
+			->notifier(
+				[this](string const &regex)
+				{
+					this->_SetCommand(cCommandDelete::Create(regex));
+				}
+			),
+			_("delete an entry"))
 		;
 
 	options_description desc_opts(_("Options"), line_length, line_length / 2);
