@@ -60,7 +60,7 @@ void cCommandDelete::Execute(const Params &params)
 	// Original entry
 	cEntry::PtrT e = entries.front()->second;
 
-	auto confirm = _("confirm deleting ") + e->GetFullTitle() + " ? [n] ";
+	auto confirm = _("Confirm deleting ") + e->GetFullTitle() + " ? [n] ";
 	if (!cTerminal::GetYN(confirm.c_str(), false))
 		return;
 
