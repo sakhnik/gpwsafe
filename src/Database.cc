@@ -25,10 +25,10 @@
 #include "i18n.h"
 
 #include <iostream>
-#include <errno.h>
 #include <boost/format.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/random_generator.hpp>
+#include <boost/filesystem.hpp>
 
 namespace gPWS {
 
@@ -139,50 +139,26 @@ void cDatabase::Write(string const &fname,
 	_file.CloseWrite();
 }
 
-string cDatabase::FollowSymlink(const string &fname)
-{
-	char buf[PATH_MAX + 1];
-	memcpy(buf, fname.data(), fname.size());
-	buf[fname.size()] = 0;
-
-	ssize_t len = 0;
-	while (-1 != (len = readlink(buf, buf, sizeof(buf) - 1)))
-		buf[len] = 0;
-	if (errno != EINVAL)
-	{
-		auto e = errno;
-		cerr << _("Couldn't follow a symbolic link ") << buf << ": "
-			<< strerror(e) << endl;
-	}
-
-	return buf;
-}
-
 void cDatabase::Write()
 {
 	assert(!_fname.empty() && !_pass.empty());
 
-	auto fname = FollowSymlink(_fname);
-	string new_fname = fname + ".new";
-	string backup = fname + "~";
+	using namespace boost::filesystem;
 
-	::unlink(new_fname.c_str());
-	Write(new_fname, _pass);
+	auto target = canonical(_fname);
+	auto new_fname = target;
+	new_fname += ".new";
+	auto backup = target;
+	backup += "~";
+
+	remove(new_fname);
+	Write(new_fname.string(), _pass);
 
 	// The following calls are unlikely to fail.
-	::unlink(backup.c_str());
+	remove(backup);
 
-	if (-1 == ::rename(fname.c_str(), backup.c_str()))
-	{
-		cerr << _("Failed to create backup: ") << strerror(errno) << endl;
-		throw runtime_error("File system");
-	}
-
-	if (-1 == ::rename(new_fname.c_str(), fname.c_str()))
-	{
-		cerr << _("Failed to move new file: ") << strerror(errno) << endl;
-		throw runtime_error("File system");
-	}
+	rename(target, backup);
+	rename(new_fname, target);
 }
 
 bool cDatabase::_AddField(sField::PtrT const &field)

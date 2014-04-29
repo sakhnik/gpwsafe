@@ -56,8 +56,6 @@ TEST(TestDatabase, FollowSymlink)
 		       "ln -s $t $f\n")
 		);
 
-	EXPECT_EQ("/tmp/gpws/sym/link/1.psafe3",
-	          cDatabase::FollowSymlink("/tmp/gpws/f.psafe3"));
 	cDatabase d;
 	d._fname = "/tmp/gpws/f.psafe3";
 	d._pass = "password";
@@ -67,6 +65,36 @@ TEST(TestDatabase, FollowSymlink)
 	EXPECT_EQ(0, system(DEFS "test $t = `readlink -f $f`\n"));
 
 	system("rm -rf /tmp/gpws");
+#undef DEFS
+}
+
+TEST(TestDatabase, FollowSymlinkRelative)
+{
+#define DEFS \
+		"#/bin/bash\n" \
+		"d=/tmp/gpws\n" \
+		"t=sym/link/1.psafe3\n" \
+		"f=$d/f.psafe3\n"
+
+	ASSERT_EQ(
+		0,
+		system(DEFS
+		       "rm -rf $d\n"
+		       "mkdir -p `dirname $d/$t`\n"
+		       "echo asdf > $d/$t\n"
+		       "ln -sf $t $f\n")
+		);
+
+	cDatabase d;
+	d._fname = "/tmp/gpws/f.psafe3";
+	d._pass = "password";
+	d.Write();
+
+	EXPECT_EQ(0, system(DEFS "test asdf = `cat $d/$t~`\n"));
+	EXPECT_EQ(0, system(DEFS "test $d/$t = `readlink -f $f`\n"));
+
+	system("rm -rf /tmp/gpws");
+#undef DEFS
 }
 
 // vim: set noet ts=4 sw=4 tw=80:

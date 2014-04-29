@@ -60,6 +60,8 @@ target_link_libraries(
 	${LIBGCRYPT_LIBRARIES}
 	readline
 	${Boost_PROGRAM_OPTIONS_LIBRARIES}
+	${Boost_FILESYSTEM_LIBRARIES}
+	${Boost_SYSTEM_LIBRARIES}
 	)
 
 if(GTK_FOUND)

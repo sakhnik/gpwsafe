@@ -34,7 +34,7 @@ find_package(PkgConfig REQUIRED)
 find_package(LibGcrypt 1.2 REQUIRED)
 
 add_definitions(-DBOOST_DISABLE_THREADS)
-find_package(Boost 1.48 REQUIRED COMPONENTS program_options)
+find_package(Boost 1.48 REQUIRED COMPONENTS program_options filesystem system)
 
 pkg_check_modules(GTK3 gtk+-3.0)
 if(GTK3_FOUND)

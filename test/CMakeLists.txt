@@ -24,7 +24,10 @@ set(UNIT_TESTS
 	EntryTest
 	)
 
-set(LIBRARIES libgpwsafe ${LIBGCRYPT_LIBRARIES} gtest gtest_main)
+set(LIBRARIES libgpwsafe
+	${LIBGCRYPT_LIBRARIES}
+	${Boost_SYSTEM_LIBRARIES} ${Boost_FILESYSTEM_LIBRARIES}
+	gtest gtest_main)
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
 foreach(TEST ${UNIT_TESTS})
