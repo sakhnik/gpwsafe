@@ -3,3 +3,4 @@
 * Error handling, granular exceptions
 * Detect where a password was actually pasted to
 * Qt for X selection
+* Move find_python_module to its own cmake file
