@@ -75,6 +75,8 @@ else()
 endif()
 
 find_package(PerlModules COMPONENTS Expect)
+find_package(PythonInterp 3 REQUIRED)
+#find_python_module(pexpect REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(po)
