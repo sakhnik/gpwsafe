@@ -65,9 +65,27 @@ def Populate():
             responses = {0: 'group', 1: 'username', 2: 'password', 3: 'password', 4: 'notes'}
             child.sendline(params[responses[idx]])
 
+def CheckList():
+    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file)
+    child.setecho(False)
+    child.expect("Enter password for " + test_file + ": ")
+    child.sendline(password)
+    output = []
+    while True:
+        line = child.readline()
+        if not line:
+            break
+        line = line.strip()
+        if not line:
+            continue
+        output.append(line)
+    actual = sorted(output)
+
 try:
     Create()
     Populate()
+    CheckList()
+    print("PASS")
 except Exception as e:
     print("Exception", e)
     sys.exit(1)
