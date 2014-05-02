@@ -74,7 +74,6 @@ else()
 	add_subdirectory(doc)
 endif()
 
-find_package(PerlModules COMPONENTS Expect)
 find_package(PythonInterp 3 REQUIRED)
 
 # Find if a Python module is installed

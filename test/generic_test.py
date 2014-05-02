@@ -45,7 +45,6 @@ def Create():
 
 def Populate():
     for params in records:
-        print("Adding " + params['add_req'])
         child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file
                               + ' --add ' + params['add_req'])
         child.setecho(False)
@@ -80,11 +79,30 @@ def CheckList():
             continue
         output.append(line)
     actual = sorted(output)
+    expected = sorted([(i['group'] + '.' + i['name']).encode('utf-8') for i in records])
+    if actual != expected:
+        sys.stderr.write("List failed: %s != %s\n" % (str(actual), str(expected)))
+        sys.exit(1)
+
+def CheckPasswords():
+    for params in records:
+        child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file
+                              + ' -Eup ' + params['query_req'])
+        child.setecho(False)
+        child.expect("\s*Going to print login and password to stdout", 1)
+        child.expect("\s*Enter password for " + test_file + ": ")
+        child.sendline(password)
+        child.expect("\s*username for " + params['query_req'] + ": " + params['username'])
+        child.expect("\s*password for " + params['query_req'] + ": " + params['password'])
+
+        child.expect("\s*")
+        child.expect(pexpect.EOF)
 
 try:
     Create()
     Populate()
     CheckList()
+    CheckPasswords()
     print("PASS")
 except Exception as e:
     print("Exception", e)
