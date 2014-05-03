@@ -98,11 +98,26 @@ def CheckPasswords():
         child.expect("\s*")
         child.expect(pexpect.EOF)
 
+def CheckInfo():
+    for params in records:
+        child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file
+                              + ' ' + params['query_req'])
+        child.setecho(False)
+        child.expect("\s*Enter password for " + test_file + ": ")
+        child.sendline(password)
+        child.expect('\s*Group:\s+' + params['group'])
+        child.expect('\s*Title:\s+' + params['name'])
+        child.expect('\s*User:\s+' + params['username'])
+        child.expect('\s*Notes:\s+' + params['notes'])
+        child.expect('\s*Pass:\s+\*{13}\s*')
+        child.expect(pexpect.EOF)
+
 try:
     Create()
     Populate()
     CheckList()
     CheckPasswords()
+    CheckInfo()
     print("PASS")
 except Exception as e:
     print("Exception", e)
