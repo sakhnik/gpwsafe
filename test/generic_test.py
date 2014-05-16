@@ -51,18 +51,30 @@ def Populate():
         child.expect('Enter password for ' + test_file + ': ')
         child.sendline(password)
         while True:
-            patterns = ['.*group \[<none>\]: ',
-                         '.*username: ',
-                         '.*password \[return for random\]: ',
-                         '.*password again: ',
-                         '.*notes: ',
-                         pexpect.EOF
-                        ]
-            idx = child.expect(patterns, timeout=1)
-            if idx == len(patterns) - 1:
-                break
-            responses = {0: 'group', 1: 'username', 2: 'password', 3: 'password', 4: 'notes'}
-            child.sendline(params[responses[idx]])
+            patterns = [{'pattern': '.*group \[<none>\]: ',
+                         'field': 'group'},
+                        {'pattern': '.*username: ',
+                         'field': 'username'},
+                        {'pattern': '.*password \[return for random\]: ',
+                         'field': 'password'},
+                        {'pattern': '.*password again: ',
+                         'field': 'password'},
+                        {'pattern': '.*notes: ',
+                         'field': 'notes'},
+                        {'pattern': '.*bytes available\. Waiting for more.*Done',
+                         'action': 'ignore'},
+                        {'pattern': pexpect.EOF,
+                         'action': 'finish'}]
+            idx = child.expect([i['pattern'] for i in patterns], timeout=1)
+            try:
+                action = patterns[idx]['action']
+                if action == 'finish':
+                    break
+                if action == 'ignore':
+                    continue
+            except KeyError:
+                pass
+            child.sendline(params[patterns[idx]['field']])
 
 def CheckList():
     child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file)
