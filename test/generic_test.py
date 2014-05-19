@@ -124,12 +124,30 @@ def CheckInfo():
         child.expect('\s*Pass:\s+\*{13}\s*')
         child.expect(pexpect.EOF)
 
+def CheckDelete():
+    for params in records:
+        child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file
+                              + ' --delete ' + params['query_req'])
+        child.setecho(False)
+        child.expect("\s*Enter password for " + test_file + ": ")
+        child.sendline(password)
+        child.expect("\s*Confirm deleting " + params['query_req'] + " \? \[n\] ", timeout=1)
+        child.sendline("y");
+        child.expect(pexpect.EOF, timeout=1)
+    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file)
+    child.setecho(False)
+    child.expect("\s*Enter password for " + test_file + ": ")
+    child.sendline(password)
+    child.expect("\s*No matching entries found", timeout=1)
+    child.expect(pexpect.EOF, timeout=1)
+
 try:
     Create()
     Populate()
     CheckList()
     CheckPasswords()
     CheckInfo()
+    CheckDelete()
     print("PASS")
 except Exception as e:
     print("Exception", e)
