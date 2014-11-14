@@ -46,13 +46,13 @@ namespace gPWS {
 using namespace std;
 
 
-cApp::cApp(char const *program_name)
+App::App(char const *program_name)
 	: _program_name(program_name)
 	, _use_weak_randomness_for_tests(false)
 {
 }
 
-void cApp::Init(int argc, char *argv[])
+void App::Init(int argc, char *argv[])
 {
 	using namespace boost::program_options;
 
@@ -89,7 +89,7 @@ void cApp::Init(int argc, char *argv[])
 			->notifier([this](bool arg)
 				{
 					if (arg)
-						this->_SetCommand(cCommandCreate::Create());
+						this->_SetCommand(CommandCreate::Create());
 				}),
 			_("create an empty database"))
 		("list",
@@ -98,7 +98,7 @@ void cApp::Init(int argc, char *argv[])
 			->notifier(
 				[this](string const &regex)
 				{
-					this->_SetCommand(cCommandList::Create(regex));
+					this->_SetCommand(CommandList::Create(regex));
 				}),
 			_("list all entries matching [REGEX]. If either -u or -p are given,"
 			  " only one entry may match. If neither -u or -p are given and one"
@@ -109,7 +109,7 @@ void cApp::Init(int argc, char *argv[])
 			->notifier(
 				[this](string const &name)
 				{
-					this->_SetCommand(cCommandAdd::Create(name));
+					this->_SetCommand(CommandAdd::Create(name));
 				}),
 			_("add an entry"))
 		("edit,e",
@@ -117,7 +117,7 @@ void cApp::Init(int argc, char *argv[])
 			->notifier(
 				[this](string const &regex)
 				{
-					this->_SetCommand(cCommandEdit::Create(regex));
+					this->_SetCommand(CommandEdit::Create(regex));
 				}
 			),
 			_("edit an entry"))
@@ -126,7 +126,7 @@ void cApp::Init(int argc, char *argv[])
 			->notifier(
 				[this](string const &regex)
 				{
-					this->_SetCommand(cCommandDelete::Create(regex));
+					this->_SetCommand(CommandDelete::Create(regex));
 				}
 			),
 			_("delete an entry"))
@@ -148,7 +148,7 @@ void cApp::Init(int argc, char *argv[])
 				[this](bool arg)
 				{
 					if (arg)
-						this->_SetEmitter(new cStdoutEmitter);
+						this->_SetEmitter(new StdoutEmitter);
 				}
 			), _("force echoing of entry to stdout"))
 #if ENABLE_XCLIP && ENABLE_GTK
@@ -157,7 +157,7 @@ void cApp::Init(int argc, char *argv[])
 				[this](bool arg)
 				{
 					if (arg)
-						this->_SetEmitter(new cGtkEmitter);
+						this->_SetEmitter(new GtkEmitter);
 				}
 			),
 			_("force copying of entry to X selection"))
@@ -202,7 +202,7 @@ void cApp::Init(int argc, char *argv[])
 	}
 }
 
-void cApp::_SetCommand(cCommand::PtrT command)
+void App::_SetCommand(Command::PtrT command)
 {
 	if (_command)
 	{
@@ -212,17 +212,17 @@ void cApp::_SetCommand(cCommand::PtrT command)
 	_command.reset(command.release());
 }
 
-void cApp::_SetEmitter(iEmitter *emitter)
+void App::_SetEmitter(iEmitter *emitter)
 {
 	_params.emitter.reset(emitter);
 }
 
-void cApp::Run()
+void App::Run()
 {
 	try
 	{
 		if (!_command)
-			_command.reset(cCommandList::Create("").release());
+			_command.reset(CommandList::Create("").release());
 		_command->Execute(_params);
 	}
 	catch (std::exception const &e)

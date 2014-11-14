@@ -29,20 +29,20 @@
 
 namespace gPWS {
 
-class cEntry
+class Entry
 	: boost::noncopyable
 {
 public:
-	typedef std::shared_ptr<cEntry> PtrT;
+	typedef std::shared_ptr<Entry> PtrT;
 
 	static PtrT Create();
 
 	void operator delete(void *p, size_t n);
 
-	cEntry();
+	Entry();
 
 	// Deep copy
-	cEntry::PtrT Copy() const;
+	Entry::PtrT Copy() const;
 
 	bool AddField(sField::PtrT const &field);
 
@@ -100,7 +100,7 @@ public:
 	};
 
 	typedef std::vector<sChange> DiffT;
-	DiffT Diff(cEntry::PtrT const &other) const;
+	DiffT Diff(Entry::PtrT const &other) const;
 
 private:
 	// Associative container. Type is used as index in the vector.

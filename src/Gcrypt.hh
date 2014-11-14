@@ -24,7 +24,7 @@
 
 namespace gPWS {
 
-class cGcrypt
+class Gcrypt
 {
 public:
 	static int CheckVersion();

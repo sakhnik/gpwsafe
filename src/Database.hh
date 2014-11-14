@@ -32,16 +32,16 @@
 
 namespace gPWS {
 
-class cDatabase
+class Database
 	: boost::noncopyable
 {
 public:
-	typedef std::shared_ptr<cDatabase> PtrT;
+	typedef std::shared_ptr<Database> PtrT;
 
 	void *operator new(size_t n);
 	void operator delete(void *p, size_t n);
 
-	cDatabase();
+	Database();
 
 	void Create();
 
@@ -56,12 +56,12 @@ public:
 
 	void Dump() const;
 
-	void AddEntry(cEntry::PtrT const &entry);
-	void RemoveEntry(cEntry::PtrT const &entry);
+	void AddEntry(Entry::PtrT const &entry);
+	void RemoveEntry(Entry::PtrT const &entry);
 	bool HasEntry(StringX const &full_title) const;
 
 private:
-	cFile3 _file;
+	File3 _file;
 	bool _changed;
 	std::string _fname; // Cached file name
 	StringX _pass;      // Cached password
@@ -80,7 +80,7 @@ private:
 	_FieldsT _fields;
 
 	// FullTitle -> EntryT
-	typedef std::map<StringX, cEntry::PtrT> _TitleEntryT;
+	typedef std::map<StringX, Entry::PtrT> _TitleEntryT;
 	_TitleEntryT _entries;
 
 	bool _AddField(sField::PtrT const &field);

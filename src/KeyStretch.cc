@@ -25,29 +25,29 @@ namespace gPWS {
 
 using namespace std;
 
-cKeyStretch::cKeyStretch(void const* pass,
-                         unsigned pass_size,
-                         void const* salt,
-                         unsigned salt_size,
-                         unsigned iterations)
+KeyStretch::KeyStretch(void const* pass,
+                       unsigned pass_size,
+                       void const* salt,
+                       unsigned salt_size,
+                       unsigned iterations)
 {
 	_sha256.Update(pass, pass_size);
 	_sha256.Update(salt, salt_size);
 
 	for (unsigned i = 0; i != iterations; ++i)
 	{
-		uint8_t X[cSha256::LENGTH];
-		memcpy(X, _sha256.Get(), cSha256::LENGTH);
+		uint8_t X[Sha256::LENGTH];
+		memcpy(X, _sha256.Get(), Sha256::LENGTH);
 		_sha256.Reset();
-		_sha256.Update(X, cSha256::LENGTH);
+		_sha256.Update(X, Sha256::LENGTH);
 	}
 }
 
-cKeyStretch::~cKeyStretch()
+KeyStretch::~KeyStretch()
 {
 }
 
-uint8_t const* cKeyStretch::Get() const
+uint8_t const* KeyStretch::Get() const
 {
 	return _sha256.Get();
 }

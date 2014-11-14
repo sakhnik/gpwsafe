@@ -25,13 +25,13 @@
 
 namespace gPWS {
 
-void cRandom::CreateNonce(uint8_t *buffer, unsigned len)
+void Random::CreateNonce(uint8_t *buffer, unsigned len)
 {
 	gcry_create_nonce(buffer, len);
 }
 
-void cRandom::Randomize(uint8_t *buffer, unsigned length,
-                        bool very_strong)
+void Random::Randomize(uint8_t *buffer, unsigned length,
+                       bool very_strong)
 {
 	gcry_randomize(buffer, length,
 	               very_strong ? GCRY_VERY_STRONG_RANDOM : GCRY_STRONG_RANDOM);

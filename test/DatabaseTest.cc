@@ -34,7 +34,7 @@ struct sGlobalFixture
 {
 	sGlobalFixture()
 	{
-		gPWS::cGcrypt::Init(true);
+		gPWS::Gcrypt::Init(true);
 	}
 
 } global_fixture;
@@ -56,7 +56,7 @@ TEST(TestDatabase, FollowSymlink)
 		       "ln -s $t $f\n")
 		);
 
-	cDatabase d;
+	Database d;
 	d._fname = "/tmp/gpws/f.psafe3";
 	d._pass = "password";
 	d.Write();
@@ -85,7 +85,7 @@ TEST(TestDatabase, FollowSymlinkRelative)
 		       "ln -sf $t $f\n")
 		);
 
-	cDatabase d;
+	Database d;
 	d._fname = "/tmp/gpws/f.psafe3";
 	d._pass = "password";
 	d.Write();

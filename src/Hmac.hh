@@ -27,16 +27,16 @@
 
 namespace gPWS {
 
-class cHmac
+class Hmac
 	: boost::noncopyable
 {
 public:
 	static const unsigned KEY_LENGTH = 32;
 	static const unsigned LENGTH = 32;
 
-	cHmac(void const *key, size_t key_len);
+	Hmac(void const *key, size_t key_len);
 
-	~cHmac();
+	~Hmac();
 
 	void Update(void const *data, size_t len);
 	uint8_t const *Get() const;

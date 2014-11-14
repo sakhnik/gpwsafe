@@ -36,7 +36,7 @@ namespace gPWS {
 using namespace std;
 typedef boost::format bfmt;
 
-cRawTerminal::cRawTerminal(bool new_line)
+RawTerminal::RawTerminal(bool new_line)
 	: _new_line(new_line)
 {
 	tcgetattr(STDIN_FILENO, &_tio);
@@ -51,7 +51,7 @@ cRawTerminal::cRawTerminal(bool new_line)
 	tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
 }
 
-cRawTerminal::~cRawTerminal()
+RawTerminal::~RawTerminal()
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, &_tio);
 	if (_new_line)
@@ -60,9 +60,9 @@ cRawTerminal::~cRawTerminal()
 
 //////////////////////////////////////////////////////////////////////////////
 
-StringX cTerminal::GetPassword(char const *prompt)
+StringX Terminal::GetPassword(char const *prompt)
 {
-	cRawTerminal raw_terminal(true);
+	RawTerminal raw_terminal(true);
 
 	rl_completion_entry_function = NULL;
 	char *input = readline(prompt);
@@ -76,8 +76,8 @@ StringX cTerminal::GetPassword(char const *prompt)
 	return StringX(input);
 }
 
-StringX cTerminal::GetText(char const *prompt,
-                           StringX const &def)
+StringX Terminal::GetText(char const *prompt,
+                          StringX const &def)
 {
 	rl_completion_entry_function = NULL;
 	char *input = readline(prompt);
@@ -94,7 +94,7 @@ StringX cTerminal::GetText(char const *prompt,
 	return res;
 }
 
-StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
+StringX Terminal::EnterPassword(char const *prompt1, char const *prompt2)
 {
 	// Copied from pwsafe
 	while (true)
@@ -123,7 +123,7 @@ StringX cTerminal::EnterPassword(char const *prompt1, char const *prompt2)
 	}
 }
 
-bool cTerminal::GetYN(char const *prompt, int def_val)
+bool Terminal::GetYN(char const *prompt, int def_val)
 {
 	// Copied from pwsafe
 	while (true)
@@ -140,7 +140,7 @@ bool cTerminal::GetYN(char const *prompt, int def_val)
 	}
 }
 
-char cTerminal::GetChar(char const *prompt, const int def_val)
+char Terminal::GetChar(char const *prompt, const int def_val)
 {
 	// Copied from pwsafe
 	struct termios tio;
@@ -185,7 +185,7 @@ char cTerminal::GetChar(char const *prompt, const int def_val)
 	}
 }
 
-StringX cTerminal::RandomPassword()
+StringX Terminal::RandomPassword()
 {
 	// Copied from pwsafe
 
@@ -295,7 +295,7 @@ StringX cTerminal::RandomPassword()
 				unsigned char idx;
 				do
 				{
-					cRandom::Randomize(&idx, 1, true);
+					Random::Randomize(&idx, 1, true);
 					idx &= 0x7f;
 					// might as well strip off the upper bit since
 					// total_chars is never more than 64, and

@@ -27,8 +27,8 @@
 
 namespace gPWS {
 
-class cCommandAdd
-	: public cCommand
+class CommandAdd
+	: public Command
 {
 public:
 	static PtrT Create(std::string const &name);
@@ -38,7 +38,7 @@ public:
 private:
 	std::string _name;
 
-	cCommandAdd(std::string const &name);
+	CommandAdd(std::string const &name);
 };
 
 } //namespace gPWS;

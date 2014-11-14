@@ -34,24 +34,24 @@ namespace gPWS {
 
 using namespace std;
 
-void *cDatabase::operator new(size_t n)
+void *Database::operator new(size_t n)
 {
-	return SecureAllocator<cDatabase>::allocate(n);
+	return SecureAllocator<Database>::allocate(n);
 }
 
-void cDatabase::operator delete(void *p, size_t n)
+void Database::operator delete(void *p, size_t n)
 {
-	cDatabase *q = reinterpret_cast<cDatabase *>(p);
-	return SecureAllocator<cDatabase>::deallocate(q, n);
+	Database *q = reinterpret_cast<Database *>(p);
+	return SecureAllocator<Database>::deallocate(q, n);
 }
 
-cDatabase::cDatabase()
+Database::Database()
 	: _changed(false)
 {
 	_fields.reserve(0x0F);
 }
 
-void cDatabase::Create()
+void Database::Create()
 {
 	_fields.clear();
 	_changed = false;
@@ -74,8 +74,7 @@ void cDatabase::Create()
 	_AddField(field);
 }
 
-void cDatabase::Read(string const &fname,
-                     StringX const &pass)
+void Database::Read(string const &fname, StringX const &pass)
 {
 	// The database must be clear.
 	assert(!_changed && "The changes must be written beforehand");
@@ -96,7 +95,7 @@ void cDatabase::Read(string const &fname,
 	if (!field)
 		return;
 
-	cEntry::PtrT entry(cEntry::Create());
+	Entry::PtrT entry(Entry::Create());
 	while ((field = _file.ReadField()))
 	{
 		if (!entry->AddField(field))
@@ -104,13 +103,12 @@ void cDatabase::Read(string const &fname,
 			// FIXME: Check if such key already exists.
 			// Avoid loosing information.
 			_entries[entry->GetFullTitle()] = entry;
-			entry = cEntry::Create();
+			entry = Entry::Create();
 		}
 	}
 }
 
-void cDatabase::Write(string const &fname,
-                      StringX const &pass)
+void Database::Write(string const &fname, StringX const &pass)
 {
 	_changed = false;
 	_file.OpenWrite(fname.c_str(), pass, true);
@@ -139,7 +137,7 @@ void cDatabase::Write(string const &fname,
 	_file.CloseWrite();
 }
 
-void cDatabase::Write()
+void Database::Write()
 {
 	assert(!_fname.empty() && !_pass.empty());
 
@@ -161,7 +159,7 @@ void cDatabase::Write()
 	rename(new_fname, target);
 }
 
-bool cDatabase::_AddField(sField::PtrT const &field)
+bool Database::_AddField(sField::PtrT const &field)
 {
 	if (field->type == 0xFF)
 		return false;
@@ -171,7 +169,7 @@ bool cDatabase::_AddField(sField::PtrT const &field)
 	return true;
 }
 
-void cDatabase::Dump() const
+void Database::Dump() const
 {
 	for (auto const &field : _fields)
 	{
@@ -193,25 +191,25 @@ void cDatabase::Dump() const
 	}
 }
 
-void cDatabase::AddEntry(cEntry::PtrT const &entry)
+void Database::AddEntry(Entry::PtrT const &entry)
 {
 	// FIXME: Check if such key already exists. Avoid loosing information.
 	_entries[entry->GetFullTitle()] = entry;
 	_changed = true;
 }
 
-void cDatabase::RemoveEntry(cEntry::PtrT const &entry)
+void Database::RemoveEntry(Entry::PtrT const &entry)
 {
 	_entries.erase(entry->GetFullTitle());
 	_changed = true;
 }
 
-bool cDatabase::HasEntry(StringX const &full_title) const
+bool Database::HasEntry(StringX const &full_title) const
 {
 	return _entries.find(full_title) != _entries.end();
 }
 
-cDatabase::MatchT cDatabase::Find(char const *query) const
+Database::MatchT Database::Find(char const *query) const
 {
 	MatchT match;
 	for (auto first = begin(_entries), last = end(_entries);

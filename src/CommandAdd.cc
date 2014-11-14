@@ -30,20 +30,20 @@ namespace gPWS {
 
 using namespace std;
 
-cCommand::PtrT cCommandAdd::Create(string const &name)
+Command::PtrT CommandAdd::Create(string const &name)
 {
-	return cCommand::PtrT(new cCommandAdd(name));
+	return Command::PtrT(new CommandAdd(name));
 }
 
-cCommandAdd::cCommandAdd(string const &name)
+CommandAdd::CommandAdd(string const &name)
 	: _name(name)
 {
 }
 
-void cCommandAdd::Execute(Params const &params)
+void CommandAdd::Execute(Params const &params)
 {
-	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
-	cEntry::PtrT entry(cEntry::Create());
+	Database::PtrT database = OpenDatabase(params.ExpandFileName());
+	Entry::PtrT entry(Entry::Create());
 
 	if (!_name.empty())
 	{
@@ -69,9 +69,9 @@ void cCommandAdd::Execute(Params const &params)
 	while (true)
 	{
 		if (entry->GetTitle().empty())
-			entry->SetTitle(cTerminal::GetText(_("name: ")));
+			entry->SetTitle(Terminal::GetText(_("name: ")));
 		if (entry->GetGroup().empty())
-			entry->SetGroup(cTerminal::GetText(_("group [<none>]: ")));
+			entry->SetGroup(Terminal::GetText(_("group [<none>]: ")));
 
 		if (database->HasEntry(entry->GetFullTitle()))
 		{
@@ -85,7 +85,7 @@ void cCommandAdd::Execute(Params const &params)
 			break;
 	}
 
-	entry->SetUser(cTerminal::GetText(_("username: ")));
+	entry->SetUser(Terminal::GetText(_("username: ")));
 	if (entry->GetUser().empty())
 	{
 		// FIXME!!!
@@ -94,11 +94,11 @@ void cCommandAdd::Execute(Params const &params)
 	}
 
 	StringX pass =
-		cTerminal::EnterPassword(_("password [return for random]: "),
-		                         _("password again: "));
+		Terminal::EnterPassword(_("password [return for random]: "),
+		                        _("password again: "));
 	entry->SetPass(pass);
 
-	entry->SetNotes(cTerminal::GetText(_("notes: ")));
+	entry->SetNotes(Terminal::GetText(_("notes: ")));
 
 	database->AddEntry(entry);
 	database->Write();

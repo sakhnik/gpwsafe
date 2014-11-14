@@ -28,17 +28,17 @@ namespace gPWS {
 
 using namespace std;
 
-cCommand::PtrT cCommandDelete::Create(const string &regex)
+Command::PtrT CommandDelete::Create(const string &regex)
 {
-	return cCommand::PtrT(new cCommandDelete(regex));
+	return Command::PtrT(new CommandDelete(regex));
 }
 
-cCommandDelete::cCommandDelete(const string &regex)
+CommandDelete::CommandDelete(const string &regex)
 	: _regex(regex)
 {
 }
 
-void cCommandDelete::Execute(const Params &params)
+void CommandDelete::Execute(const Params &params)
 {
 	if (_regex.empty())
 	{
@@ -47,7 +47,7 @@ void cCommandDelete::Execute(const Params &params)
 	}
 	char const *query = _regex.c_str();
 
-	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
+	Database::PtrT database = OpenDatabase(params.ExpandFileName());
 	auto entries = database->Find(query);
 	if (entries.empty())
 	{
@@ -58,10 +58,10 @@ void cCommandDelete::Execute(const Params &params)
 		throw ExitEx(1);
 
 	// Original entry
-	cEntry::PtrT e = entries.front()->second;
+	Entry::PtrT e = entries.front()->second;
 
 	auto confirm = _("Confirm deleting ") + e->GetFullTitle() + " ? [n] ";
-	if (!cTerminal::GetYN(confirm.c_str(), false))
+	if (!Terminal::GetYN(confirm.c_str(), false))
 		return;
 
 	database->RemoveEntry(e);

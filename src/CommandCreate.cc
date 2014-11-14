@@ -29,16 +29,16 @@ namespace gPWS {
 
 using namespace std;
 
-cCommand::PtrT cCommandCreate::Create()
+Command::PtrT CommandCreate::Create()
 {
-	return cCommand::PtrT(new cCommandCreate());
+	return Command::PtrT(new CommandCreate());
 }
 
-cCommandCreate::cCommandCreate()
+CommandCreate::CommandCreate()
 {
 }
 
-void cCommandCreate::Execute(Params const &params)
+void CommandCreate::Execute(Params const &params)
 {
 	string file_name = params.ExpandFileName();
 
@@ -49,16 +49,16 @@ void cCommandCreate::Execute(Params const &params)
 	}
 
 	string prompt1 = _("Enter passphrase for ") + file_name + ": ";
-	StringX pass1 = cTerminal::GetPassword(prompt1);
+	StringX pass1 = Terminal::GetPassword(prompt1);
 	string prompt2 = _("Reenter passphrase for ") + file_name + ": ";
-	StringX pass2 = cTerminal::GetPassword(prompt2);
+	StringX pass2 = Terminal::GetPassword(prompt2);
 	if (pass1 != pass2)
 	{
 		cerr << _("Passphrases do not match") << endl;
 		throw ExitEx(1);
 	}
 
-	cDatabase::PtrT database(new cDatabase);
+	Database::PtrT database(new Database);
 	database->Create();
 	database->Write(file_name, pass1);
 }

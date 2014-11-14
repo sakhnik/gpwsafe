@@ -27,16 +27,16 @@
 
 namespace gPWS {
 
-class cSha256
+class Sha256
 	: boost::noncopyable
 {
 public:
 	static const unsigned LENGTH = 32;
 
-	cSha256();
-	cSha256(void const *data, size_t len);
+	Sha256();
+	Sha256(void const *data, size_t len);
 
-	~cSha256();
+	~Sha256();
 
 	void Update(void const *data, size_t len);
 	uint8_t const *Get() const;

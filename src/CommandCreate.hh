@@ -29,8 +29,8 @@ namespace gPWS {
 
 struct iEmitter;
 
-class cCommandCreate
-	: public cCommand
+class CommandCreate
+	: public Command
 {
 public:
 	static PtrT Create();
@@ -38,7 +38,7 @@ public:
 	virtual void Execute(Params const &params);
 
 private:
-	cCommandCreate();
+	CommandCreate();
 };
 
 } //namespace gPWS;

@@ -36,7 +36,7 @@ struct sGlobalFixture
 {
 	sGlobalFixture()
 	{
-		gPWS::cGcrypt::Init(true);
+		gPWS::Gcrypt::Init(true);
 	}
 
 } global_fixture;
@@ -62,7 +62,7 @@ TEST(TestFile3, WriteRead)
 	char const *const fname = "/tmp/file3_test.psafe3";
 	char const *const pass = "!23$QweR";
 
-	cFile3 file1;
+	File3 file1;
 	file1.OpenWrite(fname, pass, true);
 	BOOST_SCOPE_EXIT((&fname)) {
 		::unlink(fname);
@@ -73,7 +73,7 @@ TEST(TestFile3, WriteRead)
 
 	file1.CloseWrite();
 
-	cFile3 file2;
+	File3 file2;
 	file2.OpenRead(fname, pass);
 	FieldsT fields2;
 	sField::PtrT field;

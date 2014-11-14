@@ -25,7 +25,7 @@
 
 namespace gPWS {
 
-class cStdoutEmitter
+class StdoutEmitter
 	: public iEmitter
 {
 private:

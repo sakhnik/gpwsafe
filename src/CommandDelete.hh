@@ -27,8 +27,8 @@
 
 namespace gPWS {
 
-class cCommandDelete
-	: public cCommand
+class CommandDelete
+	: public Command
 {
 public:
 	static PtrT Create(const std::string &regex);
@@ -38,7 +38,7 @@ public:
 private:
 	std::string _regex;
 
-	cCommandDelete(const std::string &regex);
+	CommandDelete(const std::string &regex);
 };
 
 } //namespace gPWS;

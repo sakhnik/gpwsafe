@@ -28,7 +28,7 @@ namespace gPWS {
 
 using namespace std;
 
-cSha256::cSha256()
+Sha256::Sha256()
 {
 	gcry_error_t error =
 		gcry_md_open(&_h, GCRY_MD_SHA256, GCRY_MD_FLAG_SECURE);
@@ -41,7 +41,7 @@ cSha256::cSha256()
 	}
 }
 
-cSha256::cSha256(void const *data, size_t len)
+Sha256::Sha256(void const *data, size_t len)
 {
 	gcry_error_t error =
 		gcry_md_open(&_h, GCRY_MD_SHA256, GCRY_MD_FLAG_SECURE);
@@ -56,22 +56,22 @@ cSha256::cSha256(void const *data, size_t len)
 	gcry_md_write(_h, data, len);
 }
 
-cSha256::~cSha256()
+Sha256::~Sha256()
 {
 	gcry_md_close(_h);
 }
 
-uint8_t const *cSha256::Get() const
+uint8_t const *Sha256::Get() const
 {
 	return gcry_md_read(_h, 0);
 }
 
-void cSha256::Update(void const *data, size_t len)
+void Sha256::Update(void const *data, size_t len)
 {
 	gcry_md_write(_h, data, len);
 }
 
-void cSha256::Reset()
+void Sha256::Reset()
 {
 	gcry_md_reset(_h);
 }

@@ -51,13 +51,13 @@ _GcryProgressHandler(void *cb_data, const char *what,
 
 } //namespace;
 
-int cGcrypt::CheckVersion()
+int Gcrypt::CheckVersion()
 {
 	char const *const REQ_GCRYPT_VERSION = "1.2.0";
 	return 0 == gcry_check_version(REQ_GCRYPT_VERSION);
 }
 
-int cGcrypt::Init(bool quick_random)
+int Gcrypt::Init(bool quick_random)
 {
 	// Allocate secure memory for sensitive information (won't be swapped)
 	gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0);

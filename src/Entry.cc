@@ -32,30 +32,30 @@ namespace gPWS {
 
 using namespace std;
 
-cEntry::PtrT cEntry::Create()
+Entry::PtrT Entry::Create()
 {
-	return make_shared<cEntry>();
+	return make_shared<Entry>();
 }
 
-void *cEntry::operator new(size_t n)
+void *Entry::operator new(size_t n)
 {
-	return SecureAllocator<cEntry>::allocate(n);
+	return SecureAllocator<Entry>::allocate(n);
 }
 
-void cEntry::operator delete(void *p, size_t n)
+void Entry::operator delete(void *p, size_t n)
 {
-	cEntry *q = reinterpret_cast<cEntry *>(p);
-	return SecureAllocator<cEntry>::deallocate(q, n);
+	Entry *q = reinterpret_cast<Entry *>(p);
+	return SecureAllocator<Entry>::deallocate(q, n);
 }
 
-cEntry::cEntry()
+Entry::Entry()
 	: _fields(0x0F, sField::PtrT())
 {
 }
 
-cEntry::PtrT cEntry::Copy() const
+Entry::PtrT Entry::Copy() const
 {
-	cEntry::PtrT entry(new cEntry);
+	Entry::PtrT entry(new Entry);
 	entry->_fields.resize(_fields.size());
 	for (unsigned i = 0; i != _fields.size(); ++i)
 	{
@@ -65,7 +65,7 @@ cEntry::PtrT cEntry::Copy() const
 	return entry;
 }
 
-bool cEntry::AddField(sField::PtrT const &field)
+bool Entry::AddField(sField::PtrT const &field)
 {
 	if (field->type == FT_END)
 		return false;
@@ -75,7 +75,7 @@ bool cEntry::AddField(sField::PtrT const &field)
 	return true;
 }
 
-void cEntry::ForEachField(OnFieldT on_field)
+void Entry::ForEachField(OnFieldT on_field)
 {
 	for (auto &field : _fields)
 	{
@@ -85,7 +85,7 @@ void cEntry::ForEachField(OnFieldT on_field)
 	}
 }
 
-void cEntry::Dump() const
+void Entry::Dump() const
 {
 	for (auto &field : _fields)
 	{
@@ -101,7 +101,7 @@ void cEntry::Dump() const
 	cout << "----------" << endl;
 }
 
-void cEntry::PrettyPrint() const
+void Entry::PrettyPrint() const
 {
 	for (auto &field : _fields)
 	{
@@ -144,7 +144,7 @@ void cEntry::PrettyPrint() const
 	}
 }
 
-StringX const &cEntry::GetValue(eFieldType field_type) const
+StringX const &Entry::GetValue(eFieldType field_type) const
 {
 	if (static_cast<size_t>(field_type) >= _fields.size())
 		return _empty;
@@ -155,14 +155,14 @@ StringX const &cEntry::GetValue(eFieldType field_type) const
 	return field->value;
 }
 
-StringX cEntry::GetFullTitle() const
+StringX Entry::GetFullTitle() const
 {
 	if (GetGroup().empty())
 		return GetTitle();
 	return GetGroup() + "." + GetTitle();
 }
 
-void cEntry::SetValue(eFieldType field_type, StringX const &value)
+void Entry::SetValue(eFieldType field_type, StringX const &value)
 {
 	if (static_cast<size_t>(field_type) >= _fields.size())
 		_fields.resize(static_cast<unsigned>(field_type) + 1);
@@ -173,8 +173,8 @@ void cEntry::SetValue(eFieldType field_type, StringX const &value)
 	field->value = value;
 }
 
-cEntry::DiffT
-cEntry::Diff(cEntry::PtrT const &other) const
+Entry::DiffT
+Entry::Diff(Entry::PtrT const &other) const
 {
 	DiffT diff;
 	for (unsigned i = 0, n = (std::max)(_fields.size(), other->_fields.size());

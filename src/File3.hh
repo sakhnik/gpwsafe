@@ -31,12 +31,12 @@
 
 namespace gPWS {
 
-class cFile3
+class File3
 	: boost::noncopyable
 {
 public:
-	cFile3();
-	~cFile3();
+	File3();
+	~File3();
 
 	void Close();
 
@@ -71,8 +71,8 @@ private:
 	StringX _main_key;
 	StringX _hmac_key;
 
-	std::unique_ptr<cTwofish> _twofish;
-	std::unique_ptr<cHmac> _hmac_calculator;
+	std::unique_ptr<Twofish> _twofish;
+	std::unique_ptr<Hmac> _hmac_calculator;
 	StringX _data;
 };
 

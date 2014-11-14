@@ -29,8 +29,8 @@ namespace gPWS {
 
 struct iEmitter;
 
-class cCommandEdit
-	: public cCommand
+class CommandEdit
+	: public Command
 {
 public:
 	static PtrT Create(std::string const &regex);
@@ -40,7 +40,7 @@ public:
 private:
 	std::string _regex;
 
-	cCommandEdit(std::string const &regex);
+	CommandEdit(std::string const &regex);
 };
 
 } //namespace gPWS;

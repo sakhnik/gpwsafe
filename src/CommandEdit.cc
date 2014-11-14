@@ -28,17 +28,17 @@ namespace gPWS {
 
 using namespace std;
 
-cCommand::PtrT cCommandEdit::Create(string const &regex)
+Command::PtrT CommandEdit::Create(string const &regex)
 {
-	return cCommand::PtrT(new cCommandEdit(regex));
+	return Command::PtrT(new CommandEdit(regex));
 }
 
-cCommandEdit::cCommandEdit(string const &regex)
+CommandEdit::CommandEdit(string const &regex)
 	: _regex(regex)
 {
 }
 
-void cCommandEdit::Execute(Params const &params)
+void CommandEdit::Execute(Params const &params)
 {
 	if (_regex.empty())
 	{
@@ -47,7 +47,7 @@ void cCommandEdit::Execute(Params const &params)
 	}
 	char const *query = _regex.c_str();
 
-	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
+	Database::PtrT database = OpenDatabase(params.ExpandFileName());
 	auto entries = database->Find(query);
 	if (entries.empty())
 	{
@@ -58,17 +58,17 @@ void cCommandEdit::Execute(Params const &params)
 		throw ExitEx(1);
 
 	// Original entry
-	cEntry::PtrT e_orig = entries.front()->second;
+	Entry::PtrT e_orig = entries.front()->second;
 
 	// Copied from pwsafe
-	cEntry::PtrT e = e_orig->Copy(); // make a local copy to edit
+	Entry::PtrT e = e_orig->Copy(); // make a local copy to edit
 
 	while (true)
 	{
-		e->SetTitle(cTerminal::GetText(_("name: [") + e_orig->GetTitle() + "] ",
-		                               e_orig->GetTitle()));
-		e->SetGroup(cTerminal::GetText(_("group: [") + e_orig->GetGroup() + "] ",
-		                               e_orig->GetGroup()));
+		e->SetTitle(Terminal::GetText(_("name: [") + e_orig->GetTitle() + "] ",
+		                              e_orig->GetTitle()));
+		e->SetGroup(Terminal::GetText(_("group: [") + e_orig->GetGroup() + "] ",
+		                              e_orig->GetGroup()));
 		if ((e->GetTitle() == e_orig->GetTitle() &&
 		     e->GetGroup() == e_orig->GetGroup()) ||
 		    !database->HasEntry(e->GetFullTitle()))
@@ -89,26 +89,26 @@ void cCommandEdit::Execute(Params const &params)
 
 	while (true)
 	{
-		if (!cTerminal::GetYN(_("change password ? [n] "), false))
+		if (!Terminal::GetYN(_("change password ? [n] "), false))
 			break;
 
 		StringX new_pw =
-			cTerminal::EnterPassword(_("new password: [return for random] "),
-			                         _("new password again: "));
+			Terminal::EnterPassword(_("new password: [return for random] "),
+			                        _("new password again: "));
 		if (new_pw.empty() && !e->GetPass().empty())
 		{
-			if (!cTerminal::GetYN(_("Confirm changing to an empty password?"
-			                        " [n] ")))
+			if (!Terminal::GetYN(_("Confirm changing to an empty password?"
+			                       " [n] ")))
 				continue;
 		}
 		e->SetPass(new_pw);
 		break;
 	}
 
-	e->SetNotes(cTerminal::GetText(_("notes: [<keep same>] "),
-	                               e_orig->GetNotes()));
+	e->SetNotes(Terminal::GetText(_("notes: [<keep same>] "),
+	                              e_orig->GetNotes()));
 
-	cEntry::DiffT diff = e->Diff(e_orig);
+	Entry::DiffT diff = e->Diff(e_orig);
 	if (diff.empty())
 	{
 		cout << _("No change") << endl;
@@ -122,16 +122,16 @@ void cCommandEdit::Execute(Params const &params)
 			prompt += ", ";
 		switch (i->type)
 		{
-		case cEntry::FT_GROUP:
+		case Entry::FT_GROUP:
 			prompt += _("group");
 			break;
-		case cEntry::FT_TITLE:
+		case Entry::FT_TITLE:
 			prompt += _("name");
 			break;
-		case cEntry::FT_PASS:
+		case Entry::FT_PASS:
 			prompt += _("password");
 			break;
-		case cEntry::FT_NOTES:
+		case Entry::FT_NOTES:
 			prompt += _("notes");
 			break;
 		default:
@@ -139,7 +139,7 @@ void cCommandEdit::Execute(Params const &params)
 		}
 	}
 	prompt += "? [y] ";
-	if (!cTerminal::GetYN(prompt, true))
+	if (!Terminal::GetYN(prompt, true))
 	{
 		cout << _("Changes abandoned") << endl;
 		return;

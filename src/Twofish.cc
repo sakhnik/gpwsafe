@@ -28,8 +28,8 @@ namespace gPWS {
 
 using namespace std;
 
-cTwofish::cTwofish(eMode mode,
-                   void const *key, size_t key_len)
+Twofish::Twofish(eMode mode,
+                 void const *key, size_t key_len)
 {
 	gcry_error_t error = gcry_cipher_open(&_h,
 	                                      GCRY_CIPHER_TWOFISH,
@@ -54,12 +54,12 @@ cTwofish::cTwofish(eMode mode,
 	}
 }
 
-cTwofish::~cTwofish()
+Twofish::~Twofish()
 {
 	gcry_cipher_close(_h);
 }
 
-void cTwofish::SetIV(void const *iv, size_t iv_len)
+void Twofish::SetIV(void const *iv, size_t iv_len)
 {
 	gcry_error_t error =
 		gcry_cipher_setiv(_h, iv, iv_len);
@@ -72,8 +72,8 @@ void cTwofish::SetIV(void const *iv, size_t iv_len)
 	}
 }
 
-void cTwofish::Decrypt(uint8_t *out, size_t out_len,
-                       uint8_t const *in, size_t in_len)
+void Twofish::Decrypt(uint8_t *out, size_t out_len,
+                      uint8_t const *in, size_t in_len)
 {
 	gcry_error_t error =
 		gcry_cipher_decrypt(_h, out, out_len, in, in_len);
@@ -86,8 +86,8 @@ void cTwofish::Decrypt(uint8_t *out, size_t out_len,
 	}
 }
 
-void cTwofish::Encrypt(uint8_t *out, size_t out_len,
-                       uint8_t const *in, size_t in_len)
+void Twofish::Encrypt(uint8_t *out, size_t out_len,
+                      uint8_t const *in, size_t in_len)
 {
 	gcry_error_t error =
 		gcry_cipher_encrypt(_h, out, out_len, in, in_len);

@@ -25,12 +25,12 @@
 
 namespace gPWS {
 
-class cGtkEmitter
+class GtkEmitter
     : public iEmitter
 {
 public:
-	cGtkEmitter();
-	~cGtkEmitter();
+	GtkEmitter();
+	~GtkEmitter();
 
 private:
 	std::string _selection;

@@ -29,8 +29,8 @@ namespace gPWS {
 
 struct iEmitter;
 
-class cCommandList
-	: public cCommand
+class CommandList
+	: public Command
 {
 public:
 	static PtrT Create(std::string const &regex);
@@ -40,7 +40,7 @@ public:
 private:
 	std::string _regex;
 
-	cCommandList(std::string const &regex);
+	CommandList(std::string const &regex);
 	void _PrintIntention(Params const &params);
 };
 

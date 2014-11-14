@@ -28,7 +28,7 @@ namespace gPWS {
 
 using namespace std;
 
-cHmac::cHmac(void const *key, size_t key_len)
+Hmac::Hmac(void const *key, size_t key_len)
 {
 	gcry_error_t error =
 		gcry_md_open(&_h,
@@ -52,17 +52,17 @@ cHmac::cHmac(void const *key, size_t key_len)
 	}
 }
 
-cHmac::~cHmac()
+Hmac::~Hmac()
 {
 	gcry_md_close(_h);
 }
 
-void cHmac::Update(void const *data, size_t len)
+void Hmac::Update(void const *data, size_t len)
 {
 	gcry_md_write(_h, data, len);
 }
 
-uint8_t const *cHmac::Get() const
+uint8_t const *Hmac::Get() const
 {
 	return gcry_md_read(_h, 0);
 }

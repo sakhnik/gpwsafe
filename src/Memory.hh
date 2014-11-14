@@ -27,7 +27,7 @@
 
 namespace gPWS {
 
-class cLockedBlockAllocator
+class LockedBlockAllocator
 {
 public:
 	typedef std::size_t size_type;
@@ -39,14 +39,14 @@ public:
 
 template<typename T>
 class SecureAllocator
-	: public boost::pool_allocator<T, cLockedBlockAllocator>
+	: public boost::pool_allocator<T, LockedBlockAllocator>
 {
 public:
-	typedef boost::pool_allocator<T, cLockedBlockAllocator> BaseT;
+	typedef boost::pool_allocator<T, LockedBlockAllocator> BaseT;
 
 	typedef T value_type;
 	typedef value_type * pointer;
-	typedef typename boost::pool<cLockedBlockAllocator>::size_type size_type;
+	typedef typename boost::pool<LockedBlockAllocator>::size_type size_type;
 
 	template <typename U>
 	struct rebind

@@ -42,7 +42,7 @@ const string MAGIC_TAG("PWS3");
 const unsigned SALT_LEN = 32;
 const string EOF_TAG("PWS3-EOFPWS3-EOF");
 
-cFile3::cFile3()
+File3::File3()
 	: _state(S_CLOSED)
 	, _initial_state(_fs.exceptions())
 	, _iterations(2048)
@@ -51,18 +51,17 @@ cFile3::cFile3()
 	       "libgcrypt must be initialized beforehand");
 }
 
-cFile3::~cFile3()
+File3::~File3()
 {
 }
 
-void cFile3::Close()
+void File3::Close()
 {
 	_state = S_CLOSED;
 	_fs.close();
 }
 
-void cFile3::OpenRead(char const *fname,
-                      StringX const &pass)
+void File3::OpenRead(char const *fname, StringX const &pass)
 {
 	assert(_state == S_CLOSED);
 	_state = S_READING;
@@ -88,53 +87,53 @@ void cFile3::OpenRead(char const *fname,
 	            + (uint32_t(iter_buf[2]) << 16)
 	            + (uint32_t(iter_buf[3]) << 24);
 
-	cKeyStretch key_stretch(pass.c_str(), pass.size(),
-	                        salt, SALT_LEN,
-	                        _iterations);
+	KeyStretch key_stretch(pass.c_str(), pass.size(),
+	                       salt, SALT_LEN,
+	                       _iterations);
 
-	cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
+	Sha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
-	string key(cSha256::LENGTH, '\0');
+	string key(Sha256::LENGTH, '\0');
 	_fs.read(&key[0], key.size());
 
 	if (memcmp(&key[0], key_md.Get(), key.size()))
 		throw runtime_error(_("Key mismatch"));
 
-	cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
+	Twofish twofish(Twofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
 	if (_main_key.empty())
-		_main_key.resize(cTwofish::KEY_LENGTH);
+		_main_key.resize(Twofish::KEY_LENGTH);
 	_fs.read(&_main_key[0], _main_key.size());
 	twofish.Decrypt(&_main_key[0], _main_key.size(),
 	                &_main_key[0], _main_key.size());
 
 	if (_hmac_key.empty())
-		_hmac_key.resize(cHmac::KEY_LENGTH);
+		_hmac_key.resize(Hmac::KEY_LENGTH);
 	_fs.read(&_hmac_key[0], _hmac_key.size());
 	twofish.Decrypt(&_hmac_key[0], _hmac_key.size(),
 	                &_hmac_key[0], _hmac_key.size());
-	_hmac_calculator.reset(new cHmac(&_hmac_key[0], _hmac_key.size()));
+	_hmac_calculator.reset(new Hmac(&_hmac_key[0], _hmac_key.size()));
 
-	BytesT iv(cTwofish::BLOCK_LENGTH);
+	BytesT iv(Twofish::BLOCK_LENGTH);
 	_fs.read(reinterpret_cast<char *>(&iv[0]), iv.size());
 
-	_twofish.reset(new cTwofish(cTwofish::M_CBC,
-	                            &_main_key[0],
-	                            _main_key.size()));
+	_twofish.reset(new Twofish(Twofish::M_CBC,
+	                           &_main_key[0],
+	                           _main_key.size()));
 	_twofish->SetIV(&iv[0], iv.size());
 }
 
-sField::PtrT cFile3::ReadField()
+sField::PtrT File3::ReadField()
 {
 	assert(_state == S_READING);
 
-	_data.resize(cTwofish::BLOCK_LENGTH);
+	_data.resize(Twofish::BLOCK_LENGTH);
 	_fs.read(&_data[0], _data.size());
 
 	assert(EOF_TAG.size() == _data.size());
 	if (!memcmp(&_data[0], EOF_TAG.data(), _data.size()))
 	{
-		BytesT hmac(cHmac::LENGTH);
+		BytesT hmac(Hmac::LENGTH);
 		_fs.read(reinterpret_cast<char *>(&hmac[0]), hmac.size());
 		_state = S_CLOSED;
 		_fs.close();
@@ -175,9 +174,9 @@ sField::PtrT cFile3::ReadField()
 	return field;
 }
 
-void cFile3::OpenWrite(char const *fname,
-                       StringX const &pass,
-                       bool new_keys)
+void File3::OpenWrite(char const *fname,
+                      StringX const &pass,
+                      bool new_keys)
 {
 	assert(_state == S_CLOSED);
 	_state = S_WRITING;
@@ -191,7 +190,7 @@ void cFile3::OpenWrite(char const *fname,
 	_fs.write(&MAGIC_TAG[0], MAGIC_TAG.size());
 
 	char salt[SALT_LEN];
-	cRandom::CreateNonce(salt, SALT_LEN);
+	Random::CreateNonce(salt, SALT_LEN);
 	_fs.write(salt, SALT_LEN);
 
 	uint8_t iter_buf[4];
@@ -202,20 +201,20 @@ void cFile3::OpenWrite(char const *fname,
 
 	_fs.write(reinterpret_cast<char *>(iter_buf), 4);
 
-	cKeyStretch key_stretch(pass.c_str(), pass.size(),
-	                        salt, SALT_LEN,
-	                        _iterations);
+	KeyStretch key_stretch(pass.c_str(), pass.size(),
+	                       salt, SALT_LEN,
+	                       _iterations);
 
-	cSha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
+	Sha256 key_md(key_stretch.Get(), key_stretch.LENGTH);
 
 	_fs.write(reinterpret_cast<char const *>(key_md.Get()), key_md.LENGTH);
 
-	cTwofish twofish(cTwofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
+	Twofish twofish(Twofish::M_ECB, key_stretch.Get(), key_stretch.LENGTH);
 
 	if (_main_key.empty() || new_keys)
 	{
-		_main_key.resize(cTwofish::KEY_LENGTH);
-		cRandom::Randomize(&_main_key[0], _main_key.size(), true);
+		_main_key.resize(Twofish::KEY_LENGTH);
+		Random::Randomize(&_main_key[0], _main_key.size(), true);
 	}
 	// Encrypt the main key before writing
 	StringX main_key_enc(_main_key);
@@ -225,32 +224,32 @@ void cFile3::OpenWrite(char const *fname,
 
 	if (_hmac_key.empty() || new_keys)
 	{
-		_hmac_key.resize(cHmac::KEY_LENGTH);
-		cRandom::Randomize(&_hmac_key[0], _hmac_key.size(), true);
+		_hmac_key.resize(Hmac::KEY_LENGTH);
+		Random::Randomize(&_hmac_key[0], _hmac_key.size(), true);
 	}
 	StringX hmac_key_enc(_hmac_key);
 	twofish.Encrypt(&hmac_key_enc[0], hmac_key_enc.size(),
 	                &_hmac_key[0], _hmac_key.size());
 	_fs.write(&hmac_key_enc[0], hmac_key_enc.size());
 
-	_hmac_calculator.reset(new cHmac(&_hmac_key[0], _hmac_key.size()));
+	_hmac_calculator.reset(new Hmac(&_hmac_key[0], _hmac_key.size()));
 
-	BytesT iv(cTwofish::BLOCK_LENGTH);
-	cRandom::CreateNonce(&iv[0], iv.size());
+	BytesT iv(Twofish::BLOCK_LENGTH);
+	Random::CreateNonce(&iv[0], iv.size());
 	_fs.write(reinterpret_cast<char *>(&iv[0]), iv.size());
 
-	_twofish.reset(new cTwofish(cTwofish::M_CBC,
-	                            &_main_key[0],
-	                            _main_key.size()));
+	_twofish.reset(new Twofish(Twofish::M_CBC,
+	                           &_main_key[0],
+	                           _main_key.size()));
 	_twofish->SetIV(&iv[0], iv.size());
 }
 
-void cFile3::WriteField(sField::PtrT const &field)
+void File3::WriteField(sField::PtrT const &field)
 {
 	assert(_state == S_WRITING);
 	assert(field);
 
-	_data.resize(cTwofish::BLOCK_LENGTH);
+	_data.resize(Twofish::BLOCK_LENGTH);
 
 	StringX &value(field->value);
 	uint32_t length(value.size());
@@ -270,7 +269,7 @@ void cFile3::WriteField(sField::PtrT const &field)
 		if (!value_rest && data_rest)
 		{
 			// Fill up the rest of the block with random data
-			cRandom::CreateNonce(&_data[0] + data_idx, data_rest);
+			Random::CreateNonce(&_data[0] + data_idx, data_rest);
 		}
 		if (!block_rest)
 		{
@@ -290,13 +289,13 @@ void cFile3::WriteField(sField::PtrT const &field)
 	}
 }
 
-void cFile3::CloseWrite()
+void File3::CloseWrite()
 {
 	assert(_state == S_WRITING);
 	_fs.write(EOF_TAG.data(), EOF_TAG.size());
 	assert(_hmac_calculator.get());
 	_fs.write(reinterpret_cast<char const *>(_hmac_calculator->Get()),
-	          cHmac::LENGTH);
+	          Hmac::LENGTH);
 	_fs.close();
 	_state = S_CLOSED;
 }

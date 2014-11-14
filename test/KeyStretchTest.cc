@@ -36,9 +36,9 @@ TEST(KeyStretchTest, First)
 	            "\x51\x49\xC3\x9D\xD3\xA5\xB1\xD5"
 	            "\x44\x46\x3A\xE6\x2D\x89\x99\x10"
 	            "\x44\x44\x85\x59\x7A\x89\xE3\x87");
-	cKeyStretch key_stretch(pass.c_str(), pass.size(),
-	                        salt.c_str(), salt.size(),
-	                        2048);
+	KeyStretch key_stretch(pass.c_str(), pass.size(),
+	                       salt.c_str(), salt.size(),
+	                       2048);
 	const uint8_t ref[] =
 	{
 		0x97, 0xE3, 0xD3, 0x0F, 0x55, 0x86, 0x76, 0xC1,

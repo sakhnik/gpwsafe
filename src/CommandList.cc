@@ -30,17 +30,17 @@ namespace gPWS {
 
 using namespace std;
 
-cCommand::PtrT cCommandList::Create(string const &regex)
+Command::PtrT CommandList::Create(string const &regex)
 {
-	return cCommand::PtrT(new cCommandList(regex));
+	return Command::PtrT(new CommandList(regex));
 }
 
-cCommandList::cCommandList(string const &regex)
+CommandList::CommandList(string const &regex)
 	: _regex(regex)
 {
 }
 
-void cCommandList::Execute(Params const &params)
+void CommandList::Execute(Params const &params)
 {
 	assert(params.emitter && "Not implemented _emitter");
 	auto &emitter = params.emitter;
@@ -48,7 +48,7 @@ void cCommandList::Execute(Params const &params)
 
 	_PrintIntention(params);
 
-	cDatabase::PtrT database = OpenDatabase(params.ExpandFileName());
+	Database::PtrT database = OpenDatabase(params.ExpandFileName());
 
 	auto match = database->Find(_regex.c_str());
 	if (match.empty())
@@ -88,7 +88,7 @@ void cCommandList::Execute(Params const &params)
 	}
 }
 
-void cCommandList::_PrintIntention(Params const &params)
+void CommandList::_PrintIntention(Params const &params)
 {
 	if (params.user)
 	{

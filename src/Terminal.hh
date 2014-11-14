@@ -28,19 +28,19 @@
 
 namespace gPWS {
 
-class cRawTerminal
+class RawTerminal
 	: boost::noncopyable
 {
 public:
-	cRawTerminal(bool new_line = false);
-	~cRawTerminal();
+	RawTerminal(bool new_line = false);
+	~RawTerminal();
 
 private:
 	bool _new_line;
 	struct termios _tio;
 };
 
-class cTerminal
+class Terminal
 	: boost::noncopyable
 {
 public:

@@ -30,11 +30,11 @@
 
 namespace gPWS {
 
-class cCommand
+class Command
 	: boost::noncopyable
 {
 public:
-	typedef std::unique_ptr<cCommand> PtrT;
+	typedef std::unique_ptr<Command> PtrT;
 
 	struct Params
 	{
@@ -48,12 +48,12 @@ public:
 		std::string ExpandFileName() const;
 	};
 
-	virtual ~cCommand() { }
+	virtual ~Command() { }
 	virtual void Execute(Params const &params) = 0;
 
 protected:
-	static cDatabase::PtrT OpenDatabase(std::string const &file_name);
-	static bool CheckSingleEntry(cDatabase::MatchT const &entries);
+	static Database::PtrT OpenDatabase(std::string const &file_name);
+	static bool CheckSingleEntry(Database::MatchT const &entries);
 };
 
 } //namespace gPWS;

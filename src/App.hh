@@ -30,11 +30,11 @@ namespace gPWS {
 
 struct iEmitter;
 
-class cApp
+class App
 	: boost::noncopyable
 {
 public:
-	cApp(char const *program_name);
+	App(char const *program_name);
 
 	void Init(int argc, char *argv[]);
 
@@ -45,11 +45,11 @@ public:
 
 private:
 	char const *_program_name;
-	cCommand::PtrT _command;
-	cCommand::Params _params;
+	Command::PtrT _command;
+	Command::Params _params;
 	bool _use_weak_randomness_for_tests;
 
-	void _SetCommand(cCommand::PtrT command);
+	void _SetCommand(Command::PtrT command);
 	void _SetEmitter(iEmitter *emitter);
 };
 

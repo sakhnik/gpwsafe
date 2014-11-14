@@ -28,7 +28,7 @@
 
 namespace gPWS {
 
-class cTwofish
+class Twofish
 	: boost::noncopyable
 {
 public:
@@ -41,10 +41,10 @@ public:
 	static const unsigned KEY_LENGTH = 32;
 	static const unsigned BLOCK_LENGTH = 16;
 
-	cTwofish(eMode mode,
-	         void const *key, size_t key_len);
+	Twofish(eMode mode,
+	        void const *key, size_t key_len);
 
-	~cTwofish();
+	~Twofish();
 
 	void SetIV(void const *iv, size_t iv_len);
 

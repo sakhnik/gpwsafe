@@ -26,7 +26,7 @@
 
 namespace gPWS {
 
-class cRandom
+class Random
 	: boost::noncopyable
 {
 public:

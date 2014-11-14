@@ -32,20 +32,20 @@ namespace gPWS {
 using namespace std;
 typedef boost::format bfmt;
 
-cGtkEmitter::cGtkEmitter()
+GtkEmitter::GtkEmitter()
 {
 }
 
-cGtkEmitter::~cGtkEmitter()
+GtkEmitter::~GtkEmitter()
 {
 }
 
-void cGtkEmitter::PrintIntention(string const &subject) const
+void GtkEmitter::PrintIntention(string const &subject) const
 {
 	cout << bfmt(_("Going to copy %s to X selection")) % subject << endl;
 }
 
-void cGtkEmitter::SetSelection(const string &selection)
+void GtkEmitter::SetSelection(const string &selection)
 {
 	_selection = selection;
 }
@@ -153,7 +153,7 @@ vector<const char *> ParseSelection(string selection)
 
 } //namespace;
 
-void cGtkEmitter::Emit(StringX const &name, StringX const &val)
+void GtkEmitter::Emit(StringX const &name, StringX const &val)
 {
 	int argc(0);
 	char **argv = { NULL };
@@ -187,7 +187,7 @@ void cGtkEmitter::Emit(StringX const &name, StringX const &val)
 	cout << _("Press any key when done") << endl;
 
 	// Switch off the canonical mode
-	cRawTerminal raw_terminal;
+	RawTerminal raw_terminal;
 
 	// Poll the stdin for any events to react on key press
 	auto channel = mk_ptr(g_io_channel_unix_new(STDIN_FILENO),

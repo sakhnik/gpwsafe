@@ -30,12 +30,12 @@ namespace gPWS {
 using namespace std;
 typedef boost::format bfmt;
 
-void cStdoutEmitter::PrintIntention(string const &subject) const
+void StdoutEmitter::PrintIntention(string const &subject) const
 {
 	cout << bfmt(_("Going to print %s to stdout")) % subject << endl;
 }
 
-void cStdoutEmitter::Emit(StringX const &name, StringX const &val)
+void StdoutEmitter::Emit(StringX const &name, StringX const &val)
 {
 	cout << name << ": " << val << endl;
 }

@@ -35,20 +35,20 @@ namespace gPWS {
 using namespace std;
 typedef boost::format bfmt;
 
-cCommand::Params::Params()
+Command::Params::Params()
 	: file_name("~/.gpwsafe.psafe3")
 	, user(false)
 	, pass(false)
 #if ENABLE_XCLIP && ENABLE_GTK
-	, emitter(new cGtkEmitter)
+	, emitter(new GtkEmitter)
 #else
-	, emitter(new cStdoutEmitter)
+	, emitter(new StdoutEmitter)
 #endif
 	, selection("BOTH")
 {
 }
 
-string cCommand::Params::ExpandFileName() const
+string Command::Params::ExpandFileName() const
 {
 	wordexp_t exp_result = { };
 	BOOST_SCOPE_EXIT((&exp_result)) {
@@ -59,16 +59,16 @@ string cCommand::Params::ExpandFileName() const
 	return exp_result.we_wordv[0];
 }
 
-cDatabase::PtrT cCommand::OpenDatabase(string const &file_name)
+Database::PtrT Command::OpenDatabase(string const &file_name)
 {
-	cDatabase::PtrT database(new cDatabase);
+	Database::PtrT database(new Database);
 	string prompt = _("Enter password for ") + file_name + ": ";
-	StringX password = cTerminal::GetPassword(prompt);
+	StringX password = Terminal::GetPassword(prompt);
 	database->Read(file_name, password);
 	return database;
 }
 
-bool cCommand::CheckSingleEntry(cDatabase::MatchT const &entries)
+bool Command::CheckSingleEntry(Database::MatchT const &entries)
 {
 	assert(!entries.empty() && "Must be analyzed separately");
 
