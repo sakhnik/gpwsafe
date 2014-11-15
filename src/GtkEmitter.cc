@@ -40,6 +40,11 @@ GtkEmitter::~GtkEmitter()
 {
 }
 
+void GtkEmitter::Init(int *argc, char ***argv)
+{
+	gtk_init(argc, argv);
+}
+
 void GtkEmitter::PrintIntention(string const &subject) const
 {
 	cout << bfmt(_("Going to copy %s to X selection")) % subject << endl;

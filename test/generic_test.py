@@ -77,7 +77,7 @@ def Populate():
             child.sendline(params[patterns[idx]['field']])
 
 def CheckList():
-    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file)
+    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file + ' --list')
     child.setecho(False)
     child.expect("Enter password for " + test_file + ": ")
     child.sendline(password)
@@ -134,7 +134,7 @@ def CheckDelete():
         child.expect("\s*Confirm deleting " + params['query_req'] + " \? \[n\] ", timeout=1)
         child.sendline("y");
         child.expect(pexpect.EOF, timeout=1)
-    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file)
+    child = pexpect.spawn(gpwsafe + ' --use-weak-randomness-for-tests -f ' + test_file + ' --list')
     child.setecho(False)
     child.expect("\s*Enter password for " + test_file + ": ")
     child.sendline(password)

@@ -32,6 +32,8 @@ public:
 	GtkEmitter();
 	~GtkEmitter();
 
+	static void Init(int *argc, char ***argv);
+
 private:
 	std::string _selection;
 

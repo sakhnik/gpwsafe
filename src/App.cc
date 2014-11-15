@@ -27,9 +27,12 @@
 #include "CommandCreate.hh"
 #include "CommandEdit.hh"
 #include "CommandDelete.hh"
+#if ENABLE_GTK
+#  include "CommandGui.hh"
+#endif
 #include "i18n.h"
 
-#ifdef ENABLE_GTK
+#if ENABLE_GTK
 #include "GtkEmitter.hh"
 #endif //ENABLE_GTK
 
@@ -54,6 +57,10 @@ App::App(char const *program_name)
 
 void App::Init(int argc, char *argv[])
 {
+#if ENABLE_GTK
+	GtkEmitter::Init(&argc, &argv);
+#endif
+
 	using namespace boost::program_options;
 
 	struct winsize w;
@@ -130,6 +137,16 @@ void App::Init(int argc, char *argv[])
 				}
 			),
 			_("delete an entry"))
+#if ENABLE_GTK
+		("gui,g",
+			bool_switch(nullptr)
+			->notifier([this](bool arg)
+				{
+					if (arg)
+						this->_SetCommand(CommandGui::Create());
+				}),
+			_("launch graphical user interface"))
+#endif
 		;
 
 	options_description desc_opts(_("Options"), line_length, line_length / 2);
@@ -188,9 +205,13 @@ void App::Init(int argc, char *argv[])
 
 	if (vm.count("help"))
 	{
-		cout << _program_name << _(" - command line tool compatible with"
+		cout << _program_name << _(" -- command line tool compatible with"
 			" Conterpane's PasswordSafe\n\n");
-		cout << _("Usage: ") << _program_name << _(" [OPTION] command [ARG]\n");
+		cout << _("Usage: ") << "\n\t"
+			<< _program_name << _(" [OPTION] command [ARG]\n");
+#if ENABLE_GTK
+		cout << "\t" << _program_name << " --gui\n";
+#endif
 		cout << desc << endl;
 		throw ExitEx(0);
 	}
@@ -222,7 +243,14 @@ void App::Run()
 	try
 	{
 		if (!_command)
-			_command.reset(CommandList::Create("").release());
+		{
+#if ENABLE_GTK
+			if (getenv("DISPLAY"))
+				_command = CommandGui::Create();
+			else
+#endif
+			_command = CommandList::Create("");
+		}
 		_command->Execute(_params);
 	}
 	catch (std::exception const &e)
