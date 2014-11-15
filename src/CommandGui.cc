@@ -21,42 +21,55 @@
 
 
 #include "CommandGui.hh"
-#include "i18n.h"
 #include <gtk/gtk.h>
 #include <memory>
+
 
 namespace gPWS {
 
 using namespace std;
+
+struct Context
+{
+	unique_ptr<GtkWidget, void(&)(GtkWidget *)> main_window;
+	unique_ptr<GtkWidget, void(&)(GtkWidget *)> about_dialog;
+};
+
+extern "C" void help_about(GtkMenuItem *, gpointer data)
+{
+	Context *context = reinterpret_cast<Context *>(data);
+	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(context->about_dialog.get()),
+	                             VERSION);
+	gtk_widget_show_all(context->about_dialog.get());
+}
 
 Command::PtrT CommandGui::Create()
 {
 	return Command::PtrT{ new CommandGui() };
 }
 
+template <typename T, typename D>
+unique_ptr<T, D> Manage(T *t, D &&d)
+{
+	return unique_ptr<T, D>{ t, forward<D>(d) };
+}
+
 void CommandGui::Execute(const Params &params)
 {
-	auto ask_passwd = unique_ptr<GtkWidget, void(&)(GtkWidget*)>(
-		gtk_dialog_new_with_buttons("gpwsafe",
-		                            NULL,
-		                            GTK_DIALOG_MODAL,
-		                            _("_Cancel"),
-		                            GTK_RESPONSE_REJECT,
-		                            _("_Open"),
-		                            GTK_RESPONSE_ACCEPT,
-		                            NULL),
-		gtk_widget_destroy);
-	gtk_dialog_set_default_response(GTK_DIALOG(ask_passwd.get()),
-	                                GTK_RESPONSE_ACCEPT);
+	auto builder = Manage(gtk_builder_new_from_file("src/gui.glade"),
+	                      [](GtkBuilder *b) { g_object_unref(G_OBJECT(b)); });
 
-	auto content_area = gtk_dialog_get_content_area(GTK_DIALOG(ask_passwd.get()));
+	Context context = {
+		.main_window = {GTK_WIDGET(gtk_builder_get_object(builder.get(), "main_window")),
+		                gtk_widget_destroy},
+		.about_dialog = {GTK_WIDGET(gtk_builder_get_object(builder.get(), "aboutdialog")),
+		                 gtk_widget_destroy}
+	};
 
-	auto text = _("Enter password for ") + params.ExpandFileName();
-	gtk_container_add(GTK_CONTAINER(content_area), gtk_label_new(text.c_str()));
+	gtk_builder_connect_signals(builder.get(), &context);
 
-	gtk_widget_show_all(ask_passwd.get());
-	auto response = gtk_dialog_run(GTK_DIALOG(ask_passwd.get()));
-	cout << response << endl;
+	gtk_widget_show_all(context.main_window.get());
+	gtk_main();
 }
 
 } //namespace gPWS;
