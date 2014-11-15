@@ -32,7 +32,7 @@ class Twofish
 	: boost::noncopyable
 {
 public:
-	enum eMode
+	enum Mode
 	{
 		M_ECB = GCRY_CIPHER_MODE_ECB,
 		M_CBC = GCRY_CIPHER_MODE_CBC
@@ -41,7 +41,7 @@ public:
 	static const unsigned KEY_LENGTH = 32;
 	static const unsigned BLOCK_LENGTH = 16;
 
-	Twofish(eMode mode,
+	Twofish(Mode mode,
 	        void const *key, size_t key_len);
 
 	~Twofish();

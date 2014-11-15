@@ -144,7 +144,7 @@ void Entry::PrettyPrint() const
 	}
 }
 
-StringX const &Entry::GetValue(eFieldType field_type) const
+StringX const &Entry::GetValue(FieldType field_type) const
 {
 	if (static_cast<size_t>(field_type) >= _fields.size())
 		return _empty;
@@ -162,7 +162,7 @@ StringX Entry::GetFullTitle() const
 	return GetGroup() + "." + GetTitle();
 }
 
-void Entry::SetValue(eFieldType field_type, StringX const &value)
+void Entry::SetValue(FieldType field_type, StringX const &value)
 {
 	if (static_cast<size_t>(field_type) >= _fields.size())
 		_fields.resize(static_cast<unsigned>(field_type) + 1);
