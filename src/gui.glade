@@ -154,7 +154,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="help_about" swapped="no"/>
+                        <signal name="activate" handler="on_help_about" swapped="no"/>
                       </object>
                     </child>
                   </object>

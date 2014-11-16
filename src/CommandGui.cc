@@ -21,6 +21,7 @@
 
 
 #include "CommandGui.hh"
+#include "i18n.h"
 #include <gtk/gtk.h>
 #include <memory>
 
@@ -31,11 +32,12 @@ using namespace std;
 
 struct Context
 {
-	unique_ptr<GtkWidget, void(&)(GtkWidget *)> main_window;
-	unique_ptr<GtkWidget, void(&)(GtkWidget *)> about_dialog;
+	unique_ptr<GtkWidget, void(&)(GtkWidget *)>
+		main_window,
+		about_dialog;
 };
 
-extern "C" void help_about(GtkMenuItem *, gpointer data)
+extern "C" void on_help_about(GtkMenuItem *, gpointer data)
 {
 	Context *context = reinterpret_cast<Context *>(data);
 	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(context->about_dialog.get()),
@@ -54,21 +56,43 @@ unique_ptr<T, D> Manage(T *t, D &&d)
 	return unique_ptr<T, D>{ t, forward<D>(d) };
 }
 
+gboolean on_start(gpointer data)
+{
+	Context *context = reinterpret_cast<Context *>(data);
+	auto dialog = Manage(gtk_dialog_new_with_buttons("Enter password",
+	                                                 GTK_WINDOW(context->main_window.get()),
+	                                                 GTK_DIALOG_MODAL,
+	                                                 _("OK"),
+	                                                 GTK_RESPONSE_OK,
+	                                                 _("Cancel"),
+	                                                 GTK_RESPONSE_CANCEL,
+	                                                 nullptr),
+	                     gtk_widget_destroy);
+	auto response = gtk_dialog_run(GTK_DIALOG(dialog.get()));
+	cout << response << endl;
+	return FALSE;
+}
+
 void CommandGui::Execute(const Params &params)
 {
 	auto builder = Manage(gtk_builder_new_from_file("src/gui.glade"),
 	                      [](GtkBuilder *b) { g_object_unref(G_OBJECT(b)); });
 
+	auto get_widget = [&](const char *id) -> decltype(Context::main_window)
+	{
+		return {GTK_WIDGET(gtk_builder_get_object(builder.get(), id)),
+		        gtk_widget_destroy};
+	};
+
 	Context context = {
-		.main_window = {GTK_WIDGET(gtk_builder_get_object(builder.get(), "main_window")),
-		                gtk_widget_destroy},
-		.about_dialog = {GTK_WIDGET(gtk_builder_get_object(builder.get(), "aboutdialog")),
-		                 gtk_widget_destroy}
+		.main_window = get_widget("main_window"),
+		.about_dialog = get_widget("aboutdialog"),
 	};
 
 	gtk_builder_connect_signals(builder.get(), &context);
 
 	gtk_widget_show_all(context.main_window.get());
+	g_timeout_add(0, on_start, &context);
 	gtk_main();
 }
 
