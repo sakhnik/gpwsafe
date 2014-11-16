@@ -37,6 +37,8 @@ foreach(TEST ${UNIT_TESTS})
 endforeach()
 
 add_test(
-	NAME functional.generic 
-	COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/generic_test.py
+	NAME functional.generic
+	COMMAND python
+		${CMAKE_CURRENT_SOURCE_DIR}/generic_test.py
+		${CMAKE_BINARY_DIR}/src/gpwsafe
 	)

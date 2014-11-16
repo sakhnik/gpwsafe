@@ -2,7 +2,7 @@
 
 import pexpect, sys, os
 
-gpwsafe = "../src/gpwsafe"
+gpwsafe = sys.argv[1]
 test_file = "/tmp/test.ps3"
 password = "asdfqwer"
 
