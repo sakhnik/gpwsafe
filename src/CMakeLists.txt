@@ -65,21 +65,39 @@ target_link_libraries(
 	)
 
 if(GTK_FOUND)
-	add_library(gtk_gui STATIC
+	add_library(gtk_emitter STATIC
 		GtkEmitter.cc GtkEmitter.hh
-		CommandGui.cc CommandGui.hh
 		)
 
 	set_property(
-		TARGET gtk_gui
+		TARGET gtk_emitter
 		PROPERTY COMPILE_DEFINITIONS ${GTK_DEFINITIONS}
 		PROPERTY INCLUDE_DIRECTORIES ${GTK_INCLUDE_DIRS}
 		)
 
 	target_link_libraries(
 		${PACKAGE}
-		gtk_gui
+		gtk_emitter
 		${GTK_LIBRARIES}
+		)
+endif()
+
+if(GTKMM_FOUND)
+	add_library(gtk_gui STATIC
+		CommandGui.cc CommandGui.hh
+		gui/MainWindow.cc gui/MainWindow.hh
+		)
+
+	set_property(
+		TARGET gtk_gui
+		PROPERTY COMPILE_DEFINITIONS ${GTKMM_DEFINITIONS}
+		PROPERTY INCLUDE_DIRECTORIES ${GTKMM_INCLUDE_DIRS}
+		)
+
+	target_link_libraries(
+		${PACKAGE}
+		gtk_gui
+		${GTKMM_LIBRARIES}
 		)
 endif()
 

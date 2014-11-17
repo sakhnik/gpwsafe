@@ -27,7 +27,7 @@
 #include "CommandCreate.hh"
 #include "CommandEdit.hh"
 #include "CommandDelete.hh"
-#if ENABLE_GTK
+#if ENABLE_GTKMM
 #  include "CommandGui.hh"
 #endif
 #include "i18n.h"
@@ -137,7 +137,7 @@ void App::Init(int argc, char *argv[])
 				}
 			),
 			_("delete an entry"))
-#if ENABLE_GTK
+#if ENABLE_GTKMM
 		("gui,g",
 			bool_switch(nullptr)
 			->notifier([this](bool arg)
@@ -209,7 +209,7 @@ void App::Init(int argc, char *argv[])
 			" Conterpane's PasswordSafe\n\n");
 		cout << _("Usage: ") << "\n\t"
 			<< _program_name << _(" [OPTION] command [ARG]\n");
-#if ENABLE_GTK
+#if ENABLE_GTKMM
 		cout << "\t" << _program_name << " --gui\n";
 #endif
 		cout << desc << endl;
@@ -244,7 +244,7 @@ void App::Run()
 	{
 		if (!_command)
 		{
-#if ENABLE_GTK
+#if ENABLE_GTKMM
 			if (getenv("DISPLAY"))
 				_command = CommandGui::Create();
 			else

@@ -58,6 +58,11 @@ else(GTK3_FOUND)
 	endif()
 endif(GTK3_FOUND)
 
+pkg_check_modules(GTKMM gtkmm-3.0)
+if(GTKMM_FOUND)
+	add_definitions(-DENABLE_GTKMM)
+endif(GTKMM_FOUND)
+
 find_package(Gettext)
 message(STATUS "Found gettext version ${GETTEXT_VERSION_STRING}")
 
