@@ -24,6 +24,7 @@
 #include "i18n.h"
 #include <gtk/gtk.h>
 #include <memory>
+#include <boost/filesystem.hpp>
 
 
 namespace gPWS {
@@ -32,6 +33,8 @@ using namespace std;
 
 struct Context
 {
+	string file_name;
+
 	unique_ptr<GtkWidget, void(&)(GtkWidget *)>
 		main_window,
 		about_dialog;
@@ -59,15 +62,30 @@ unique_ptr<T, D> Manage(T *t, D &&d)
 gboolean on_start(gpointer data)
 {
 	Context *context = reinterpret_cast<Context *>(data);
-	auto dialog = Manage(gtk_dialog_new_with_buttons("Enter password",
-	                                                 GTK_WINDOW(context->main_window.get()),
-	                                                 GTK_DIALOG_MODAL,
-	                                                 _("OK"),
-	                                                 GTK_RESPONSE_OK,
-	                                                 _("Cancel"),
-	                                                 GTK_RESPONSE_CANCEL,
-	                                                 nullptr),
-	                     gtk_widget_destroy);
+
+	if (!boost::filesystem::exists(context->file_name))
+		return FALSE;
+
+	auto dialog = Manage(
+		gtk_dialog_new_with_buttons("Enter password",
+		                            GTK_WINDOW(context->main_window.get()),
+		                            GTK_DIALOG_MODAL,
+		                            _("_OK"),
+		                            GTK_RESPONSE_OK,
+		                            _("_Cancel"),
+		                            GTK_RESPONSE_CANCEL,
+		                            nullptr),
+		gtk_widget_destroy
+		);
+
+	auto password_entry = gtk_entry_new();
+	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog.get()))),
+	                 password_entry,
+	                 FALSE,
+	                 FALSE,
+	                 0);
+
+	gtk_widget_show_all(dialog.get());
 	auto response = gtk_dialog_run(GTK_DIALOG(dialog.get()));
 	cout << response << endl;
 	return FALSE;
@@ -85,6 +103,7 @@ void CommandGui::Execute(const Params &params)
 	};
 
 	Context context = {
+		.file_name = params.ExpandFileName(),
 		.main_window = get_widget("main_window"),
 		.about_dialog = get_widget("aboutdialog"),
 	};
