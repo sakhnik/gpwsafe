@@ -36,6 +36,8 @@ public:
 
 private:
 	const Glib::RefPtr<Gtk::Builder> &_builder;
+
+	void on_help_about();
 };
 
 } //namespace gPWS;

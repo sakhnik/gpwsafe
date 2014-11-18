@@ -30,14 +30,6 @@ namespace gPWS {
 
 using namespace std;
 
-//extern "C" void on_help_about(GtkMenuItem *, gpointer data)
-//{
-//	Context *context = reinterpret_cast<Context *>(data);
-//	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(context->about_dialog.get()),
-//	                             VERSION);
-//	gtk_widget_show_all(context->about_dialog.get());
-//}
-
 Command::PtrT CommandGui::Create()
 {
 	return Command::PtrT{ new CommandGui() };
@@ -77,8 +69,7 @@ void CommandGui::Execute(const Params &params)
 {
 	Gtk::Main app("org.sakhnik.gpwsafe");
 
-	Glib::RefPtr<Gtk::Builder> builder =
-		Gtk::Builder::create_from_file("src/gui.glade");
+	auto builder = Gtk::Builder::create_from_file("src/gui.glade");
 
 	MainWindow *window = nullptr;
 	builder->get_widget_derived("main_window", window);
