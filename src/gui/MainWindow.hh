@@ -34,6 +34,8 @@ public:
 	MainWindow(BaseObjectType *cobject,
 	           const Glib::RefPtr<Gtk::Builder> &builder);
 
+	void OpenRecent(const std::string &file_name);
+
 private:
 	const Glib::RefPtr<Gtk::Builder> &_builder;
 

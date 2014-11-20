@@ -23,6 +23,7 @@
 #include "MainWindow.hh"
 #include "../i18n.h"
 #include <iostream>
+#include <boost/filesystem.hpp>
 
 namespace gPWS {
 
@@ -56,6 +57,31 @@ void MainWindow::on_help_about()
 	dialog.set_authors({"Anatolii Sakhnik <sakhnik@gmail.com>"});
 
 	dialog.run();
+}
+
+void MainWindow::OpenRecent(const string &file_name)
+{
+	if (!boost::filesystem::exists(file_name))
+		return;
+
+	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", true) };
+	dialog->set_transient_for(*this);
+	dialog->set_parent(*this);
+	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK);
+	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog->set_default_response(Gtk::RESPONSE_OK);
+
+	auto password_entry = new Gtk::Entry();
+	password_entry->set_visibility(false);
+	dialog->get_content_area()->pack_end(*password_entry, true, false, 20);
+
+	dialog->show_all();
+
+	if (Gtk::RESPONSE_OK != dialog->run())
+		return;
+	dialog->hide();
+
+	cout << password_entry->get_text() << endl;
 }
 
 } //namespace gPWS;

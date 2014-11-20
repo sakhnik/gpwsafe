@@ -35,36 +35,6 @@ Command::PtrT CommandGui::Create()
 	return Command::PtrT{ new CommandGui() };
 }
 
-//template <typename T, typename D>
-//unique_ptr<T, D> Manage(T *t, D &&d)
-//{
-//	return unique_ptr<T, D>{ t, forward<D>(d) };
-//}
-//
-//gboolean on_start(gpointer data)
-//{
-//	Context *context = reinterpret_cast<Context *>(data);
-//
-//	if (!boost::filesystem::exists(context->file_name))
-//		return FALSE;
-//
-//	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", true) };
-//	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK);
-//	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-//
-//	dialog->show_all();
-//	auto response = dialog->run();
-//	//auto password_entry = gtk_entry_new();
-//	//gtk_box_pack_end(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog.get()))),
-//	//                 password_entry,
-//	//                 FALSE,
-//	//                 FALSE,
-//	//                 0);
-//
-//	cout << response << endl;
-//	return FALSE;
-//}
-
 void CommandGui::Execute(const Params &params)
 {
 	Gtk::Main app("org.sakhnik.gpwsafe");
@@ -73,6 +43,9 @@ void CommandGui::Execute(const Params &params)
 
 	MainWindow *window = nullptr;
 	builder->get_widget_derived("main_window", window);
+
+	window->OpenRecent(params.ExpandFileName());
+
 	app.run(*window);
 	delete window;
 }
