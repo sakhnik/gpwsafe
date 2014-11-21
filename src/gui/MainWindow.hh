@@ -31,15 +31,16 @@ class MainWindow
 	: public Gtk::Window
 {
 public:
-	MainWindow(BaseObjectType *cobject,
-	           const Glib::RefPtr<Gtk::Builder> &builder);
-
-	void OpenRecent(const std::string &file_name);
+	MainWindow(std::string &&file_name);
 
 private:
-	const Glib::RefPtr<Gtk::Builder> &_builder;
+	std::string _file_name;
+	bool _first_time;
+	Gtk::Entry _query_entry;
 
 	void on_help_about();
+	void on_file_quit();
+	bool on_query_focus_in(GdkEventFocus *event);
 };
 
 } //namespace gPWS;

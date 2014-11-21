@@ -30,15 +30,46 @@ namespace gPWS {
 using namespace std;
 
 
-MainWindow::MainWindow(BaseObjectType *cobject,
-                       const Glib::RefPtr<Gtk::Builder> &builder)
-	: Gtk::Window(cobject)
-	, _builder{builder}
+MainWindow::MainWindow(string &&file_name)
+	: _file_name(std::move(file_name))
+	, _first_time{true}
 {
-	auto action_group = Gio::SimpleActionGroup::create();
-	action_group->add_action("help.about",
-	                         sigc::mem_fun(*this, &MainWindow::on_help_about));
-	insert_action_group("main", action_group);
+	this->set_default_size(320, 240);
+
+	auto vbox = Gtk::manage(new Gtk::VBox);
+	this->add(*vbox);
+
+	auto menu_bar = Gtk::manage(new Gtk::MenuBar);
+	vbox->pack_start(*menu_bar, Gtk::PACK_SHRINK, 0);
+
+	auto menu_item = Gtk::manage(new Gtk::MenuItem(_("_File"), true));
+	menu_bar->append(*menu_item);
+	auto menu_file = Gtk::manage(new Gtk::Menu);
+	menu_item->set_submenu(*menu_file);
+
+	menu_item = Gtk::manage(new Gtk::MenuItem(_("_Quit"), true));
+	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_file_quit));
+	menu_file->append(*menu_item);
+
+	menu_item = Gtk::manage(new Gtk::MenuItem(_("_Help"), true));
+	menu_bar->append(*menu_item);
+	auto menu_help = Gtk::manage(new Gtk::Menu);
+	menu_item->set_submenu(*menu_help);
+
+	menu_item = Gtk::manage(new Gtk::MenuItem(_("_About"), true));
+	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_help_about));
+	menu_help->append(*menu_item);
+
+	vbox->pack_start(_query_entry, false, false, 20);
+	_query_entry.signal_focus_in_event()
+		.connect(sigc::mem_fun(*this, &MainWindow::on_query_focus_in));
+
+	this->show_all();
+}
+
+void MainWindow::on_file_quit()
+{
+	Gtk::Main::quit();
 }
 
 void MainWindow::on_help_about()
@@ -59,17 +90,21 @@ void MainWindow::on_help_about()
 	dialog.run();
 }
 
-void MainWindow::OpenRecent(const string &file_name)
+bool MainWindow::on_query_focus_in(GdkEventFocus *event)
 {
-	if (!boost::filesystem::exists(file_name))
-		return;
+	if (!_first_time)
+		return false;
+	_first_time = false;
 
-	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", true) };
+	if (!boost::filesystem::exists(_file_name))
+		return false;
+
+	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", *this, true) };
 	dialog->set_transient_for(*this);
-	dialog->set_parent(*this);
 	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK);
 	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-	dialog->set_default_response(Gtk::RESPONSE_OK);
+	//dialog->set_default_response(Gtk::RESPONSE_OK);
+	dialog->set_response_sensitive(Gtk::RESPONSE_OK);
 
 	auto password_entry = new Gtk::Entry();
 	password_entry->set_visibility(false);
@@ -78,10 +113,10 @@ void MainWindow::OpenRecent(const string &file_name)
 	dialog->show_all();
 
 	if (Gtk::RESPONSE_OK != dialog->run())
-		return;
-	dialog->hide();
+		return false;
 
 	cout << password_entry->get_text() << endl;
+	return false;
 }
 
 } //namespace gPWS;

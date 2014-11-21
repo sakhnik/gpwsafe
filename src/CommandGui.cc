@@ -38,16 +38,8 @@ Command::PtrT CommandGui::Create()
 void CommandGui::Execute(const Params &params)
 {
 	Gtk::Main app("org.sakhnik.gpwsafe");
-
-	auto builder = Gtk::Builder::create_from_file("src/gui.glade");
-
-	MainWindow *window = nullptr;
-	builder->get_widget_derived("main_window", window);
-
-	window->OpenRecent(params.ExpandFileName());
-
-	app.run(*window);
-	delete window;
+	MainWindow window{params.ExpandFileName()};
+	app.run(window);
 }
 
 } //namespace gPWS;
