@@ -32,17 +32,21 @@ class MainWindow
 	: public Gtk::Window
 {
 public:
-	MainWindow(std::string &&file_name);
+	MainWindow(const std::string &file_name);
 
 private:
 	std::string _file_name;
-	bool _first_time;
-	Gtk::Entry _query_entry;
 	Database::PtrT _database;
+	Gtk::VBox _vbox;
+	Gtk::SearchEntry _query_entry;
+	Gtk::ListBox _record_list;
+
+	void _OpenDatabase(const std::string &file_name);
+	void _InitMenuBar();
 
 	void on_help_about();
 	void on_file_quit();
-	bool on_query_focus_in(GdkEventFocus *event);
+	void on_query_changed();
 };
 
 } //namespace gPWS;

@@ -30,17 +30,28 @@ namespace gPWS {
 using namespace std;
 
 
-MainWindow::MainWindow(string &&file_name)
-	: _file_name(std::move(file_name))
-	, _first_time{true}
+MainWindow::MainWindow(const string &file_name)
 {
-	this->set_default_size(320, 240);
+	this->set_default_size(640, 480);
 
-	auto vbox = Gtk::manage(new Gtk::VBox);
-	this->add(*vbox);
+	this->add(_vbox);
 
+	_InitMenuBar();
+
+	_vbox.pack_start(_query_entry, false, false, 0);
+	_query_entry.signal_changed().connect([&]() { this->on_query_changed(); });
+
+	_vbox.pack_end(_record_list, Gtk::PackOptions::PACK_EXPAND_WIDGET, 0);
+
+	this->show_all();
+
+	_OpenDatabase(file_name);
+}
+
+void MainWindow::_InitMenuBar()
+{
 	auto menu_bar = Gtk::manage(new Gtk::MenuBar);
-	vbox->pack_start(*menu_bar, Gtk::PACK_SHRINK, 0);
+	_vbox.pack_start(*menu_bar, Gtk::PACK_SHRINK, 0);
 
 	auto menu_item = Gtk::manage(new Gtk::MenuItem(_("_File"), true));
 	menu_bar->append(*menu_item);
@@ -48,7 +59,7 @@ MainWindow::MainWindow(string &&file_name)
 	menu_item->set_submenu(*menu_file);
 
 	menu_item = Gtk::manage(new Gtk::MenuItem(_("_Quit"), true));
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_file_quit));
+	menu_item->signal_activate().connect([&]() { this->on_file_quit(); });
 	menu_file->append(*menu_item);
 
 	menu_item = Gtk::manage(new Gtk::MenuItem(_("_Help"), true));
@@ -57,14 +68,50 @@ MainWindow::MainWindow(string &&file_name)
 	menu_item->set_submenu(*menu_help);
 
 	menu_item = Gtk::manage(new Gtk::MenuItem(_("_About"), true));
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_help_about));
+	menu_item->signal_activate().connect([&]() { this->on_help_about(); });
 	menu_help->append(*menu_item);
+}
 
-	vbox->pack_start(_query_entry, false, false, 0);
-	_query_entry.signal_focus_in_event()
-		.connect(sigc::mem_fun(*this, &MainWindow::on_query_focus_in));
+void MainWindow::_OpenDatabase(const string &file_name)
+{
+	if (!boost::filesystem::exists(file_name))
+		return;
 
-	this->show_all();
+	Gtk::Dialog dialog{ _("Open database"), *this, true };
+	dialog.set_transient_for(*this);
+	dialog.add_button(_("_Ok"), Gtk::RESPONSE_OK)->grab_default();
+	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.set_default_response(Gtk::RESPONSE_OK);
+	dialog.set_response_sensitive(Gtk::RESPONSE_OK);
+
+	auto label = Gtk::manage(new Gtk::Label(_("Enter password for")));
+	dialog.get_content_area()->pack_start(*label, true, false, 0);
+
+	label = Gtk::manage(new Gtk::Label(file_name));
+	dialog.get_content_area()->pack_start(*label, true, false, 0);
+
+	auto password_entry = Gtk::manage(new Gtk::Entry());
+	password_entry->set_visibility(false);
+	password_entry->set_activates_default();
+	dialog.get_content_area()->pack_start(*password_entry, true, false, 20);
+
+	dialog.show_all_children();
+	auto response = dialog.run();
+	if (Gtk::RESPONSE_OK != response)
+		return;
+
+	try
+	{
+		Database::PtrT database{ new Database };
+		StringX password{ password_entry->get_text().c_str() };
+		database->Read(file_name, password);
+		_file_name = file_name;
+		_database = std::move(database);
+	}
+	catch (const std::exception &e)
+	{
+		cerr << "Failed" << endl;
+	}
 }
 
 void MainWindow::on_file_quit()
@@ -90,50 +137,9 @@ void MainWindow::on_help_about()
 	dialog.run();
 }
 
-bool MainWindow::on_query_focus_in(GdkEventFocus *event)
+void MainWindow::on_query_changed()
 {
-	if (!_first_time)
-		return false;
-	_first_time = false;
-
-	if (!boost::filesystem::exists(_file_name))
-		return false;
-
-	Gtk::Dialog dialog{ _("Open database"), *this, true };
-	dialog.set_transient_for(*this);
-	dialog.add_button(_("_Ok"), Gtk::RESPONSE_OK)->grab_default();
-	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-	dialog.set_default_response(Gtk::RESPONSE_OK);
-	dialog.set_response_sensitive(Gtk::RESPONSE_OK);
-
-	auto label = Gtk::manage(new Gtk::Label(_("Enter password for")));
-	dialog.get_content_area()->pack_start(*label, true, false, 0);
-
-	label = Gtk::manage(new Gtk::Label(_file_name));
-	dialog.get_content_area()->pack_start(*label, true, false, 0);
-
-	auto password_entry = Gtk::manage(new Gtk::Entry());
-	password_entry->set_visibility(false);
-	password_entry->set_activates_default();
-	dialog.get_content_area()->pack_start(*password_entry, true, false, 20);
-
-	dialog.show_all_children();
-	auto response = dialog.run();
-	if (Gtk::RESPONSE_OK != response)
-		return false;
-
-	try
-	{
-		Database::PtrT database{ new Database };
-		StringX password{ password_entry->get_text().c_str() };
-		database->Read(_file_name, password);
-		_database = std::move(database);
-	}
-	catch (const std::exception &e)
-	{
-		cerr << "Failed" << endl;
-	}
-	return false;
+	cout << "Changed" << endl;
 }
 
 } //namespace gPWS;
