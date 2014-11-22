@@ -99,20 +99,26 @@ bool MainWindow::on_query_focus_in(GdkEventFocus *event)
 	if (!boost::filesystem::exists(_file_name))
 		return false;
 
-	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", *this, true) };
-	dialog->set_transient_for(*this);
-	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK)->grab_default();
-	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Dialog dialog{ _("Open database"), *this, true };
+	dialog.set_transient_for(*this);
+	dialog.add_button(_("_Ok"), Gtk::RESPONSE_OK)->grab_default();
+	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.set_default_response(Gtk::RESPONSE_OK);
+	dialog.set_response_sensitive(Gtk::RESPONSE_OK);
 
-	auto password_entry = new Gtk::Entry();
+	auto label = Gtk::manage(new Gtk::Label(_("Enter password for")));
+	dialog.get_content_area()->pack_start(*label, true, false, 0);
+
+	label = Gtk::manage(new Gtk::Label(_file_name));
+	dialog.get_content_area()->pack_start(*label, true, false, 0);
+
+	auto password_entry = Gtk::manage(new Gtk::Entry());
 	password_entry->set_visibility(false);
 	password_entry->set_activates_default();
-	dialog->get_content_area()->pack_end(*password_entry, true, false, 20);
+	dialog.get_content_area()->pack_start(*password_entry, true, false, 20);
 
-	dialog->show_all_children();
-	auto response = dialog->run();
-	dialog->hide();
-
+	dialog.show_all_children();
+	auto response = dialog.run();
 	if (Gtk::RESPONSE_OK != response)
 		return false;
 
