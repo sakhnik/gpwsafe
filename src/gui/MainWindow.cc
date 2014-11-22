@@ -122,7 +122,17 @@ bool MainWindow::on_query_focus_in(GdkEventFocus *event)
 	if (Gtk::RESPONSE_OK != response)
 		return false;
 
-	cout << password_entry->get_text() << endl;
+	try
+	{
+		Database::PtrT database{ new Database };
+		StringX password{ password_entry->get_text().c_str() };
+		database->Read(_file_name, password);
+		_database = std::move(database);
+	}
+	catch (const std::exception &e)
+	{
+		cerr << "Failed" << endl;
+	}
 	return false;
 }
 

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "../Database.hh"
 #include <string>
 #include <gtkmm.h>
 
@@ -37,6 +38,7 @@ private:
 	std::string _file_name;
 	bool _first_time;
 	Gtk::Entry _query_entry;
+	Database::PtrT _database;
 
 	void on_help_about();
 	void on_file_quit();
