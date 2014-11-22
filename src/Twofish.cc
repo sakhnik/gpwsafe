@@ -28,7 +28,7 @@ namespace gPWS {
 
 using namespace std;
 
-Twofish::Twofish(eMode mode,
+Twofish::Twofish(Mode mode,
                  void const *key, size_t key_len)
 {
 	gcry_error_t error = gcry_cipher_open(&_h,

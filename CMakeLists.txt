@@ -108,6 +108,9 @@ endfunction(find_python_module)
 
 find_python_module(pexpect REQUIRED)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+configure_file(.ycm_extra_conf.py.in .ycm_extra_conf.py)
+
 add_subdirectory(src)
 add_subdirectory(po)
 add_subdirectory(test)

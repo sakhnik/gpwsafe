@@ -53,7 +53,7 @@ public:
 	void Dump() const;
 	void PrettyPrint() const;
 
-	enum eFieldType
+	enum FieldType
 	{
 		FT_UUID = 0x01,
 		FT_GROUP = 0x02,
@@ -66,7 +66,7 @@ public:
 		FT_END = 0xFF
 	};
 
-	StringX const &GetValue(eFieldType field_type) const;
+	StringX const &GetValue(FieldType field_type) const;
 
 	StringX const &GetGroup() const { return GetValue(FT_GROUP); }
 	StringX const &GetTitle() const { return GetValue(FT_TITLE); }
@@ -75,7 +75,7 @@ public:
 	StringX const &GetPass() const  { return GetValue(FT_PASS);  }
 	StringX const &GetUrl() const   { return GetValue(FT_URL);   }
 
-	void SetValue(eFieldType field_type, StringX const &value);
+	void SetValue(FieldType field_type, StringX const &value);
 
 	void SetGroup(StringX const &value) { SetValue(FT_GROUP, value); }
 	void SetTitle(StringX const &value) { SetValue(FT_TITLE, value); }
@@ -91,7 +91,7 @@ public:
 	struct sChange
 	{
 		uint8_t type;
-		enum eChange
+		enum Change
 		{
 			C_ADDED = 0,
 			C_DELETED,
