@@ -60,7 +60,7 @@ MainWindow::MainWindow(string &&file_name)
 	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_help_about));
 	menu_help->append(*menu_item);
 
-	vbox->pack_start(_query_entry, false, false, 20);
+	vbox->pack_start(_query_entry, false, false, 0);
 	_query_entry.signal_focus_in_event()
 		.connect(sigc::mem_fun(*this, &MainWindow::on_query_focus_in));
 
@@ -101,18 +101,19 @@ bool MainWindow::on_query_focus_in(GdkEventFocus *event)
 
 	Glib::RefPtr<Gtk::Dialog> dialog{ new Gtk::Dialog("Enter password", *this, true) };
 	dialog->set_transient_for(*this);
-	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK);
+	dialog->add_button(_("_Ok"), Gtk::RESPONSE_OK)->grab_default();
 	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-	//dialog->set_default_response(Gtk::RESPONSE_OK);
-	dialog->set_response_sensitive(Gtk::RESPONSE_OK);
 
 	auto password_entry = new Gtk::Entry();
 	password_entry->set_visibility(false);
+	password_entry->set_activates_default();
 	dialog->get_content_area()->pack_end(*password_entry, true, false, 20);
 
-	dialog->show_all();
+	dialog->show_all_children();
+	auto response = dialog->run();
+	dialog->hide();
 
-	if (Gtk::RESPONSE_OK != dialog->run())
+	if (Gtk::RESPONSE_OK != response)
 		return false;
 
 	cout << password_entry->get_text() << endl;
