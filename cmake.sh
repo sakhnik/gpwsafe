@@ -8,4 +8,5 @@ cd `dirname ${BASH_SOURCE[0]}`
 mkdir /tmp/gpwsafe-build
 sudo mount -o bind /tmp/gpwsafe-build BUILD
 cd BUILD
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+cmake ..
+ln -sf .ycm_extra_conf.py ..
