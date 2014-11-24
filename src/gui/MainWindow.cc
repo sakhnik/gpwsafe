@@ -31,6 +31,7 @@ using namespace std;
 
 
 MainWindow::MainWindow(const string &file_name)
+	: _record_store(Gtk::ListStore::create(_columns))
 {
 	this->set_default_size(640, 480);
 	this->add(_vbox);
@@ -41,6 +42,9 @@ MainWindow::MainWindow(const string &file_name)
 	_query_entry.signal_changed().connect([&]() { this->on_query_changed(); });
 
 	_vbox.pack_end(_record_list, Gtk::PACK_EXPAND_WIDGET, 0);
+	_record_list.set_model(_record_store);
+	_record_list.append_column(_("Record"), _columns._column_title);
+	_record_list.set_headers_visible(false);
 	this->show_all();
 
 	_OpenDatabase(file_name);
@@ -105,6 +109,7 @@ void MainWindow::_OpenDatabase(const string &file_name)
 		database->Read(file_name, password);
 		_file_name = file_name;
 		_database = std::move(database);
+		on_query_changed();
 	}
 	catch (const std::exception &e)
 	{
@@ -137,7 +142,17 @@ void MainWindow::on_help_about()
 
 void MainWindow::on_query_changed()
 {
-	cout << "Changed" << endl;
+	auto q = _query_entry.get_text();
+	auto match = _database->Find(q.c_str());
+
+	_record_store->clear();
+
+	for (size_t i = 0; i < match.size(); ++i)
+	{
+		const auto &title = match[i]->first;
+		auto it = _record_store->append();
+		(*it)[_columns._column_title] = title.c_str();
+	}
 }
 
 } //namespace gPWS;

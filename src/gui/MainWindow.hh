@@ -39,7 +39,20 @@ private:
 	Database::PtrT _database;
 	Gtk::VBox _vbox;
 	Gtk::SearchEntry _query_entry;
-	Gtk::ListBox _record_list;
+
+	struct _Columns
+		: Gtk::TreeModelColumnRecord
+	{
+		_Columns()
+		{
+			add(_column_title);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> _column_title;
+	} _columns;
+
+	Glib::RefPtr<Gtk::ListStore> _record_store;
+	Gtk::TreeView _record_list;
 
 	void _OpenDatabase(const std::string &file_name);
 	void _InitMenuBar();
