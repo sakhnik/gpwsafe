@@ -82,16 +82,16 @@ void MainWindow::_OpenDatabase(const string &file_name)
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 	dialog.set_response_sensitive(Gtk::RESPONSE_OK);
 
-	auto label = Gtk::manage(new Gtk::Label(_("Enter password for")));
-	dialog.get_content_area()->pack_start(*label, true, false, 0);
+	Gtk::Label label1{ _("Enter password for") };
+	dialog.get_content_area()->pack_start(label1, true, false, 0);
 
-	label = Gtk::manage(new Gtk::Label(file_name));
-	dialog.get_content_area()->pack_start(*label, true, false, 0);
+	Gtk::Label label2{ file_name };
+	dialog.get_content_area()->pack_start(label2, true, false, 0);
 
-	auto password_entry = Gtk::manage(new Gtk::Entry());
-	password_entry->set_visibility(false);
-	password_entry->set_activates_default();
-	dialog.get_content_area()->pack_start(*password_entry, true, false, 20);
+	Gtk::Entry password_entry;
+	password_entry.set_visibility(false);
+	password_entry.set_activates_default();
+	dialog.get_content_area()->pack_start(password_entry, true, false, 20);
 
 	dialog.show_all_children();
 	auto response = dialog.run();
@@ -101,7 +101,7 @@ void MainWindow::_OpenDatabase(const string &file_name)
 	try
 	{
 		Database::PtrT database{ new Database };
-		StringX password{ password_entry->get_text().c_str() };
+		StringX password{ password_entry.get_text().c_str() };
 		database->Read(file_name, password);
 		_file_name = file_name;
 		_database = std::move(database);
