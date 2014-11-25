@@ -31,7 +31,7 @@ using namespace std;
 
 
 MainWindow::MainWindow(const string &file_name)
-	: _record_store(Gtk::ListStore::create(_columns))
+	: _record_store(Gtk::ListStore::create(_record_columns))
 {
 	this->set_default_size(640, 480);
 	this->add(_vbox);
@@ -45,7 +45,7 @@ MainWindow::MainWindow(const string &file_name)
 
 	_scroll.add(_record_list);
 	_record_list.set_model(_record_store);
-	_record_list.append_column(_("Record"), _columns._column_title);
+	_record_list.append_column(_("Record"), _record_columns._column_title);
 	_record_list.set_headers_visible(false);
 
 	this->show_all();
@@ -154,7 +154,7 @@ void MainWindow::on_query_changed()
 	{
 		const auto &title = match[i]->first;
 		auto it = _record_store->append();
-		(*it)[_columns._column_title] = title.c_str();
+		(*it)[_record_columns._column_title] = title.c_str();
 	}
 }
 

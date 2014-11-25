@@ -40,16 +40,16 @@ private:
 	Gtk::VBox _vbox;
 	Gtk::SearchEntry _query_entry;
 
-	struct _Columns
-		: Gtk::TreeModelColumnRecord
+	struct _RecordColumns : Gtk::TreeModelColumnRecord
 	{
-		_Columns()
+		Gtk::TreeModelColumn<Glib::ustring> _column_title;
+
+		_RecordColumns()
 		{
 			add(_column_title);
 		}
 
-		Gtk::TreeModelColumn<Glib::ustring> _column_title;
-	} _columns;
+	} _record_columns;
 
 	Glib::RefPtr<Gtk::ListStore> _record_store;
 	Gtk::TreeView _record_list;
