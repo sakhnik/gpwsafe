@@ -53,6 +53,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> _record_store;
 	Gtk::TreeView _record_list;
+	Gtk::ScrolledWindow _scroll;
 
 	void _OpenDatabase(const std::string &file_name);
 	void _InitMenuBar();

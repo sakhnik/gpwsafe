@@ -41,10 +41,13 @@ MainWindow::MainWindow(const string &file_name)
 	_vbox.pack_start(_query_entry, Gtk::PACK_SHRINK, 0);
 	_query_entry.signal_changed().connect([&]() { this->on_query_changed(); });
 
-	_vbox.pack_end(_record_list, Gtk::PACK_EXPAND_WIDGET, 0);
+	_vbox.pack_end(_scroll, Gtk::PACK_EXPAND_WIDGET, 0);
+
+	_scroll.add(_record_list);
 	_record_list.set_model(_record_store);
 	_record_list.append_column(_("Record"), _columns._column_title);
 	_record_list.set_headers_visible(false);
+
 	this->show_all();
 
 	_OpenDatabase(file_name);
