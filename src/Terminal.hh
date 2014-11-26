@@ -78,6 +78,9 @@ public:
 		}
 
 	static StringX RandomPassword();
+
+	static bool IsOutput();
+	static int GetColumns();
 };
 
 } //namespace gPWS;

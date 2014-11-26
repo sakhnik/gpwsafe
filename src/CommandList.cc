@@ -26,6 +26,9 @@
 #include "Entry.hh"
 #include "i18n.h"
 
+#include <algorithm>
+#include <iomanip>
+
 namespace gPWS {
 
 using namespace std;
@@ -61,8 +64,37 @@ void CommandList::Execute(Params const &params)
 	{
 		if (match.size() > 1)
 		{
-			for (auto const &title_entry : match)
-				cout << title_entry->first << endl;
+			if (Terminal::IsOutput())
+			{
+				auto max_entry =
+					max_element(begin(match), end(match),
+					            [](const auto &a, const auto &b)
+					            {
+					                return a->first.size() < b->first.size();
+					            });
+				auto max_width = (*max_entry)->first.size() + 4;
+				auto columns = Terminal::GetColumns() / max_width;
+
+				size_t col{0};
+				for (const auto &title_entry : match)
+				{
+					cout << title_entry->first;
+					cout << setw(max_width - title_entry->first.size())
+						<< ' ';
+					if (++col == columns)
+					{
+						cout << endl;
+						col = 0;
+					}
+				}
+				if (col)
+					cout << endl;
+			}
+			else
+			{
+				for (auto const &title_entry : match)
+					cout << title_entry->first << endl;
+			}
 		}
 		else
 		{

@@ -30,6 +30,7 @@
 #include <boost/scope_exit.hpp>
 #include <boost/format.hpp>
 #include <readline/readline.h>
+#include <sys/ioctl.h>
 
 namespace gPWS {
 
@@ -373,6 +374,18 @@ StringX Terminal::RandomPassword()
 			// default: show another password
 		}
 	}
+}
+
+bool Terminal::IsOutput()
+{
+	return isatty(fileno(stdout));
+}
+
+int Terminal::GetColumns()
+{
+	struct winsize w;
+	ioctl(0, TIOCGWINSZ, &w);
+	return w.ws_col;
 }
 
 } //namespace gPWS;

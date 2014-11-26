@@ -26,7 +26,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 # FIXME:
 #find_package(CXXFeatures)
-add_definitions(-std=c++11 -DPACKAGE=\"${PACKAGE}\")
+add_definitions(-std=c++14 -DPACKAGE=\"${PACKAGE}\")
 add_definitions(-DVERSION="${PACKAGE_VERSION}")
 
 find_package(PkgConfig REQUIRED)
