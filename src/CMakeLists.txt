@@ -59,6 +59,7 @@ target_link_libraries(
 	libgpwsafe
 	${LIBGCRYPT_LIBRARIES}
 	readline
+	ncurses
 	${Boost_PROGRAM_OPTIONS_LIBRARIES}
 	${Boost_FILESYSTEM_LIBRARIES}
 	${Boost_SYSTEM_LIBRARIES}

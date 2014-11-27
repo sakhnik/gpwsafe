@@ -104,6 +104,17 @@ void CommandList::Execute(Params const &params)
 		return;
 	}
 
+	// If no query was given on the command line, pick up record interactively.
+	if (_regex.empty())
+	{
+		auto query = Terminal::PickUp(match.size(),
+		                              [&](size_t i) -> const StringX &
+		                              {
+		                                  return match[i]->first;
+		                              });
+		match = database->Find(query.c_str());
+	}
+
 	if (!CheckSingleEntry(match))
 		throw ExitEx(1);
 

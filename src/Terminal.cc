@@ -31,6 +31,7 @@
 #include <boost/format.hpp>
 #include <readline/readline.h>
 #include <sys/ioctl.h>
+#include <ncurses.h>
 
 namespace gPWS {
 
@@ -386,6 +387,82 @@ int Terminal::GetColumns()
 	struct winsize w;
 	ioctl(0, TIOCGWINSZ, &w);
 	return w.ws_col;
+}
+
+const StringX &Terminal::PickUp(size_t count,
+                                const function<const StringX &(size_t)> &feed)
+{
+	initscr();
+	noecho();
+	//curs_set(FALSE);
+	cbreak();
+	keypad(stdscr, TRUE);
+
+	string query;
+	int max_x{0}, max_y{0};
+	vector<size_t> filtered;
+
+	while (true)
+	{
+		getmaxyx(stdscr, max_y, max_x);
+		clear();
+		filtered.clear();
+
+		size_t max_width{0};
+		for (size_t i = 0; i != count; ++i)
+		{
+			const auto &entry = feed(i);
+			if (entry.find(query.c_str()) != entry.npos)
+			{
+				max_width = (std::max)(max_width, entry.size());
+				filtered.push_back(i);
+			}
+		}
+
+		int columns = max_x / (max_width + 4);
+		int square = sqrt(filtered.size());
+		if (square && square < columns)
+			columns = square;
+		int rows = filtered.size() / columns;
+
+		int y{1};
+		int x{0};
+		for (auto it = begin(filtered); it != end(filtered); ++it)
+		{
+			mvprintw(y, x, feed(*it).c_str());
+			++y;
+			if (y > max_y || y > rows)
+			{
+				y = 1;
+				x += max_width + 4;
+				if (x > max_x)
+					break;
+			}
+		}
+
+		mvprintw(0, 1, query.c_str());
+
+		refresh();
+		auto ch = getch();
+		if (ch == '\n' || ch == EOF)
+			break;
+		else if (ch == 27)
+			break;
+		else if (ch == 127 || ch == 8)
+		{
+			if (!query.empty())
+				query.erase(query.size() - 1);
+			continue;
+		}
+		else if (isprint(ch))
+			query.push_back(ch);
+
+	}
+
+	endwin();
+
+	// FIXME: What if filtered is empty?
+	return feed(filtered[0]);
 }
 
 } //namespace gPWS;
