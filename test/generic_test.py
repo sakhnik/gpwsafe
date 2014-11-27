@@ -89,7 +89,7 @@ def CheckList():
         line = line.strip()
         if not line:
             continue
-        output.append(line)
+        output.extend(line.split())
     actual = sorted(output)
     expected = sorted([(i['group'] + '.' + i['name']).encode('utf-8') for i in records])
     if actual != expected:
