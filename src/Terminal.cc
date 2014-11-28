@@ -22,6 +22,7 @@
 #include "Terminal.hh"
 #include "Random.hh"
 #include "i18n.h"
+#include "Matcher.hh"
 
 #include <iostream>
 #include <sstream>
@@ -412,11 +413,12 @@ size_t Terminal::PickUp(size_t count,
 		clear();
 		filtered.clear();
 
+		FuzzyMatcher match{ query.c_str() };
 		size_t max_width{0};
 		for (size_t i = 0; i != count; ++i)
 		{
 			const auto &entry = feed(i);
-			if (entry.find(query.c_str()) != entry.npos)
+			if (match(entry))
 			{
 				max_width = (std::max)(max_width, entry.size());
 				filtered.push_back(i);
@@ -429,8 +431,7 @@ size_t Terminal::PickUp(size_t count,
 			columns = square;
 		int rows = filtered.size() / columns;
 
-		int y{1};
-		int x{0};
+		int y{1}, x{0};
 		for (auto it = begin(filtered); it != end(filtered); ++it)
 		{
 			mvprintw(y, x, feed(*it).c_str());

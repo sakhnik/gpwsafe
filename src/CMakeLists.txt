@@ -50,6 +50,7 @@ add_executable(
 	CommandList.cc CommandList.hh
 	Exceptions.hh
 	IEmitter.hh
+	Matcher.cc Matcher.hh
 	StdoutEmitter.cc StdoutEmitter.hh
 	Terminal.cc Terminal.hh
 	)
