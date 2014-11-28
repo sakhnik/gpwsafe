@@ -389,10 +389,14 @@ int Terminal::GetColumns()
 	return w.ws_col;
 }
 
-const StringX &Terminal::PickUp(size_t count,
-                                const function<const StringX &(size_t)> &feed)
+size_t Terminal::PickUp(size_t count,
+                        const function<const StringX &(size_t)> &feed)
 {
 	initscr();
+	BOOST_SCOPE_EXIT((count)) {
+		endwin();
+	} BOOST_SCOPE_EXIT_END
+
 	noecho();
 	//curs_set(FALSE);
 	cbreak();
@@ -444,10 +448,10 @@ const StringX &Terminal::PickUp(size_t count,
 
 		refresh();
 		auto ch = getch();
-		if (ch == '\n' || ch == EOF)
-			break;
+		if ((ch == '\n' || ch == EOF) && !filtered.empty())
+			return filtered[0];
 		else if (ch == 27)
-			break;
+			return -1;
 		else if (ch == 127 || ch == 8)
 		{
 			if (!query.empty())
@@ -458,11 +462,6 @@ const StringX &Terminal::PickUp(size_t count,
 			query.push_back(ch);
 
 	}
-
-	endwin();
-
-	// FIXME: What if filtered is empty?
-	return feed(filtered[0]);
 }
 
 } //namespace gPWS;

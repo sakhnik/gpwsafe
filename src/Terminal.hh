@@ -82,8 +82,8 @@ public:
 	static bool IsOutput();
 	static int GetColumns();
 
-	static const StringX &PickUp(size_t count,
-	                             const std::function<const StringX &(size_t)> &feed);
+	static size_t PickUp(size_t count,
+	                     const std::function<const StringX &(size_t)> &feed);
 };
 
 } //namespace gPWS;
