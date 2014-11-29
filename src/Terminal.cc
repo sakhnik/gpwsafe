@@ -440,7 +440,7 @@ size_t Terminal::PickUp(size_t count,
 			{
 				y = 1;
 				x += max_width + 4;
-				if (x > max_x)
+				if (x + int(max_width) > max_x)
 					break;
 			}
 		}
