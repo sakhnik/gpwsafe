@@ -27,20 +27,41 @@ namespace gPWS {
 
 using namespace std;
 
-SubstringMatcher::SubstringMatcher(const char *query)
-	: _query(query)
+SubstringMatcher::SubstringMatcher()
+	: _query("")
 {
 }
 
-bool SubstringMatcher::operator()(const StringX &entry)
+void SubstringMatcher::SetQuery(const char *query)
+{
+	_query = query;
+}
+
+bool SubstringMatcher::Check(const StringX &entry)
 {
 	return entry.find(_query) != entry.npos;
 }
 
-FuzzyMatcher::FuzzyMatcher(const char *query)
+FuzzyMatcher::FuzzyMatcher()
+{
+	_CompileQuery("");
+}
+
+FuzzyMatcher::~FuzzyMatcher()
+{
+	regfree(&_re);
+}
+
+void FuzzyMatcher::SetQuery(const char *query)
 {
 	assert(query);
 
+	regfree(&_re);
+	_CompileQuery(query);
+}
+
+void FuzzyMatcher::_CompileQuery(const char *query)
+{
 	bool ignore_case{true};
 	string str;
 	while (auto ch = *query++)
@@ -58,12 +79,7 @@ FuzzyMatcher::FuzzyMatcher(const char *query)
 	}
 }
 
-FuzzyMatcher::~FuzzyMatcher()
-{
-	regfree(&_re);
-}
-
-bool FuzzyMatcher::operator()(const StringX &entry)
+bool FuzzyMatcher::Check(const StringX &entry)
 {
 	return regexec(&_re, entry.c_str(), 0, nullptr, 0) == 0;
 }

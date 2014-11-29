@@ -404,6 +404,7 @@ size_t Terminal::PickUp(size_t count,
 	keypad(stdscr, TRUE);
 
 	string query;
+	unique_ptr<Matcher> matcher{ new FuzzyMatcher };
 	int max_x{0}, max_y{0};
 	vector<size_t> filtered;
 
@@ -413,12 +414,12 @@ size_t Terminal::PickUp(size_t count,
 		clear();
 		filtered.clear();
 
-		FuzzyMatcher match{ query.c_str() };
+		matcher->SetQuery(query.c_str());
 		size_t max_width{0};
 		for (size_t i = 0; i != count; ++i)
 		{
 			const auto &entry = feed(i);
-			if (match(entry))
+			if (matcher->Check(entry))
 			{
 				max_width = (std::max)(max_width, entry.size());
 				filtered.push_back(i);
@@ -445,23 +446,30 @@ size_t Terminal::PickUp(size_t count,
 			}
 		}
 
-		mvprintw(0, 1, query.c_str());
+		mvprintw(0, 0, "%s> %s", matcher->GetAbbreviation(), query.c_str());
 
 		refresh();
 		auto ch = getch();
 		if ((ch == '\n' || ch == EOF) && !filtered.empty())
 			return filtered[0];
-		else if (ch == 27)
+		else if (ch == 27) // Esc
 			return -1;
-		else if (ch == 127 || ch == 8)
+		else if (ch == 127 || ch == 8)  // Back space
 		{
 			if (!query.empty())
 				query.erase(query.size() - 1);
 			continue;
 		}
+		else if (ch == 18) // ^R
+		{
+			if (typeid(*matcher.get()) == typeid(FuzzyMatcher))
+				matcher.reset(new SubstringMatcher);
+			else
+				matcher.reset(new FuzzyMatcher);
+			continue;
+		}
 		else if (isprint(ch))
 			query.push_back(ch);
-
 	}
 }
 

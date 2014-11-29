@@ -30,7 +30,9 @@ namespace gPWS {
 struct Matcher
 {
 	virtual ~Matcher() = default;
-	virtual bool operator()(const StringX &entry) = 0;
+	virtual const char *GetAbbreviation() const = 0;
+	virtual void SetQuery(const char *query) = 0;
+	virtual bool Check(const StringX &entry) = 0;
 
 	Matcher() = default;
 	Matcher(const Matcher &) = delete;
@@ -42,8 +44,10 @@ class SubstringMatcher
 	: public Matcher
 {
 public:
-	SubstringMatcher(const char *query);
-	virtual bool operator()(const StringX &entry);
+	SubstringMatcher();
+	virtual const char *GetAbbreviation() const { return "substring"; }
+	virtual void SetQuery(const char *query);
+	virtual bool Check(const StringX &entry);
 
 private:
 	const char *_query;
@@ -53,13 +57,16 @@ class FuzzyMatcher
 	: public Matcher
 {
 public:
-	FuzzyMatcher(const char *query);
+	FuzzyMatcher();
 	~FuzzyMatcher();
-
-	virtual bool operator()(const StringX &entry);
+	virtual const char *GetAbbreviation() const { return "fuzzy"; }
+	virtual void SetQuery(const char *query);
+	virtual bool Check(const StringX &entry);
 
 private:
 	regex_t _re;
+
+	void _CompileQuery(const char *query);
 };
 
 } //namespace gPWS;
