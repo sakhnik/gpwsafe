@@ -28,7 +28,6 @@ namespace gPWS {
 using namespace std;
 
 SubstringMatcher::SubstringMatcher()
-	: _query("")
 {
 }
 
@@ -37,9 +36,12 @@ void SubstringMatcher::SetQuery(const char *query)
 	_query = query;
 }
 
-bool SubstringMatcher::Check(const StringX &entry)
+Matcher::MatchT SubstringMatcher::Search(const StringX &entry)
 {
-	return entry.find(_query) != entry.npos;
+	auto pos = entry.find(_query.c_str());
+	if (pos == entry.npos)
+		return MatchT{ -1u, 0 };
+	return MatchT{ pos, _query.size() };
 }
 
 FuzzyMatcher::FuzzyMatcher()
@@ -66,22 +68,26 @@ void FuzzyMatcher::_CompileQuery(const char *query)
 	string str;
 	while (auto ch = *query++)
 	{
-		str += string{"[^"} + ch + "]*" + ch;
+		if (!str.empty())
+			str += string{"[^"} + ch + "]*";
+		str += ch;
 		if (isupper(ch))
 			ignore_case = false;
 	}
 
-	auto status = regcomp(&_re, str.c_str(),
-	                      REG_NOSUB | (ignore_case ? REG_ICASE : 0));
+	auto status = regcomp(&_re, str.c_str(), ignore_case ? REG_ICASE : 0);
 	if (status != 0)
 	{
 		assert(false);
 	}
 }
 
-bool FuzzyMatcher::Check(const StringX &entry)
+Matcher::MatchT FuzzyMatcher::Search(const StringX &entry)
 {
-	return regexec(&_re, entry.c_str(), 0, nullptr, 0) == 0;
+	regmatch_t match = {};
+	if (regexec(&_re, entry.c_str(), 1, &match, 0) != 0)
+		return MatchT{ -1u, 0 };
+	return MatchT{ match.rm_so, match.rm_eo - match.rm_so };
 }
 
 } //namespace gPWS;

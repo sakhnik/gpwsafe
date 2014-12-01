@@ -32,7 +32,9 @@ struct Matcher
 	virtual ~Matcher() = default;
 	virtual const char *GetAbbreviation() const = 0;
 	virtual void SetQuery(const char *query) = 0;
-	virtual bool Check(const StringX &entry) = 0;
+
+	typedef std::pair<size_t, size_t> MatchT;
+	virtual MatchT Search(const StringX &entry) = 0;
 
 	Matcher() = default;
 	Matcher(const Matcher &) = delete;
@@ -47,10 +49,10 @@ public:
 	SubstringMatcher();
 	virtual const char *GetAbbreviation() const { return "substring"; }
 	virtual void SetQuery(const char *query);
-	virtual bool Check(const StringX &entry);
+	virtual MatchT Search(const StringX &entry);
 
 private:
-	const char *_query;
+	std::string _query;
 };
 
 class FuzzyMatcher
@@ -61,7 +63,7 @@ public:
 	~FuzzyMatcher();
 	virtual const char *GetAbbreviation() const { return "fuzzy"; }
 	virtual void SetQuery(const char *query);
-	virtual bool Check(const StringX &entry);
+	virtual MatchT Search(const StringX &entry);
 
 private:
 	regex_t _re;

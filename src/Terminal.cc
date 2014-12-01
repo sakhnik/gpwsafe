@@ -398,6 +398,13 @@ size_t Terminal::PickUp(size_t count,
 		endwin();
 	} BOOST_SCOPE_EXIT_END
 
+	if (has_colors())
+	{
+		start_color();
+		init_pair(1, COLOR_WHITE, COLOR_BLACK);
+		init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	}
+
 	noecho();
 	//curs_set(FALSE);
 	cbreak();
@@ -406,7 +413,8 @@ size_t Terminal::PickUp(size_t count,
 	string query;
 	unique_ptr<Matcher> matcher{ new FuzzyMatcher };
 	int max_x{0}, max_y{0};
-	vector<size_t> filtered;
+	// Index in the feed, match position, count of matched characters
+	vector<tuple<size_t, size_t, size_t>> filtered;
 
 	while (true)
 	{
@@ -414,28 +422,49 @@ size_t Terminal::PickUp(size_t count,
 		clear();
 		filtered.clear();
 
+		// First collect entries matching the query, and calculate maximum
+		// width of an entry.
 		matcher->SetQuery(query.c_str());
 		size_t max_width{0};
 		for (size_t i = 0; i != count; ++i)
 		{
 			const auto &entry = feed(i);
-			if (matcher->Check(entry))
+			auto match = matcher->Search(entry);
+			if (match.first != -1u)
 			{
 				max_width = (std::max)(max_width, entry.size());
-				filtered.push_back(i);
+				filtered.emplace_back(i, match.first, match.second);
 			}
 		}
 
+		// Estimate parameters of the table with the selected entries.
 		int columns = max_x / (max_width + 4);
 		int square = sqrt(filtered.size());
 		if (square && square < columns)
 			columns = square;
 		int rows = filtered.size() / columns;
 
+		// Print entries
 		int y{1}, x{0};
 		for (auto it = begin(filtered); it != end(filtered); ++it)
 		{
-			mvprintw(y, x, feed(*it).c_str());
+			auto str = feed(get<0>(*it)).c_str();
+			auto pos = get<1>(*it);
+			auto count = get<2>(*it);
+			if (has_colors())
+			{
+				// Highlight the matching part in an entry
+				attron(COLOR_PAIR(1));
+				mvprintw(y, x, "%.*s", pos, str);
+				mvprintw(y, x + pos + count, "%s", str + pos + count);
+				attroff(COLOR_PAIR(1));
+				attron(COLOR_PAIR(2));
+				mvprintw(y, x + pos, "%.*s", count, str + pos);
+				attroff(COLOR_PAIR(2));
+			}
+			else
+				mvprintw(y, x, str);
+			// Proceed to the next table cell
 			++y;
 			if (y > max_y || y > rows)
 			{
@@ -446,21 +475,31 @@ size_t Terminal::PickUp(size_t count,
 			}
 		}
 
+		// Print the query itself
 		mvprintw(0, 0, "%s> %s", matcher->GetAbbreviation(), query.c_str());
 
 		refresh();
+
+		// Wait for user input and react on it
 		auto ch = getch();
 		if ((ch == '\n' || ch == EOF) && !filtered.empty())
-			return filtered[0];
+			return get<0>(filtered[0]);
 		else if (ch == 27) // Esc
+		{
+			if (!query.empty())
+			{
+				query.clear();
+				continue;
+			}
 			return -1;
+		}
 		else if (ch == 127 || ch == 8)  // Back space
 		{
 			if (!query.empty())
 				query.erase(query.size() - 1);
 			continue;
 		}
-		else if (ch == 18) // ^R
+		else if (ch == 18) // ^R -- switch matcher mode
 		{
 			if (typeid(*matcher.get()) == typeid(FuzzyMatcher))
 				matcher.reset(new SubstringMatcher);

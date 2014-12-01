@@ -1,7 +1,6 @@
-* Switch between fuzzy matchers
-* Colorize matched part
 * Select among matches with arrows
 * Help page
+* Man page
 
 * Resolve ambiguity when a record is the prefix of another record
 * Edit user name as well
