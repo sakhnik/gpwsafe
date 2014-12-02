@@ -29,7 +29,6 @@
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
 #include <boost/format.hpp>
-#include <readline/readline.h>
 #include <sys/ioctl.h>
 
 namespace gPWS {
@@ -65,34 +64,25 @@ StringX Terminal::GetPassword(char const *prompt)
 {
 	RawTerminal raw_terminal(true);
 
-	rl_completion_entry_function = NULL;
-	char *input = readline(prompt);
-	if (!input)
-		throw runtime_error(_("Can't get password"));
-	BOOST_SCOPE_EXIT((&input)) {
-		memset(input, 0, strlen(input));
-		delete input;
-	} BOOST_SCOPE_EXIT_END
+	cerr << prompt << flush;
+	StringX password;
+	getline(cin, password);
 
-	return StringX(input);
+	if (password.empty())
+		throw runtime_error(_("Can't get password"));
+
+	return password;
 }
 
 StringX Terminal::GetText(char const *prompt,
                           StringX const &def)
 {
-	rl_completion_entry_function = NULL;
-	char *input = readline(prompt);
-	if (!input)
+	cerr << prompt << flush;
+	StringX text;
+	if (!getline(cin, text))
 		throw runtime_error(_("Can't get text"));
-	BOOST_SCOPE_EXIT((&input)) {
-		memset(input, 0, strlen(input));
-		delete input;
-	} BOOST_SCOPE_EXIT_END
 
-	StringX res(input);
-	if (res.empty())
-		return def;
-	return res;
+	return text.empty() ? def : text;
 }
 
 StringX Terminal::EnterPassword(char const *prompt1, char const *prompt2)
