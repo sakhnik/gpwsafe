@@ -114,7 +114,7 @@ command line, a TUI selector is launched. Type characters in the query line to
 filter database entries. Press return to use the selection. Other useful keys:
 
 ^R::
-        Switch among fuzzy and substring matcher
+        Switch between fuzzy and substring matcher
 
 ^N, ^P::
         Move to next or previous filtered entries respectively
