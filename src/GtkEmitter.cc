@@ -42,7 +42,7 @@ GtkEmitter::~GtkEmitter()
 
 void GtkEmitter::PrintIntention(string const &subject) const
 {
-	cout << bfmt(_("Going to copy %s to X selection")) % subject << endl;
+	cerr << bfmt(_("Going to copy %s to X selection")) % subject << endl;
 }
 
 void GtkEmitter::SetSelection(const string &selection)
