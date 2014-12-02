@@ -32,7 +32,7 @@ typedef boost::format bfmt;
 
 void StdoutEmitter::PrintIntention(string const &subject) const
 {
-	cout << bfmt(_("Going to print %s to stdout")) % subject << endl;
+	cerr << bfmt(_("Going to print %s to stdout")) % subject << endl;
 }
 
 void StdoutEmitter::Emit(StringX const &name, StringX const &val)
