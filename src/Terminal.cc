@@ -390,6 +390,97 @@ int Terminal::GetColumns()
 	return w.ws_col;
 }
 
+template <typename F>
+class Filter
+{
+public:
+	Filter(size_t count, const F &feed)
+		: _count(count)
+		, _feed(feed)
+	{
+	}
+
+	const string &GetQuery() const { return _query; }
+
+	size_t GetMaxWidth()
+	{
+		if (_refilter)
+			_Refilter();
+		return _max_width;
+	}
+
+	// Index in the feed, match position, count of matched characters
+	typedef tuple<size_t, size_t, size_t> IdxPosCountT;
+	typedef vector<IdxPosCountT> FilteredT;
+
+	const FilteredT &GetFiltered()
+	{
+		if (_refilter)
+			_Refilter();
+		return _filtered;
+	}
+
+	const char *GetAbbreviation() const { return _matcher->GetAbbreviation(); }
+
+	void ClearQuery()
+	{
+		if (!_query.empty())
+			_refilter = true;
+		_query.clear();
+	}
+
+	void QueryBackSpace()
+	{
+		if (_query.empty())
+			return;
+		_query.erase(_query.size() - 1);
+		_refilter = true;
+	}
+
+	void SwitchMatcher()
+	{
+		if (typeid(*_matcher.get()) == typeid(FuzzyMatcher))
+			_matcher.reset(new SubstringMatcher);
+		else
+			_matcher.reset(new FuzzyMatcher);
+		_refilter = true;
+	}
+
+	void QueryAdd(char ch)
+	{
+		_refilter = true;
+		_query.push_back(ch);
+	}
+
+private:
+	size_t _count;
+	const F &_feed;
+
+	bool _refilter = true;
+	string _query;
+	size_t _max_width = 0;
+	FilteredT _filtered;
+	unique_ptr<Matcher> _matcher{ new FuzzyMatcher };
+
+	void _Refilter()
+	{
+		_refilter = false;
+		_max_width = 0;
+		_filtered.clear();
+		_matcher->SetQuery(_query.c_str());
+		for (size_t i = 0; i != _count; ++i)
+		{
+			const auto &entry = _feed(i);
+			auto match = _matcher->Search(entry);
+			if (match.first != -1u)
+			{
+				_max_width = (std::max)(_max_width, entry.size());
+				_filtered.emplace_back(i, match.first, match.second);
+			}
+		}
+	}
+};
+
 size_t Terminal::PickUp(size_t count,
                         const function<const StringX &(size_t)> &feed)
 {
@@ -410,32 +501,19 @@ size_t Terminal::PickUp(size_t count,
 	cbreak();
 	keypad(stdscr, TRUE);
 
-	string query;
-	unique_ptr<Matcher> matcher{ new FuzzyMatcher };
+	Filter<decltype(feed)> filter(count, feed);
 	int max_x{0}, max_y{0};
-	// Index in the feed, match position, count of matched characters
-	vector<tuple<size_t, size_t, size_t>> filtered;
+	size_t cursor{0};
 
 	while (true)
 	{
 		getmaxyx(stdscr, max_y, max_x);
 		clear();
-		filtered.clear();
 
 		// First collect entries matching the query, and calculate maximum
 		// width of an entry.
-		matcher->SetQuery(query.c_str());
-		size_t max_width{0};
-		for (size_t i = 0; i != count; ++i)
-		{
-			const auto &entry = feed(i);
-			auto match = matcher->Search(entry);
-			if (match.first != -1u)
-			{
-				max_width = (std::max)(max_width, entry.size());
-				filtered.emplace_back(i, match.first, match.second);
-			}
-		}
+		size_t max_width = filter.GetMaxWidth();
+		auto filtered = filter.GetFiltered();
 
 		// Estimate parameters of the table with the selected entries.
 		int columns = max_x / (max_width + 4);
@@ -476,39 +554,39 @@ size_t Terminal::PickUp(size_t count,
 		}
 
 		// Print the query itself
-		mvprintw(0, 0, "%s> %s", matcher->GetAbbreviation(), query.c_str());
+		mvprintw(0, 0, "%s> %s",
+		         filter.GetAbbreviation(),
+		         filter.GetQuery().c_str());
 
 		refresh();
 
 		// Wait for user input and react on it
 		auto ch = getch();
 		if ((ch == '\n' || ch == EOF) && !filtered.empty())
-			return get<0>(filtered[0]);
+			return get<0>(filtered[cursor]);
 		else if (ch == 27) // Esc
 		{
-			if (!query.empty())
+			if (!filter.GetQuery().empty())
 			{
-				query.clear();
+				filter.ClearQuery();
 				continue;
 			}
 			return -1;
 		}
 		else if (ch == 127 || ch == 8)  // Back space
 		{
-			if (!query.empty())
-				query.erase(query.size() - 1);
+			filter.QueryBackSpace();
 			continue;
 		}
 		else if (ch == 18) // ^R -- switch matcher mode
 		{
-			if (typeid(*matcher.get()) == typeid(FuzzyMatcher))
-				matcher.reset(new SubstringMatcher);
-			else
-				matcher.reset(new FuzzyMatcher);
+			filter.SwitchMatcher();
 			continue;
 		}
 		else if (isprint(ch))
-			query.push_back(ch);
+		{
+			filter.QueryAdd(ch);
+		}
 	}
 }
 
