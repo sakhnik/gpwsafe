@@ -50,8 +50,9 @@ COMMANDS
 --list[=REGEX]::
         List all [matching] entries in database. If either -u or -p is given,
         then REGEX must match only one entry, and only the requested
-        field(s) are emitted. If neither -u nor -p is given, and the regex
-        matches a single entry, the details of the entry are printed out.
+        field(s) are emitted. If no REGEX and either of -u and -p are given,
+        launch TUI. If neither -u nor -p is given, and the regex matches a
+        single entry, the details of the entry are printed out.
 
 -a, --add[=ENTRY]::
         Add an entry to database.
@@ -103,6 +104,23 @@ endif::enable_xclip[]
 
 -V, --version::
         Show version of program.
+
+
+INTERACTIVE TUI
+---------------
+
+When going to emit either user name or password and no query is specified on
+command line, a TUI selector is launched. Type characters in the query line to
+filter database entries. Press return to use the selection. Other useful keys:
+
+^R::
+        Switch among fuzzy and substring matcher
+
+^N, ^P::
+        Move to next or previous filtered entries respectively
+
+Esc::
+        Clear query, then abandon selection and quit the program
 
 
 ENVIRONMENT

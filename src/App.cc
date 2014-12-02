@@ -101,7 +101,8 @@ void App::Init(int argc, char *argv[])
 					this->_SetCommand(CommandList::Create(regex));
 				}),
 			_("list all entries matching [REGEX]. If either -u or -p are given,"
-			  " only one entry may match. If neither -u or -p are given and one"
+			  " only one entry may match. If no REGEX and either of -u and -p"
+			  " are given, launch TUI. If neither -u or -p are given and one"
 			  " entry matches, print details."))
 		("add,a",
 			named_option("NAME")
