@@ -514,6 +514,8 @@ size_t Terminal::PickUp(size_t count,
 		// width of an entry.
 		size_t max_width = filter.GetMaxWidth();
 		auto filtered = filter.GetFiltered();
+		if (cursor >= filtered.size())
+			cursor = filtered.size() - 1;
 
 		// Estimate parameters of the table with the selected entries.
 		int columns = max_x / (max_width + 4);
@@ -524,11 +526,13 @@ size_t Terminal::PickUp(size_t count,
 
 		// Print entries
 		int y{1}, x{0};
-		for (auto it = begin(filtered); it != end(filtered); ++it)
+		for (size_t i = 0; i != filtered.size(); ++i)
 		{
-			auto str = feed(get<0>(*it)).c_str();
-			auto pos = get<1>(*it);
-			auto count = get<2>(*it);
+			auto str = feed(get<0>(filtered[i])).c_str();
+			auto pos = get<1>(filtered[i]);
+			auto count = get<2>(filtered[i]);
+			if (i == cursor)
+				attron(A_STANDOUT);
 			if (has_colors())
 			{
 				// Highlight the matching part in an entry
@@ -542,6 +546,8 @@ size_t Terminal::PickUp(size_t count,
 			}
 			else
 				mvprintw(y, x, str);
+			if (i == cursor)
+				attroff(A_STANDOUT);
 			// Proceed to the next table cell
 			++y;
 			if (y > max_y || y > rows)
@@ -562,30 +568,41 @@ size_t Terminal::PickUp(size_t count,
 
 		// Wait for user input and react on it
 		auto ch = getch();
-		if ((ch == '\n' || ch == EOF) && !filtered.empty())
-			return get<0>(filtered[cursor]);
-		else if (ch == 27) // Esc
+		switch (ch)
 		{
+		case '\n':
+		case EOF:
+			if (!filtered.empty())
+				return get<0>(filtered[cursor]);
+			continue;
+		case 27:  // Esc
 			if (!filter.GetQuery().empty())
 			{
 				filter.ClearQuery();
 				continue;
 			}
 			return -1;
-		}
-		else if (ch == 127 || ch == 8)  // Back space
-		{
+		case 127:
+		case 8:  // Back space
 			filter.QueryBackSpace();
 			continue;
-		}
-		else if (ch == 18) // ^R -- switch matcher mode
-		{
+		case 18:  // ^R -- switch matcher mode
 			filter.SwitchMatcher();
 			continue;
-		}
-		else if (isprint(ch))
-		{
-			filter.QueryAdd(ch);
+		case 14:  // ^N -- next choice
+			if (cursor + 1 < filtered.size())
+				++cursor;
+			continue;
+		case 16:  // ^P -- previous choice
+			if (cursor > 0)
+				--cursor;
+			continue;
+		default:
+			if (isprint(ch))
+			{
+				filter.QueryAdd(ch);
+				continue;
+			}
 		}
 	}
 }
