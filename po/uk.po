@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-13 20:40+0300\n"
+"POT-Creation-Date: 2014-12-02 23:17+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -15,62 +15,389 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:72
+msgid "name: "
+msgstr "назва: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:74
+msgid "group [<none>]: "
+msgstr "група [<немає>]: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:78
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandCreate.cc:47
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:78
+msgid " already exists"
+msgstr " вже існує"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:88
+msgid "username: "
+msgstr "користувач: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:97
+msgid "password [return for random]: "
+msgstr "пароль [return щоб випадковий]: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:98
+msgid "password again: "
+msgstr "пароль знову: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:101
+msgid "notes: "
+msgstr "нотатки: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandCreate.cc:51
+msgid "Enter passphrase for "
+msgstr "Уведіть пароль для "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandCreate.cc:53
+msgid "Reenter passphrase for "
+msgstr "Уведіть ще раз пароль для "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandCreate.cc:57
+msgid "Passphrases do not match"
+msgstr "Паролі не співпадають"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:45
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:45
 msgid "An entry must be specified"
 msgstr "Має бути вказаний запис"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:54
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:54
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:59
 msgid "No matching entries found"
 msgstr "Не знайдено відповідних записів"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:63
 msgid "Confirm deleting "
 msgstr "Справді знищити "
 
+#: /home/sakhnik/work/gpwsafe/po/../src/File3.cc:72
+msgid "Can't open file for reading"
+msgstr "Не вдалося відкрити файл для читання"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/File3.cc:78
+msgid "Invalid tag"
+msgstr "Неправильна мітка"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/File3.cc:100
+msgid "Key mismatch"
+msgstr "Ключ не співпадає"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/File3.cc:141
+msgid "HMAC check failed"
+msgstr "Не пройдено перевірку HMAC"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/File3.cc:187
+msgid "Can't open file for writing"
+msgstr "Не вдалося відкрити файл для запису"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Gcrypt.cc:43
+#, c-format
+msgid "Entropy pool: %d of %d bytes available."
+msgstr "Резерв ентропії: доступно %d з %d байтів."
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Gcrypt.cc:46
+msgid " Done.              "
+msgstr " Зроблено.          "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Gcrypt.cc:48
+msgid " Waiting for more..."
+msgstr " Чекаємо ще...      "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Memory.cc:38
+msgid "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
+msgstr ""
+"ПОПЕРЕДЖЕННЯ: не вдалося використати безпечну пам’ять (треба мати "
+"CAP_IPC_LOCK)"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/main.cc:61
 msgid "libgcrypt version mismatch"
 msgstr "Не співпадає версія libgcrypt"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/main.cc:72
 msgid "Can't initialize libgcrypt"
 msgstr "Не вдалося ініціалізувати libgcrypt"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Command.cc:65
+msgid "Enter password for "
+msgstr "Уведіть пароль для "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Command.cc:78
+msgid "More than one matching entry: "
+msgstr "Не єдиний збіг: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Command.cc:89
+#, c-format
+msgid "%d more"
+msgstr "ще %d"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Entry.cc:121
+msgid "Group:\t\t"
+msgstr "Група:\t\t"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Entry.cc:124
+msgid "Title:\t\t"
+msgstr "Назва:\t\t"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Entry.cc:127
+msgid "User:\t\t"
+msgstr "Користувач:\t"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Entry.cc:130
+msgid "Notes:\t\t"
+msgstr "Нотатки:\t"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Entry.cc:133
+msgid "Pass:\t\t*************\n"
+msgstr "Пароль:\t\t*************\n"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:68
+msgid "name: ["
+msgstr "назва: ["
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:70
+msgid "group: ["
+msgstr "група: ["
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:92
+msgid "change password ? [n] "
+msgstr "змінити пароль ? [n] "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:96
+msgid "new password: [return for random] "
+msgstr "новий пароль: [return щоб випадковий] "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:97
+msgid "new password again: "
+msgstr "новий пароль ще раз: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:100
+msgid "Confirm changing to an empty password? [n] "
+msgstr "Справді скинути пароль? [n] "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:108
+msgid "notes: [<keep same>] "
+msgstr "нотатки: [<залишити без змін>] "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:114
+msgid "No change"
+msgstr "Без змін"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:118
+msgid "Confirm changing "
+msgstr "Справді змінити "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:126
+msgid "group"
+msgstr "групу"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:129
+msgid "name"
+msgstr "назву"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:132
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:150
+msgid "password"
+msgstr "пароль"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:135
+msgid "notes"
+msgstr "нотатки"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:144
+msgid "Changes abandoned"
+msgstr "Зміни скасовано"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/GtkEmitter.cc:45
+#, c-format
+msgid "Going to copy %s to X selection"
+msgstr "Буде скопійовано %s у буфер обміну Х"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/GtkEmitter.cc:173
+msgid "Failed to get "
+msgstr "Не вдалося отримати буфер обміну "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/GtkEmitter.cc:185
+#, c-format
+msgid "You are ready to paste the %s from "
+msgstr "Вставте %s з буферу обміну "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/GtkEmitter.cc:187
+msgid "Press any key when done"
+msgstr "Натисніть будь-яку клавішу, як зроблено"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/StdoutEmitter.cc:35
+#, c-format
+msgid "Going to print %s to stdout"
+msgstr "Буде надруковано %s у стандартний вивід"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:85
+msgid "Commands"
+msgstr "Команди"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:94
+msgid "create an empty database"
+msgstr "створити порожню базу даних"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:103
+msgid ""
+"list all entries matching [REGEX]. If either -u or -p are given, only one "
+"entry may match. If no REGEX and either of -u and -p are given, launch TUI. "
+"If neither -u or -p are given and one entry matches, print details."
+msgstr ""
+"перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -"
+"p, має бути знайдено єдиний запис. Якщо немає REGEX і задано -u чи -p, буде "
+" запущено інтерактивний вибір. Якщо не задано жодне з -u чи -p, і "
+"знайдено єдиний запис, роздрукувати подробиці."
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:115
+msgid "add an entry"
+msgstr "додати запис"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:124
+msgid "edit an entry"
+msgstr "редагувати запис"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:133
+msgid "delete an entry"
+msgstr "знищити запис"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:136
+msgid "Options"
+msgstr "Опції"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:140
+msgid "specify the database file"
+msgstr "зазначити файл бази даних"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:143
+msgid "emit username of listed account"
+msgstr "видати назву користувача"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:146
+msgid "emit password of listed account"
+msgstr "видати пароль"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:154
+msgid "force echoing of entry to stdout"
+msgstr "примусово надрукувати у стандартний вивід"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:164
+msgid "force copying of entry to X selection"
+msgstr "примусово скопіювати у буфер обміну Х"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:167
+msgid "X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
+msgstr "тип буфера обміну X ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:171
+msgid "don't press on the pool of randomness"
+msgstr "не виснажувати збірник випадковості"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:172
+msgid "display this help and exit"
+msgstr "показати цю допомогу і вийти"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:173
+msgid "output version information and exit"
+msgstr "вивести відомості про версію і вийти"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:192
+msgid ""
+" - command line tool compatible with Conterpane's PasswordSafe\n"
+"\n"
+msgstr ""
+" — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
+"\n"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
+msgid "Usage: "
+msgstr "Вживання: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
+msgid " [OPTION] command [ARG]\n"
+msgstr " [OPTION] команда [ARG]\n"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:210
+msgid "Ambiguous command"
+msgstr "Неоднозначна команда"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:231
+msgid "Exception: "
+msgstr "Виняток: "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:128
+msgid "username for "
+msgstr "користувач для "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:133
+msgid "password for "
+msgstr "пароль для "
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:143
+msgid "login and password"
+msgstr "користувач і пароль"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:145
+msgid "login"
+msgstr "користувач"
+
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:74
 msgid "Can't get password"
 msgstr "Не вдалося отримати пароль"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:85
 msgid "Can't get text"
 msgstr "Не вдалося отримати текст"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:98
 msgid "Generate random password? [y] "
 msgstr "Згенерувати випадковий пароль? [y] "
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:115
 msgid "Passwords do not match"
 msgstr "Паролі не співпадають"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:161
 msgid "Read error"
 msgstr "Помилка читання"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:212
 msgid "alpha/digit/symbol"
 msgstr "букви/цифри/символи"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:219
 msgid "alpha/digit"
 msgstr "букви/цифри"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:224
 msgid "easy-to-read alpha/digit"
 msgstr "легкий для читання букви/цифри"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:230
 msgid "easy-to-read alpha/digit/symbol"
 msgstr "легкий для читання букви/цифри/символи"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:236
 msgid "digits only"
 msgstr "тільки цифри"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:242
 msgid "hex digits only"
 msgstr "тільки шістнадцяткові цифри"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:323
 #, c-format
 msgid "Use %s"
 msgstr "Використати %s"
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:324
 #, c-format
 msgid "type %s, length %d, %d bits of entropy [y/N/ /+/-/q/?] ? "
 msgstr "тип %s, довжина %d, %d бітів ентропії [y/N/ /+/-/q/?] ? "
 
+#: /home/sakhnik/work/gpwsafe/po/../src/Terminal.cc:356
 msgid ""
 "Commands:\n"
 "  Y      Yes, accept this password\n"
@@ -89,242 +416,3 @@ msgstr ""
 "  +      Збільшити ентропію і довжину паролю\n"
 "  Q      Вийти\n"
 "  ?      Допомога\n"
-
-#, c-format
-msgid "Going to print %s to stdout"
-msgstr "Буде надруковано %s у стандартний вивід"
-
-msgid "WARNING: unable to use secure ram (need to have CAP_IPC_LOCK)"
-msgstr ""
-"ПОПЕРЕДЖЕННЯ: не вдалося використати безпечну пам’ять (треба мати "
-"CAP_IPC_LOCK)"
-
-#, c-format
-msgid "Going to copy %s to X selection"
-msgstr "Буде скопійовано %s у буфер обміну Х"
-
-msgid "Failed to get "
-msgstr "Не вдалося отримати буфер обміну "
-
-#, c-format
-msgid "You are ready to paste the %s from "
-msgstr "Вставте %s з буферу обміну "
-
-msgid "Press any key when done"
-msgstr "Натисніть будь-яку клавішу, як зроблено"
-
-#, c-format
-msgid "Entropy pool: %d of %d bytes available."
-msgstr "Резерв ентропії: доступно %d з %d байтів."
-
-msgid " Done.              "
-msgstr " Зроблено.          "
-
-msgid " Waiting for more..."
-msgstr " Чекаємо ще...      "
-
-msgid "Can't open file for reading"
-msgstr "Не вдалося відкрити файл для читання"
-
-msgid "Invalid tag"
-msgstr "Неправильна мітка"
-
-msgid "Key mismatch"
-msgstr "Ключ не співпадає"
-
-msgid "HMAC check failed"
-msgstr "Не пройдено перевірку HMAC"
-
-msgid "Can't open file for writing"
-msgstr "Не вдалося відкрити файл для запису"
-
-msgid "Group:\t\t"
-msgstr "Група:\t\t"
-
-msgid "Title:\t\t"
-msgstr "Назва:\t\t"
-
-msgid "User:\t\t"
-msgstr "Користувач:\t"
-
-msgid "Notes:\t\t"
-msgstr "Нотатки:\t"
-
-msgid "Pass:\t\t*************\n"
-msgstr "Пароль:\t\t*************\n"
-
-msgid "Couldn't follow a symbolic link "
-msgstr "Не вдалося відслідкувати по символічне посилання "
-
-msgid "Failed to create backup: "
-msgstr "Не вдалося створити резервну копію: "
-
-msgid "Failed to move new file: "
-msgstr "Не вдалося перемістити новий файл: "
-
-msgid "username for "
-msgstr "користувач для "
-
-msgid "password for "
-msgstr "пароль для "
-
-msgid "login and password"
-msgstr "користувач і пароль"
-
-msgid "login"
-msgstr "користувач"
-
-msgid "password"
-msgstr "пароль"
-
-msgid "name: ["
-msgstr "назва: ["
-
-msgid "group: ["
-msgstr "група: ["
-
-msgid " already exists"
-msgstr " вже існує"
-
-msgid "change password ? [n] "
-msgstr "змінити пароль ? [n] "
-
-msgid "new password: [return for random] "
-msgstr "новий пароль: [return щоб випадковий] "
-
-msgid "new password again: "
-msgstr "новий пароль ще раз: "
-
-msgid "Confirm changing to an empty password? [n] "
-msgstr "Справді скинути пароль? [n] "
-
-msgid "notes: [<keep same>] "
-msgstr "нотатки: [<залишити без змін>] "
-
-msgid "No change"
-msgstr "Без змін"
-
-msgid "Confirm changing "
-msgstr "Справді змінити "
-
-msgid "group"
-msgstr "групу"
-
-msgid "name"
-msgstr "назву"
-
-msgid "notes"
-msgstr "нотатки"
-
-msgid "Changes abandoned"
-msgstr "Зміни скасовано"
-
-msgid "Enter passphrase for "
-msgstr "Уведіть пароль для "
-
-msgid "Reenter passphrase for "
-msgstr "Уведіть ще раз пароль для "
-
-msgid "Passphrases do not match"
-msgstr "Паролі не співпадають"
-
-msgid "name: "
-msgstr "назва: "
-
-msgid "group [<none>]: "
-msgstr "група [<немає>]: "
-
-msgid "username: "
-msgstr "користувач: "
-
-msgid "password [return for random]: "
-msgstr "пароль [return щоб випадковий]: "
-
-msgid "password again: "
-msgstr "пароль знову: "
-
-msgid "notes: "
-msgstr "нотатки: "
-
-msgid "Enter password for "
-msgstr "Уведіть пароль для "
-
-msgid "More than one matching entry: "
-msgstr "Не єдиний збіг: "
-
-#, c-format
-msgid "%d more"
-msgstr "ще %d"
-
-msgid "Commands"
-msgstr "Команди"
-
-msgid "create an empty database"
-msgstr "створити порожню базу даних"
-
-msgid ""
-"list all entries matching [REGEX]. If either -u or -p are given, only one "
-"entry may match. If neither -u or -p are given and one entry matches, print "
-"details."
-msgstr ""
-"перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -"
-"p, має бути знайдено єдиний запис. Якщо не задано жодне з -u чи -p, і "
-"знайдено єдиний запис, роздрукувати подробиці."
-
-msgid "add an entry"
-msgstr "додати запис"
-
-msgid "edit an entry"
-msgstr "редагувати запис"
-
-msgid "delete an entry"
-msgstr "знищити запис"
-
-msgid "Options"
-msgstr "Опції"
-
-msgid "specify the database file"
-msgstr "зазначити файл бази даних"
-
-msgid "emit username of listed account"
-msgstr "видати назву користувача"
-
-msgid "emit password of listed account"
-msgstr "видати пароль"
-
-msgid "force echoing of entry to stdout"
-msgstr "примусово надрукувати у стандартний вивід"
-
-msgid "force copying of entry to X selection"
-msgstr "примусово скопіювати у буфер обміну Х"
-
-msgid "X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
-msgstr "тип буфера обміну X ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
-
-msgid "don't press on the pool of randomness"
-msgstr "не виснажувати збірник випадковості"
-
-msgid "display this help and exit"
-msgstr "показати цю допомогу і вийти"
-
-msgid "output version information and exit"
-msgstr "вивести відомості про версію і вийти"
-
-msgid ""
-" - command line tool compatible with Conterpane's PasswordSafe\n"
-"\n"
-msgstr ""
-" — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
-"\n"
-
-msgid "Usage: "
-msgstr "Вживання: "
-
-msgid " [OPTION] command [ARG]\n"
-msgstr " [OPTION] команда [ARG]\n"
-
-msgid "Ambiguous command"
-msgstr "Неоднозначна команда"
-
-msgid "Exception: "
-msgstr "Виняток: "
