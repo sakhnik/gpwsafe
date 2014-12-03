@@ -58,11 +58,12 @@ COMMANDS
         Add an entry to database.
 
 -e, --edit[=REGEX]::
-        Edit an entry. If no REGEX is specified, TUI is launched to pick up
-        an entry for editing.
+        Edit an entry. If no REGEX is specified, TUI will be launched
+        to pick up an entry for editing.
 
---delete=REGEX::
-        Delete an entry.
+--delete[=REGEX]::
+        Delete an entry. If no REGEX is specified, TUI will be launched
+        to pick up an entry for removal.
 
 If no command is given, --list is assumed.
 

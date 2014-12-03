@@ -122,17 +122,19 @@ void App::Init(int argc, char *argv[])
 					this->_SetCommand(CommandEdit::Create(regex));
 				}
 			),
-			_("edit an entry. If no REGEX is specified, TUI is launched"
+			_("edit an entry. If no REGEX is specified, TUI will be launched"
 			  " to pick up an entry."))
 		("delete",
 			named_option("REGEX")
+			->implicit_value("")
 			->notifier(
 				[this](string const &regex)
 				{
 					this->_SetCommand(CommandDelete::Create(regex));
 				}
 			),
-			_("delete an entry"))
+			_("delete an entry. If no REGEX is specified, TUI will be launched"
+			  " to pick up an entry."))
 		;
 
 	options_description desc_opts(_("Options"), line_length, line_length / 2);

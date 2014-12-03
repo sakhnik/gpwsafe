@@ -40,20 +40,29 @@ CommandDelete::CommandDelete(const string &regex)
 
 void CommandDelete::Execute(const Params &params)
 {
-	if (_regex.empty())
-	{
-		cerr << _("An entry must be specified") << endl;
-		throw ExitEx(1);
-	}
-	char const *query = _regex.c_str();
-
 	Database::PtrT database = OpenDatabase(params.ExpandFileName());
-	auto entries = database->Find(query);
+	auto entries = database->Find(_regex.c_str());
 	if (entries.empty())
 	{
 		cerr << _("No matching entries found") << endl;
 		throw ExitEx(1);
 	}
+
+	// If no query was given on the command line, pick up record interactively.
+	if (_regex.empty())
+	{
+		auto idx = Terminal::PickUp(entries.size(),
+		                            [&](size_t i) -> const StringX &
+		                            {
+		                                return entries[i]->first;
+		                            });
+		if (idx > entries.size())
+			throw ExitEx(1);
+
+		const auto &query = entries[idx]->first;
+		entries = database->Find(query.c_str());
+	}
+
 	if (!CheckSingleEntry(entries))
 		throw ExitEx(1);
 

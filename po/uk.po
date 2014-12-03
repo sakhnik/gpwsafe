@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 22:37+0200\n"
+"POT-Creation-Date: 2014-12-03 22:50+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -57,17 +57,13 @@ msgstr "Уведіть ще раз пароль для "
 msgid "Passphrases do not match"
 msgstr "Паролі не співпадають"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:45
-msgid "An entry must be specified"
-msgstr "Має бути вказаний запис"
-
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:54
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:47
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:47
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:59
 msgid "No matching entries found"
 msgstr "Не знайдено відповідних записів"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:63
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:72
 msgid "Confirm deleting "
 msgstr "Справді знищити "
 
@@ -256,55 +252,59 @@ msgstr "додати запис"
 
 #: /home/sakhnik/work/gpwsafe/po/../src/App.cc:125
 msgid ""
-"edit an entry. If no REGEX is specified, TUI is launched to pick up an entry."
+"edit an entry. If no REGEX is specified, TUI will be launched to pick up an "
+"entry."
 msgstr ""
 "редагувати запис. Якщо не задано REGEX, буде запущено інтерактивний пошук."
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:135
-msgid "delete an entry"
-msgstr "знищити запис"
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:136
+msgid ""
+"delete an entry. If no REGEX is specified, TUI will be launched to pick up "
+"an entry."
+msgstr ""
+"редагувати запис. Якщо не задано REGEX, буде запущено інтерактивний пошук."
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:138
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:140
 msgid "Options"
 msgstr "Опції"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:142
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:144
 msgid "specify the database file"
 msgstr "зазначити файл бази даних"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:145
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:147
 msgid "emit username of listed account"
 msgstr "видати назву користувача"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:148
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:150
 msgid "emit password of listed account"
 msgstr "видати пароль"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:156
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:158
 msgid "force echoing of entry to stdout"
 msgstr "примусово надрукувати у стандартний вивід"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:166
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:168
 msgid "force copying of entry to X selection"
 msgstr "примусово скопіювати у буфер обміну Х"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:169
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:171
 msgid "X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
 msgstr "тип буфера обміну X ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:173
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:175
 msgid "don't press on the pool of randomness"
 msgstr "не виснажувати збірник випадковості"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:174
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:176
 msgid "display this help and exit"
 msgstr "показати цю допомогу і вийти"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:175
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:177
 msgid "output version information and exit"
 msgstr "вивести відомості про версію і вийти"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:196
 msgid ""
 " - command line tool compatible with Conterpane's PasswordSafe\n"
 "\n"
@@ -312,19 +312,19 @@ msgstr ""
 " — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
 "\n"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:196
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:198
 msgid "Usage: "
 msgstr "Вживання: "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:196
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:198
 msgid " [OPTION] command [ARG]\n"
 msgstr " [OPTION] команда [ARG]\n"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:212
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:214
 msgid "Ambiguous command"
 msgstr "Неоднозначна команда"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:233
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:235
 msgid "Exception: "
 msgstr "Виняток: "
 
