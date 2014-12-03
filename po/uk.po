@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 23:17+0200\n"
+"POT-Creation-Date: 2014-12-03 22:37+0200\n"
 "PO-Revision-Date: 2014-03-16 09:18+0200\n"
 "Last-Translator: Anatolii Sakhnik <sakhnik@gmail.com>\n"
 "Language-Team: Anatolii Sakhnik <sakhnik@gmail.com>\n"
@@ -25,7 +25,7 @@ msgstr "група [<немає>]: "
 
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandAdd.cc:78
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandCreate.cc:47
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:78
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:87
 msgid " already exists"
 msgstr " вже існує"
 
@@ -58,12 +58,11 @@ msgid "Passphrases do not match"
 msgstr "Паролі не співпадають"
 
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:45
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:45
 msgid "An entry must be specified"
 msgstr "Має бути вказаний запис"
 
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandDelete.cc:54
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:54
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:47
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:59
 msgid "No matching entries found"
 msgstr "Не знайдено відповідних записів"
@@ -152,60 +151,60 @@ msgstr "Нотатки:\t"
 msgid "Pass:\t\t*************\n"
 msgstr "Пароль:\t\t*************\n"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:68
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:77
 msgid "name: ["
 msgstr "назва: ["
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:70
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:79
 msgid "group: ["
 msgstr "група: ["
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:92
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:101
 msgid "change password ? [n] "
 msgstr "змінити пароль ? [n] "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:96
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:105
 msgid "new password: [return for random] "
 msgstr "новий пароль: [return щоб випадковий] "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:97
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:106
 msgid "new password again: "
 msgstr "новий пароль ще раз: "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:100
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:109
 msgid "Confirm changing to an empty password? [n] "
 msgstr "Справді скинути пароль? [n] "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:108
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:117
 msgid "notes: [<keep same>] "
 msgstr "нотатки: [<залишити без змін>] "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:114
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:123
 msgid "No change"
 msgstr "Без змін"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:118
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:127
 msgid "Confirm changing "
 msgstr "Справді змінити "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:126
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:135
 msgid "group"
 msgstr "групу"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:129
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:138
 msgid "name"
 msgstr "назву"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:132
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:141
 #: /home/sakhnik/work/gpwsafe/po/../src/CommandList.cc:150
 msgid "password"
 msgstr "пароль"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:135
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:144
 msgid "notes"
 msgstr "нотатки"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:144
+#: /home/sakhnik/work/gpwsafe/po/../src/CommandEdit.cc:153
 msgid "Changes abandoned"
 msgstr "Зміни скасовано"
 
@@ -247,63 +246,65 @@ msgid ""
 "If neither -u or -p are given and one entry matches, print details."
 msgstr ""
 "перерахувати всі записи, які відповідають [REGEX]. Якщо задано одне з -u чи -"
-"p, має бути знайдено єдиний запис. Якщо немає REGEX і задано -u чи -p, буде "
-" запущено інтерактивний вибір. Якщо не задано жодне з -u чи -p, і "
-"знайдено єдиний запис, роздрукувати подробиці."
+"p, має бути знайдено єдиний запис. Якщо немає REGEX і задано -u чи -p, буде  "
+"запущено інтерактивний вибір. Якщо не задано жодне з -u чи -p, і знайдено "
+"єдиний запис, роздрукувати подробиці."
 
 #: /home/sakhnik/work/gpwsafe/po/../src/App.cc:115
 msgid "add an entry"
 msgstr "додати запис"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:124
-msgid "edit an entry"
-msgstr "редагувати запис"
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:125
+msgid ""
+"edit an entry. If no REGEX is specified, TUI is launched to pick up an entry."
+msgstr ""
+"редагувати запис. Якщо не задано REGEX, буде запущено інтерактивний пошук."
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:133
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:135
 msgid "delete an entry"
 msgstr "знищити запис"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:136
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:138
 msgid "Options"
 msgstr "Опції"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:140
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:142
 msgid "specify the database file"
 msgstr "зазначити файл бази даних"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:143
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:145
 msgid "emit username of listed account"
 msgstr "видати назву користувача"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:146
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:148
 msgid "emit password of listed account"
 msgstr "видати пароль"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:154
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:156
 msgid "force echoing of entry to stdout"
 msgstr "примусово надрукувати у стандартний вивід"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:164
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:166
 msgid "force copying of entry to X selection"
 msgstr "примусово скопіювати у буфер обміну Х"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:167
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:169
 msgid "X selection type ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
 msgstr "тип буфера обміну X ([P]RIMARY, [C]LIPBOARD, [B]OTH)"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:171
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:173
 msgid "don't press on the pool of randomness"
 msgstr "не виснажувати збірник випадковості"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:172
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:174
 msgid "display this help and exit"
 msgstr "показати цю допомогу і вийти"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:173
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:175
 msgid "output version information and exit"
 msgstr "вивести відомості про версію і вийти"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:192
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
 msgid ""
 " - command line tool compatible with Conterpane's PasswordSafe\n"
 "\n"
@@ -311,19 +312,19 @@ msgstr ""
 " — інструмент командного рядка, сумісний з Conterpane PasswordSafe\n"
 "\n"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:196
 msgid "Usage: "
 msgstr "Вживання: "
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:194
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:196
 msgid " [OPTION] command [ARG]\n"
 msgstr " [OPTION] команда [ARG]\n"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:210
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:212
 msgid "Ambiguous command"
 msgstr "Неоднозначна команда"
 
-#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:231
+#: /home/sakhnik/work/gpwsafe/po/../src/App.cc:233
 msgid "Exception: "
 msgstr "Виняток: "
 
