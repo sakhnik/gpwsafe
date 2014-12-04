@@ -118,7 +118,7 @@ filter database entries. Press return to use the selection. Other useful keys:
 ^R::
         Switch between fuzzy and substring matcher
 
-^N, ^P::
+\^N, ^P::
         Move to next or previous filtered entries respectively
 
 Esc::
