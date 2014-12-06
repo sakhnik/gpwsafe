@@ -471,6 +471,49 @@ private:
 	}
 };
 
+namespace {
+
+void ShowHelp()
+{
+	int max_y{0}, max_x{0};
+
+	getmaxyx(stdscr, max_y, max_x);
+	auto center_y = max_y / 2;
+	auto center_x = max_x / 2;
+
+	auto win = unique_ptr<WINDOW, int(*)(WINDOW*)>{
+		newwin(center_y, center_x, max_y / 4, max_x / 4),
+		delwin
+	};
+	box(win.get(), 0, 0);
+
+	attron(A_UNDERLINE);
+	mvwprintw(win.get(), 2, 2, "gpwsafe interactive TUI");
+	attroff(A_UNDERLINE);
+
+	mvwprintw(win.get(), 4, 2, "char     Add character to the query");
+	mvwprintw(win.get(), 5, 2, "^R       Switch between fuzzy and substring matchers");
+	mvwprintw(win.get(), 6, 2, "^N, ^P   Cycle through next/previous entry");
+	mvwprintw(win.get(), 7, 2, "CR       Accept the highlighted entry");
+	mvwprintw(win.get(), 8, 2, "Esc      Give up and quit");
+
+	wrefresh(win.get());
+
+	while (true)
+	{
+		auto ch = getch();
+		switch (ch)
+		{
+		case '\n':
+		case EOF:
+		case 27:  // Esc
+			return;
+		}
+	}
+}
+
+} //namespace;
+
 size_t Terminal::PickUp(size_t count,
                         const function<const StringX &(size_t)> &feed)
 {
@@ -594,6 +637,9 @@ size_t Terminal::PickUp(size_t count,
 				--cursor;
 			else
 				cursor = filtered.size() - 1;
+			continue;
+		case '?':
+			ShowHelp();
 			continue;
 		default:
 			if (isprint(ch))
