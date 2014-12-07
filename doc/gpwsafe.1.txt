@@ -119,7 +119,7 @@ filter database entries. Press return to use the selection. Other useful keys:
         Switch between fuzzy and substring matcher
 
 \^N, ^P::
-        Move to next or previous filtered entries respectively
+        Cycle through next or previous filtered entries respectively
 
 Esc::
         Clear query, then abandon selection and quit the program

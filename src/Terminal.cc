@@ -579,13 +579,21 @@ size_t Terminal::PickUp(size_t count,
 		case 18:  // ^R -- switch matcher mode
 			filter.SwitchMatcher();
 			continue;
-		case 14:  // ^N -- next choice
+		case 14:  // ^N -- cycle through next choice
+			if (filtered.empty())
+				continue;
 			if (cursor + 1 < filtered.size())
 				++cursor;
+			else
+				cursor = 0;
 			continue;
-		case 16:  // ^P -- previous choice
+		case 16:  // ^P -- cycle through previous choice
+			if (filtered.empty())
+				continue;
 			if (cursor > 0)
 				--cursor;
+			else
+				cursor = filtered.size() - 1;
 			continue;
 		default:
 			if (isprint(ch))
