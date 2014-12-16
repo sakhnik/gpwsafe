@@ -68,9 +68,7 @@ StringX Terminal::GetPassword(char const *prompt)
 
 	cerr << prompt << flush;
 	StringX password;
-	getline(cin, password);
-
-	if (password.empty())
+	if (!getline(cin, password))
 		throw runtime_error(_("Can't get password"));
 
 	return password;
