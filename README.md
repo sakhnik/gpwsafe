@@ -10,5 +10,5 @@ Run the unit test suite with `make check`.
 
 If you find a bug or want to improve the code, please open a pull request.
 
-Anatolii Sakhnik <sakhnik@gmail.com>,
+Anatolii Sakhnik <sakhnik@gmail.com>,  
 Kyiv 2012
