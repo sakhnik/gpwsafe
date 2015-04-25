@@ -57,7 +57,7 @@ public:
 	static void deallocate(const pointer ptr, const size_type n)
 	{
 		// Clear memory before returning it to the system.
-		memset(ptr, 0, n*sizeof(T));
+		memset(static_cast<void*>(ptr), 0, n*sizeof(T));
 		BaseT::deallocate (ptr, n);
 	}
 };
