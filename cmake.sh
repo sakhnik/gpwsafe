@@ -13,6 +13,5 @@ else
 fi
 (
 cd BUILD
-cmake ..
+CC=clang CXX=clang++ cmake ..
 )
-ln -sf BUILD/.ycm_extra_conf.py
