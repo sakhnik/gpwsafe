@@ -38,8 +38,7 @@ namespace gPWS {
 using namespace std;
 typedef boost::format bfmt;
 
-RawTerminal::RawTerminal(bool new_line)
-	: _new_line(new_line)
+RawTerminal::RawTerminal()
 {
 	tcgetattr(STDIN_FILENO, &_tio);
 
@@ -56,20 +55,19 @@ RawTerminal::RawTerminal(bool new_line)
 RawTerminal::~RawTerminal()
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, &_tio);
-	if (_new_line)
-		cout << endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 StringX Terminal::GetPassword(char const *prompt)
 {
-	RawTerminal raw_terminal(true);
+	RawTerminal raw_terminal;
 
 	cerr << prompt << flush;
 	StringX password;
 	if (!getline(cin, password))
 		throw runtime_error(_("Can't get password"));
+	cerr << endl;
 
 	return password;
 }

@@ -32,11 +32,10 @@ class RawTerminal
 	: boost::noncopyable
 {
 public:
-	RawTerminal(bool new_line = false);
+	RawTerminal();
 	~RawTerminal();
 
 private:
-	bool _new_line;
 	struct termios _tio;
 };
 
