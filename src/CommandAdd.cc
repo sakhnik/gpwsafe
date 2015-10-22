@@ -30,14 +30,14 @@ namespace gPWS {
 
 using namespace std;
 
-Command::PtrT CommandAdd::Create(string const &name)
+Command::PtrT CommandAdd::Create()
 {
-	return Command::PtrT(new CommandAdd(name));
+	return Command::PtrT(new CommandAdd);
 }
 
-CommandAdd::CommandAdd(string const &name)
-	: _name(name)
+void CommandAdd::SetArgument(const string &arg)
 {
+	_name = arg;
 }
 
 void CommandAdd::Execute(Params const &params)

@@ -35,6 +35,7 @@ class CommandCreate
 public:
 	static PtrT Create();
 
+	virtual void SetArgument(const std::string &arg);
 	virtual void Execute(Params const &params);
 
 private:

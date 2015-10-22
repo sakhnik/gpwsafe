@@ -46,10 +46,12 @@ public:
 private:
 	char const *_program_name;
 	Command::PtrT _command;
+	std::string _argument;
 	Command::Params _params;
 	bool _use_weak_randomness_for_tests;
 
 	void _SetCommand(Command::PtrT command);
+	void _SetCommandArgument(const std::string &arg);
 	void _SetEmitter(iEmitter *emitter);
 };
 

@@ -28,14 +28,14 @@ namespace gPWS {
 
 using namespace std;
 
-Command::PtrT CommandEdit::Create(string const &regex)
+Command::PtrT CommandEdit::Create()
 {
-	return Command::PtrT(new CommandEdit(regex));
+	return Command::PtrT(new CommandEdit);
 }
 
-CommandEdit::CommandEdit(string const &regex)
-	: _regex(regex)
+void CommandEdit::SetArgument(const std::string &arg)
 {
+	_regex = arg;
 }
 
 void CommandEdit::Execute(Params const &params)

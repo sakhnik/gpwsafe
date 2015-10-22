@@ -38,6 +38,14 @@ CommandCreate::CommandCreate()
 {
 }
 
+void CommandCreate::SetArgument(const std::string &arg)
+{
+	if (arg.empty())
+		return;
+	cerr << _("No argument is allowed") << endl;
+	throw ExitEx(1);
+}
+
 void CommandCreate::Execute(Params const &params)
 {
 	string file_name = params.ExpandFileName();

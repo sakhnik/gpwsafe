@@ -33,14 +33,15 @@ class CommandEdit
 	: public Command
 {
 public:
-	static PtrT Create(std::string const &regex);
+	static PtrT Create();
 
+	virtual void SetArgument(const std::string &arg);
 	virtual void Execute(Params const &params);
 
 private:
 	std::string _regex;
 
-	CommandEdit(std::string const &regex);
+	CommandEdit() = default;
 };
 
 } //namespace gPWS;

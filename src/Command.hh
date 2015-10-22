@@ -49,6 +49,7 @@ public:
 	};
 
 	virtual ~Command() { }
+	virtual void SetArgument(const std::string &arg) = 0;
 	virtual void Execute(Params const &params) = 0;
 
 protected:

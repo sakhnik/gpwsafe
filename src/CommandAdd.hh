@@ -31,14 +31,15 @@ class CommandAdd
 	: public Command
 {
 public:
-	static PtrT Create(std::string const &name);
+	static PtrT Create();
 
+	virtual void SetArgument(const std::string &arg);
 	virtual void Execute(Params const &params);
 
 private:
 	std::string _name;
 
-	CommandAdd(std::string const &name);
+	CommandAdd() = default;
 };
 
 } //namespace gPWS;

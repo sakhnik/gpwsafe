@@ -33,14 +33,15 @@ class CommandList
 	: public Command
 {
 public:
-	static PtrT Create(std::string const &regex);
+	static PtrT Create();
 
+	virtual void SetArgument(const std::string &arg);
 	virtual void Execute(Params const &params);
 
 private:
 	std::string _regex;
 
-	CommandList(std::string const &regex);
+	CommandList() = default;
 	void _PrintIntention(Params const &params);
 };
 

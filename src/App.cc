@@ -93,44 +93,40 @@ void App::Init(int argc, char *argv[])
 				}),
 			_("create an empty database"))
 		("list",
-			named_option("REGEX")
-			->implicit_value("")
-			->notifier(
-				[this](string const &regex)
+			bool_switch(nullptr)
+			->notifier([this](bool arg)
 				{
-					this->_SetCommand(CommandList::Create(regex));
+					if (arg)
+						this->_SetCommand(CommandList::Create());
 				}),
 			_("list all entries matching [REGEX]. If either -u or -p are given,"
 			  " only one entry may match. If no REGEX and either of -u and -p"
 			  " are given, launch TUI. If neither -u or -p are given and one"
 			  " entry matches, print details."))
 		("add,a",
-			named_option("NAME")
-			->implicit_value("")
-			->notifier(
-				[this](string const &name)
+		 	bool_switch(nullptr)
+			->notifier([this](bool arg)
 				{
-					this->_SetCommand(CommandAdd::Create(name));
+					if (arg)
+						this->_SetCommand(CommandAdd::Create());
 				}),
 			_("add an entry"))
 		("edit,e",
-			named_option("REGEX")
-			->implicit_value("")
-			->notifier(
-				[this](string const &regex)
+		 	bool_switch(nullptr)
+			->notifier([this](bool arg)
 				{
-					this->_SetCommand(CommandEdit::Create(regex));
+				    if (arg)
+						this->_SetCommand(CommandEdit::Create());
 				}
 			),
 			_("edit an entry. If no REGEX is specified, TUI will be launched"
 			  " to pick up an entry."))
 		("delete",
-			named_option("REGEX")
-			->implicit_value("")
-			->notifier(
-				[this](string const &regex)
+		 	bool_switch(nullptr)
+			->notifier([this](bool arg)
 				{
-					this->_SetCommand(CommandDelete::Create(regex));
+					if (arg)
+						this->_SetCommand(CommandDelete::Create());
 				}
 			),
 			_("delete an entry. If no REGEX is specified, TUI will be launched"
@@ -177,15 +173,30 @@ void App::Init(int argc, char *argv[])
 		("version,V", _("output version information and exit"))
 		;
 
+	options_description desc_arg(_("Arguments"), line_length, line_length / 2);
+	desc_arg.add_options()
+		("argument",
+			named_option("ARG")
+			->default_value("")
+			->notifier([this](const std::string &arg)
+				{
+					this->_SetCommandArgument(arg);
+				}),
+			_("assign an argument to the command"))
+		;
+
 	options_description desc(line_length, line_length / 2);
 	desc.add(desc_cmd).add(desc_opts);
 
+	options_description desc_all(line_length, line_length / 2);
+	desc_all.add(desc_cmd).add(desc_opts).add(desc_arg);
+
 	positional_options_description p;
-	p.add("list", 1);
+	p.add("argument", 1);
 
 	variables_map vm;
 	store(command_line_parser(argc, argv)
-			.options(desc)
+			.options(desc_all)
 			.positional(p)
 			.run(),
 		vm);
@@ -217,6 +228,11 @@ void App::_SetCommand(Command::PtrT command)
 	_command.reset(command.release());
 }
 
+void App::_SetCommandArgument(const std::string &arg)
+{
+	_argument = arg;
+}
+
 void App::_SetEmitter(iEmitter *emitter)
 {
 	_params.emitter.reset(emitter);
@@ -227,7 +243,8 @@ void App::Run()
 	try
 	{
 		if (!_command)
-			_command.reset(CommandList::Create("").release());
+			_command = CommandList::Create();
+		_command->SetArgument(_argument);
 		_command->Execute(_params);
 	}
 	catch (std::exception const &e)

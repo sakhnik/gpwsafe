@@ -31,14 +31,15 @@ class CommandDelete
 	: public Command
 {
 public:
-	static PtrT Create(const std::string &regex);
+	static PtrT Create();
 
+	virtual void SetArgument(const std::string &arg);
 	virtual void Execute(Params const &params);
 
 private:
 	std::string _regex;
 
-	CommandDelete(const std::string &regex);
+	CommandDelete() = default;
 };
 
 } //namespace gPWS;

@@ -28,14 +28,14 @@ namespace gPWS {
 
 using namespace std;
 
-Command::PtrT CommandDelete::Create(const string &regex)
+Command::PtrT CommandDelete::Create()
 {
-	return Command::PtrT(new CommandDelete(regex));
+	return Command::PtrT(new CommandDelete);
 }
 
-CommandDelete::CommandDelete(const string &regex)
-	: _regex(regex)
+void CommandDelete::SetArgument(const std::string &arg)
 {
+	_regex = arg;
 }
 
 void CommandDelete::Execute(const Params &params)

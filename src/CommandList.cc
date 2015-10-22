@@ -33,14 +33,14 @@ namespace gPWS {
 
 using namespace std;
 
-Command::PtrT CommandList::Create(string const &regex)
+Command::PtrT CommandList::Create()
 {
-	return Command::PtrT(new CommandList(regex));
+	return Command::PtrT(new CommandList);
 }
 
-CommandList::CommandList(string const &regex)
-	: _regex(regex)
+void CommandList::SetArgument(const std::string &arg)
 {
+	_regex = arg;
 }
 
 void CommandList::Execute(Params const &params)
