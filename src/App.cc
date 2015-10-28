@@ -104,7 +104,7 @@ void App::Init(int argc, char *argv[])
 			  " are given, launch TUI. If neither -u or -p are given and one"
 			  " entry matches, print details."))
 		("add,a",
-		 	bool_switch(nullptr)
+			bool_switch(nullptr)
 			->notifier([this](bool arg)
 				{
 					if (arg)
@@ -112,17 +112,17 @@ void App::Init(int argc, char *argv[])
 				}),
 			_("add an entry"))
 		("edit,e",
-		 	bool_switch(nullptr)
+			bool_switch(nullptr)
 			->notifier([this](bool arg)
 				{
-				    if (arg)
+					if (arg)
 						this->_SetCommand(CommandEdit::Create());
 				}
 			),
 			_("edit an entry. If no REGEX is specified, TUI will be launched"
 			  " to pick up an entry."))
 		("delete",
-		 	bool_switch(nullptr)
+			bool_switch(nullptr)
 			->notifier([this](bool arg)
 				{
 					if (arg)
