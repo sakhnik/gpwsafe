@@ -529,6 +529,9 @@ size_t Terminal::PickUp(size_t count,
 	//curs_set(FALSE);
 	cbreak();
 	keypad(stdscr, TRUE);
+	// Delay after <esc> 25 ms by default
+	if (!getenv("ESCDELAY"))
+		set_escdelay(25);
 
 	Filter<decltype(feed)> filter(count, feed);
 	int max_x{0}, max_y{0};
@@ -561,7 +564,7 @@ size_t Terminal::PickUp(size_t count,
 			auto pos = get<1>(filtered[i]);
 			auto count = get<2>(filtered[i]);
 			if (i == cursor)
-				attron(A_STANDOUT);
+				attron(A_REVERSE);
 			if (has_colors())
 			{
 				// Highlight the matching part in an entry
@@ -576,7 +579,7 @@ size_t Terminal::PickUp(size_t count,
 			else
 				mvprintw(y, x, str);
 			if (i == cursor)
-				attroff(A_STANDOUT);
+				attroff(A_REVERSE);
 			// Proceed to the next table cell
 			++y;
 			if (y > max_y || y > rows)
