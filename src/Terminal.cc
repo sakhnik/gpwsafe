@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <cstdio>
+#include <cmath>
 #include <stdexcept>
 #include <boost/scope_exit.hpp>
 #include <boost/format.hpp>
