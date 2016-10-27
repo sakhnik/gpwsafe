@@ -15,7 +15,8 @@
 
 enable_testing()
 
-add_subdirectory(/usr/src/gtest gtest)
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 set(UNIT_TESTS
 	KeyStretchTest
@@ -27,8 +28,7 @@ set(UNIT_TESTS
 set(LIBRARIES libgpwsafe
 	${LIBGCRYPT_LIBRARIES}
 	${Boost_SYSTEM_LIBRARIES} ${Boost_FILESYSTEM_LIBRARIES}
-	gtest gtest_main)
-add_definitions(-DBOOST_TEST_DYN_LINK)
+	${GTEST_BOTH_LIBRARIES})
 
 foreach(TEST ${UNIT_TESTS})
 	add_executable(${TEST} ${TEST}.cc)

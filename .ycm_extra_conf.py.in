@@ -56,14 +56,8 @@ flags = [
 # For a C project, you would set this to 'c' instead of 'c++'.
 '-x',
 'c++',
-'-I.',
-'-I..',
-'-isystem/usr/include/c++/4.9.1',
-'-isystem/usr/include/c++/4.9.1/x86_64-unknown-linux-gnu',
-'-isystem/usr/include/c++/4.9.1/backward',
-'-isystem/usr/local/include',
-'-isystem/usr/lib/clang/3.5.0/include',
-'-isystem/usr/include'
+@clang_include_dirs@
+'-I.'
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
@@ -72,7 +66,7 @@ flags = [
 #
 # Most projects will NOT need to set this to anything; you can just change the
 # 'flags' list of compilation flags. Notice that YCM itself uses that approach.
-compilation_database_folder = '@CMAKE_CURRENT_BINARY_DIR@'
+compilation_database_folder = ''
 
 if compilation_database_folder:
   database = ycm_core.CompilationDatabase( compilation_database_folder )

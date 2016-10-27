@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with gpwsafe.  If not, see <http://www.gnu.org/licenses/>
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 set(PACKAGE gpwsafe)
-set(PACKAGE_VERSION "0.21.2")
+set(PACKAGE_VERSION "0.21.3")
 
 project(${PACKAGE})
 
@@ -103,11 +103,10 @@ endfunction(find_python_module)
 
 find_python_module(pexpect REQUIRED)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/detect-clang-dirs.sh
+	OUTPUT_VARIABLE clang_include_dirs)
 configure_file(.ycm_extra_conf.py.in .ycm_extra_conf.py)
 
 add_subdirectory(src)
 add_subdirectory(po)
 add_subdirectory(test)
-
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure)
