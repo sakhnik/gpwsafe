@@ -95,8 +95,7 @@ void Entry::Dump() const
 			<< boost::format("%02X") % unsigned(field->type)
 			<< ", '"
 			<< gPWS::Quote(&field->value[0], field->value.size())
-			<< "'}"
-			<< endl;
+			<< "'}\n";
 	}
 	cout << "----------" << endl;
 }
@@ -114,26 +113,26 @@ void Entry::PrettyPrint() const
 				assert(field->value.size() == 16);
 				boost::uuids::uuid u;
 				memcpy(&u, &field->value[0], 16);
-				cout << "UUID:\t\t" << u << "\n";
+				cout << "UUID:\t\t" << u << '\n';
 				break;
 			}
 		case FT_GROUP:
-			cout << _("Group:\t\t") << field->value << "\n";
+			cout << _("Group:\t\t") << field->value << '\n';
 			break;
 		case FT_TITLE:
-			cout << _("Title:\t\t") << field->value << "\n";
+			cout << _("Title:\t\t") << field->value << '\n';
 			break;
 		case FT_USER:
-			cout << _("User:\t\t") << field->value << "\n";
+			cout << _("User:\t\t") << field->value << '\n';
 			break;
 		case FT_NOTES:
-			cout << _("Notes:\t\t") << field->value << "\n";
+			cout << _("Notes:\t\t") << field->value << '\n';
 			break;
 		case FT_PASS:
 			cout << _("Pass:\t\t*************\n");
 			break;
 		case FT_URL:
-			cout << "URL:\t\t" << field->value << "\n";
+			cout << "URL:\t\t" << field->value << '\n';
 			break;
 		default:
 			cout << boost::format("0x%02X") % unsigned(field->type) << "\t\t";
@@ -159,7 +158,7 @@ StringX Entry::GetFullTitle() const
 {
 	if (GetGroup().empty())
 		return GetTitle();
-	return GetGroup() + "." + GetTitle();
+	return GetGroup() + '.' + GetTitle();
 }
 
 void Entry::SetValue(FieldType field_type, StringX const &value)

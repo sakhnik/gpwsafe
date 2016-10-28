@@ -37,7 +37,7 @@ Hmac::Hmac(void const *key, size_t key_len)
 	if (error)
 	{
 		cerr << "gcry_md_open failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("md error");
 	}
@@ -46,7 +46,7 @@ Hmac::Hmac(void const *key, size_t key_len)
 	if (error)
 	{
 		cerr << "gcry_md_setkey failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("md error");
 	}

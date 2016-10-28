@@ -213,7 +213,7 @@ void App::Init(int argc, char *argv[])
 
 	if (vm.count("version"))
 	{
-		cout << _program_name << " " << VERSION << endl;
+		cout << _program_name << ' ' << VERSION << endl;
 		throw ExitEx(0);
 	}
 }

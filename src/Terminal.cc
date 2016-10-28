@@ -317,7 +317,7 @@ StringX Terminal::RandomPassword()
 
 		// see what the user thinks of this one
 		OStringStreamX prompt_oss;
-		prompt_oss << bfmt(_("Use %s")) % pw << "\n"
+		prompt_oss << bfmt(_("Use %s")) % pw << '\n'
 		           << bfmt(_("type %s, length %d, %d bits of entropy [y/N/ /+/-/q/?] ? "))
 		               % type_name % pw.length() % entropy_needed;
 		StringX prompt = prompt_oss.str();

@@ -35,7 +35,7 @@ Sha256::Sha256()
 	if (error)
 	{
 		cerr << "gcry_md_open failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("md error");
 	}
@@ -48,7 +48,7 @@ Sha256::Sha256(void const *data, size_t len)
 	if (error)
 	{
 		cerr << "gcry_md_open failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("md error");
 	}

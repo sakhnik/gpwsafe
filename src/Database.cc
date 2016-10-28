@@ -147,7 +147,7 @@ void Database::Write()
 	auto new_fname = target;
 	new_fname += ".new";
 	auto backup = target;
-	backup += "~";
+	backup += '~';
 
 	remove(new_fname);
 	Write(new_fname.string(), _pass);
@@ -179,8 +179,7 @@ void Database::Dump() const
 		     << boost::format("%02X") % unsigned(field->type)
 		     << ", '"
 		     << gPWS::Quote(&field->value[0], field->value.size())
-		     << "'}"
-		     << endl;
+		     << "'}\n";
 	}
 	cout << "==========" << endl;
 

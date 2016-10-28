@@ -183,7 +183,7 @@ void GtkEmitter::Emit(StringX const &name, StringX const &val)
 	ClipboardSetup(clipboards, val);
 
 	cout << bfmt(_("You are ready to paste the %s from ")) % name;
-	cout << ListItems(names) << endl;
+	cout << ListItems(names) << '\n';
 	cout << _("Press any key when done") << endl;
 
 	// Switch off the canonical mode

@@ -86,7 +86,7 @@ bool Command::CheckSingleEntry(Database::MatchT const &entries)
 	}
 	int rest = entries.size() - j;
 	if (rest)
-		cerr << ", ... (" << bfmt(_("%d more")) % rest << ")";
+		cerr << ", ... (" << bfmt(_("%d more")) % rest << ')';
 	cerr << " ." << endl;
 	return false;
 }

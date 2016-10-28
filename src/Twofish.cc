@@ -39,7 +39,7 @@ Twofish::Twofish(Mode mode,
 	if (error)
 	{
 		cerr << "gcry_cipher_open failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("cipher error");
 	}
@@ -48,7 +48,7 @@ Twofish::Twofish(Mode mode,
 	if (error)
 	{
 		cerr << "gcry_cipher_setkey failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("cipher error");
 	}
@@ -66,7 +66,7 @@ void Twofish::SetIV(void const *iv, size_t iv_len)
 	if (error)
 	{
 		cerr << "gcry_cipher_setiv failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("cipher error");
 	}
@@ -80,7 +80,7 @@ void Twofish::Decrypt(uint8_t *out, size_t out_len,
 	if (error)
 	{
 		cerr << "gcry_cipher_decrypt failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("cipher error");
 	}
@@ -94,7 +94,7 @@ void Twofish::Encrypt(uint8_t *out, size_t out_len,
 	if (error)
 	{
 		cerr << "gcry_cipher_encrypt failed: "
-		     << gcry_strsource(error) << "/"
+		     << gcry_strsource(error) << '/'
 		     << gcry_strerror(error) << endl;
 		throw runtime_error("cipher error");
 	}

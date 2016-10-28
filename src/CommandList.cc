@@ -83,12 +83,13 @@ void CommandList::Execute(Params const &params)
 						<< ' ';
 					if (++col == columns)
 					{
-						cout << endl;
+						cout << '\n';
 						col = 0;
 					}
 				}
 				if (col)
-					cout << endl;
+					cout << '\n';
+				cout << flush;
 			}
 			else
 			{
