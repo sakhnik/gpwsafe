@@ -10,6 +10,7 @@ before_install:
   - sudo apt-get install -y libgtest-dev
   - sudo apt-get install -y libboost-program-options-dev libboost-filesystem-dev
   - sudo apt-get install g++-5
+  - sudo apt-get install python-pexpect
 
   - "cd /usr/src/gtest && sudo cmake -DBUILD_SHARED_LIBS=ON . && sudo make && sudo mv libg* /usr/local/lib/; cd -"
 
@@ -18,8 +19,9 @@ script:
   - cd BUILD
   - cmake ..
   - make
+  - make test
 
 matrix:
   include:
     - os: linux
-      env: COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5
+      env: COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5 CTEST_OUTPUT_ON_FAILURE=1
