@@ -38,7 +38,7 @@ endforeach()
 
 add_test(
 	NAME functional.generic
-	COMMAND python
-		${CMAKE_CURRENT_SOURCE_DIR}/generic_test.py
+	COMMAND bash
+		${CMAKE_CURRENT_SOURCE_DIR}/generic_test.sh
 		${CMAKE_BINARY_DIR}/src/gpwsafe
 	)

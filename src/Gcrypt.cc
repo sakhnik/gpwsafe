@@ -40,12 +40,15 @@ _GcryProgressHandler(void *cb_data, const char *what,
 {
 	if (!strcmp(what, "need_entropy"))
 	{
-		cerr << '\r' << bfmt(_("Entropy pool: %d of %d bytes available."))
-			% current % total;
-		if (current == total)
-			cerr << _(" Done.              ") << endl;
-		else
-			cerr << _(" Waiting for more...") << flush;
+		// Report once a second at most
+		static time_t last_report = 0;
+		time_t now = time(nullptr);
+		if (last_report == now)
+			return;
+		last_report = now;
+
+		cerr << bfmt(_("Entropy pool: %d of %d bytes available.")) % current % total;
+		cerr << endl;
 	}
 }
 
