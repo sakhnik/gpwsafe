@@ -225,7 +225,7 @@ void App::_SetCommand(Command::PtrT command)
 		cerr << _("Ambiguous command") << endl;
 		throw ExitEx(1);
 	}
-	_command.reset(command.release());
+	_command = std::move(command);
 }
 
 void App::_SetCommandArgument(const std::string &arg)
