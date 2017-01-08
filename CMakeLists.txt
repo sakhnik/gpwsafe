@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(PACKAGE gpwsafe)
-set(PACKAGE_VERSION "0.21.4")
+set(PACKAGE_V4RSION "0.21.5")
 
 project(${PACKAGE})
 
