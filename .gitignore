@@ -1,3 +1,5 @@
 BUILD*
-.ycm_extra_conf.py
-.ycm_extra_conf.pyc
+.ycm_extra_conf.py*
+.cproj.out/
+.clang_complete
+CMakeLists.txt.user
