@@ -88,7 +88,6 @@ endif()
 
 execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/detect-clang-dirs.sh
 	OUTPUT_VARIABLE clang_include_dirs)
-configure_file(.ycm_extra_conf.py.in .ycm_extra_conf.py)
 
 add_subdirectory(src)
 add_subdirectory(po)
