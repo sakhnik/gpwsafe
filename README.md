@@ -1,5 +1,9 @@
 [![Travis Build Status](https://travis-ci.org/sakhnik/gpwsafe.svg?branch=master)](https://travis-ci.org/sakhnik/github)
 
+# Status
+
+The project is abandoned in favour of [pass](https://www.passwordstore.org/).
+
 # Overview
 
 This is a reimplementation of the unix command line utility
