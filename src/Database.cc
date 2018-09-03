@@ -56,22 +56,23 @@ void Database::Create()
 	_fields.clear();
 	_changed = false;
 
-	sField::PtrT field(sField::Create());
+	sField::PtrT version_field(sField::Create());
 
 	// Insert default version (mock 3.10)
-	field->type = FT_VERSION;
-	field->value.clear();
-	field->value.push_back(0x0A);
-	field->value.push_back(0x03);
-	_AddField(field);
+	version_field->type = FT_VERSION;
+	version_field->value.clear();
+	version_field->value.push_back(0x0A);
+	version_field->value.push_back(0x03);
+	_AddField(version_field);
 
+	sField::PtrT uuid_field(sField::Create());
 	// Insert new UUID
-	field->type = FT_UUID;
-	field->value.resize(16);
+	uuid_field->type = FT_UUID;
+	uuid_field->value.resize(16);
 	boost::uuids::uuid new_uuid = boost::uuids::random_generator()();
 	assert(new_uuid.size() == 16);
-	copy(new_uuid.begin(), new_uuid.end(), field->value.begin());
-	_AddField(field);
+	copy(new_uuid.begin(), new_uuid.end(), uuid_field->value.begin());
+	_AddField(uuid_field);
 }
 
 void Database::Read(string const &fname, StringX const &pass)
