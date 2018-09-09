@@ -60,7 +60,7 @@ void CommandList::Execute(Params const &params)
 		throw ExitEx(1);
 	}
 
-	if (!params.user && !params.pass)
+	if (!params.user && !params.pass && !params.notes)
 	{
 		if (match.size() > 1)
 		{
@@ -134,6 +134,12 @@ void CommandList::Execute(Params const &params)
 		emitter->Emit(_("password for ") + title_entry->first,
 		              title_entry->second->GetPass());
 	}
+	if (params.notes)
+	{
+		emitter->Emit(_("notes for ") + title_entry->first,
+		              title_entry->second->GetNotes());
+	}
+
 }
 
 void CommandList::_PrintIntention(Params const &params)
@@ -151,6 +157,10 @@ void CommandList::_PrintIntention(Params const &params)
 			params.emitter->PrintIntention(_("password"));
 		else
 			return;
+	}
+	if (params.notes) 
+	{
+		params.emitter->PrintIntention(_("notes"));
 	}
 }
 

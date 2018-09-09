@@ -12,7 +12,7 @@ before_install:
   - sudo apt-get install g++-5
   - sudo apt-get install expect
 
-  - "cd /usr/src/gtest && sudo cmake -DBUILD_SHARED_LIBS=ON . && sudo make && sudo mv libg* /usr/local/lib/; cd -"
+  - bash -c "cp -R /usr/src/gtest /tmp/ && cd /tmp/gtest && cmake -DBUILD_SHARED_LIBS=ON . && make && sudo mv libgtest* /usr/local/lib/"
 
 script:
   - mkdir BUILD

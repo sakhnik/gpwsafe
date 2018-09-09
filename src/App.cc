@@ -144,6 +144,9 @@ void App::Init(int argc, char *argv[])
 		("pass,p",
 			bool_switch(&_params.pass),
 			_("emit password of listed account"))
+		("notes,n",
+			bool_switch(&_params.notes),
+			_("emit notes of listed account"))
 		("echo,E",
 			bool_switch(nullptr)->notifier(
 				[this](bool arg)

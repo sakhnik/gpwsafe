@@ -41,6 +41,7 @@ public:
 		std::string file_name;
 		bool user;
 		bool pass;
+		bool notes;
 		std::unique_ptr<iEmitter> emitter;
 		std::string selection;
 
