@@ -1,27 +1,34 @@
 language: generic
-sudo: required
+sudo: false
 dist: trusty
 notifications:
   email: false
+   
+addons:
+  apt:
+    sources: 
+      - ubuntu-toolchain-r-test
+    packages:
+      - libgtest-dev
+      - expect
+      - libboost-program-options-dev
+      - libboost-filesystem-dev
 
-before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libgtest-dev
-  - sudo apt-get install -y libboost-program-options-dev libboost-filesystem-dev
-  - sudo apt-get install g++-5
-  - sudo apt-get install expect
-
-  - bash -c "cp -R /usr/src/gtest /tmp/ && cd /tmp/gtest && cmake -DBUILD_SHARED_LIBS=ON . && make && sudo mv libgtest* /usr/local/lib/"
-
+before_script:
+  - mkdir GTEST_BUILD
+  - cd GTEST_BUILD
+  - cmake -DBUILD_SHARED_LIBS=ON /usr/src/gtest
+  - make
+  - cd -
+  
 script:
   - mkdir BUILD
   - cd BUILD
-  - cmake ..
+  - GTEST_ROOT=../GTEST_BUILD cmake ..
   - make
   - make test
 
 matrix:
   include:
     - os: linux
-      env: COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5 CTEST_OUTPUT_ON_FAILURE=1
+      env: COMPILER_NAME=clang CXX=clang++ CC=clang CTEST_OUTPUT_ON_FAILURE=1
